@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>研究報告資源索引</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #0f172a; /* 極深藍底色 */
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .link-item {
+            transition: all 0.3s ease;
+        }
+        .link-item:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateX(8px);
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen flex flex-col items-center justify-center p-6">
+
+    <div class="max-w-3xl w-full">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                專案研究資源索引
+            </h1>
+            <p class="text-gray-400">精選 AI 經濟影響與技術研究報告清單</p>
+        </div>
+
+        <!-- Links Container -->
+        <div class="glass-card rounded-3xl p-8 shadow-2xl">
+            <h2 class="text-xl font-semibold mb-6 border-b border-gray-700 pb-4 flex items-center">
+                <span class="mr-2">📂</span> 研究報告列表
+            </h2>
+            
+            <nav class="space-y-4">
+                <!-- 項目 1 -->
+                <a href="https://github.com/nike1112afmax/Study/AI%20%E5%8B%9E%E5%8B%95%E5%8A%9B%E8%A1%9D%E6%93%8A%E8%88%87%E7%B6%93%E6%BF%9F%E8%BD%89%E5%9E%8B.html" 
+                   target="_blank" 
+                   class="link-item group flex items-center justify-between p-5 rounded-2xl border border-gray-700 bg-gray-800/50">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-4 group-hover:scale-110 transition-transform">📊</span>
+                        <div>
+                            <div class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">AI 勞動力衝擊經濟調查</div>
+                            <div class="text-sm text-gray-500">探討 AI 生產力、失業率與經濟結構轉型的深度研究</div>
+                        </div>
+                    </div>
+                    <span class="text-gray-600 group-hover:text-blue-400 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </span>
+                </a>
+
+                <!-- 未來可在此增加更多項目 -->
+            </nav>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-gray-500 text-sm">
+            <p>© 2026 AI 經濟影響研究中心 | 持續更新中</p>
+        </footer>
+    </div>
+
+</body>
+</html>
