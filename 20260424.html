@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMA 財富管理顧問課程｜2026.04.24 課程整理</title>
+<style>
+  :root {
+    --primary: #1a2e4a;
+    --accent: #c8922a;
+    --accent-light: #e8b84b;
+    --bg: #ffffff;
+    --bg-soft: #f7f8fa;
+    --bg-card: #ffffff;
+    --border: #e2e6ea;
+    --text: #1f2937;
+    --text-muted: #6b7280;
+    --red: #c0392b;
+    --green: #1a7a4a;
+    --blue: #1d4ed8;
+    --tag-bg: #eef2ff;
+    --tag-text: #3730a3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Serif TC', 'Georgia', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.85;
+    font-size: 16px;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--primary);
+    color: #fff;
+    padding: 48px 32px 36px;
+    border-bottom: 4px solid var(--accent);
+  }
+  .header-inner {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .header-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    font-family: 'Georgia', serif;
+    margin-bottom: 12px;
+  }
+  .header-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .header-subtitle {
+    font-size: 1rem;
+    color: #94a3b8;
+    font-family: 'Georgia', serif;
+  }
+  .header-meta {
+    margin-top: 20px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .meta-chip {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #cbd5e1;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'Georgia', serif;
+  }
+
+  /* ── Nav ── */
+  .toc-bar {
+    background: var(--bg-soft);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .toc-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .toc-link {
+    display: block;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    font-family: 'Georgia', serif;
+  }
+  .toc-link:hover {
+    color: var(--primary);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── Main Layout ── */
+  .main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 64px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-number {
+    background: var(--primary);
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'Georgia', serif;
+  }
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .section-tag {
+    margin-left: auto;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-family: 'Georgia', serif;
+  }
+
+  /* ── Summary Box ── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .summary-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 20px;
+  }
+  .summary-card .sc-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-family: 'Georgia', serif;
+  }
+  .summary-card .sc-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1.2;
+  }
+  .summary-card .sc-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .sc-value.red { color: var(--red); }
+  .sc-value.green { color: var(--green); }
+  .sc-value.blue { color: var(--blue); }
+
+  /* ── Key Points ── */
+  .key-point {
+    background: var(--bg-soft);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 18px 22px;
+    margin-bottom: 16px;
+  }
+  .key-point h4 {
+    font-size: 15px;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+  .key-point p {
+    font-size: 14.5px;
+    color: var(--text);
+    line-height: 1.75;
+  }
+  .key-point.alert {
+    border-left-color: var(--red);
+    background: #fef2f2;
+  }
+  .key-point.alert h4 { color: var(--red); }
+  .key-point.positive {
+    border-left-color: var(--green);
+    background: #f0fdf4;
+  }
+  .key-point.positive h4 { color: var(--green); }
+  .key-point.neutral {
+    border-left-color: #6b7280;
+    background: #f9fafb;
+  }
+
+  /* ── Logic Chain ── */
+  .logic-chain {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 24px 0;
+  }
+  .logic-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 4px;
+    position: relative;
+  }
+  .logic-step:not(:last-child)::after {
+    content: '↓';
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--accent);
+    font-size: 16px;
+    z-index: 1;
+    background: #fff;
+    padding: 0 4px;
+  }
+  .logic-step:not(:last-child) {
+    margin-bottom: 20px;
+  }
+  .step-num {
+    background: var(--primary);
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .step-content { flex: 1; }
+  .step-title { font-weight: 700; font-size: 14px; color: var(--primary); margin-bottom: 4px; }
+  .step-desc { font-size: 13.5px; color: var(--text-muted); }
+
+  /* ── Table ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 20px 0;
+  }
+  .data-table th {
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+  }
+  .data-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table tr:nth-child(even) td { background: var(--bg-soft); }
+  .data-table tr:hover td { background: #eef2ff; }
+  .td-red { color: var(--red); font-weight: 600; }
+  .td-green { color: var(--green); font-weight: 600; }
+  .td-warn { color: #b45309; font-weight: 600; }
+
+  /* ── Quote ── */
+  blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 20px 0;
+    background: #fffbf0;
+    font-style: italic;
+    color: #4b3a1f;
+    border-radius: 0 4px 4px 0;
+    font-size: 14.5px;
+  }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 600;
+    vertical-align: middle;
+    font-family: 'Georgia', serif;
+  }
+  .badge-warn { background: #fef3c7; color: #92400e; }
+  .badge-danger { background: #fee2e2; color: #991b1b; }
+  .badge-safe { background: #d1fae5; color: #065f46; }
+  .badge-info { background: #dbeafe; color: #1e40af; }
+
+  /* ── Wave Box ── */
+  .wave-box {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+  .wave-box h4 {
+    font-size: 15px;
+    color: var(--primary);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .wave-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  .wave-label {
+    width: 120px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .wave-value {
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  /* ── Timeline ── */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+    margin: 20px 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding-left: 16px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 7px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .tl-date {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .tl-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.65;
+  }
+
+  /* ── Footer ── */
+  .site-footer {
+    background: var(--primary);
+    color: #94a3b8;
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  /* ── Prose ── */
+  .prose p {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .prose strong { color: var(--primary); }
+
+  /* ── Cols ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  @media (max-width: 640px) {
+    .two-col { grid-template-columns: 1fr; }
+    .header-title { font-size: 1.4rem; }
+    .main { padding: 24px 16px 60px; }
+    .toc-inner { gap: 0; }
+    .toc-link { padding: 12px 10px; font-size: 12px; }
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-label">WMA · Wealth Management Advisor</div>
+    <h1 class="header-title">啟富達 WMA 財富管理顧問課程<br>課程整理報告</h1>
+    <p class="header-subtitle">2026年4月24日 第二次課程｜三堂完整內容分析</p>
+    <div class="header-meta">
+      <span class="meta-chip">📅 2026.04.24</span>
+      <span class="meta-chip">📚 三堂課・完整逐字稿</span>
+      <span class="meta-chip">🛢️ 油價 · 殖利率 · 美元</span>
+      <span class="meta-chip">📈 技術分析 · 波浪理論</span>
+    </div>
+  </div>
+</header>
+
+<!-- ══ TOC ══ -->
+<nav class="toc-bar">
+  <div class="toc-inner">
+    <a href="#overview" class="toc-link">課程概覽</a>
+    <a href="#macro" class="toc-link">總體經濟</a>
+    <a href="#oil" class="toc-link">油價分析</a>
+    <a href="#rates" class="toc-link">殖利率</a>
+    <a href="#technical" class="toc-link">技術分析</a>
+    <a href="#strategy" class="toc-link">投資策略</a>
+    <a href="#timeline" class="toc-link">關鍵時間點</a>
+    <a href="#philosophy" class="toc-link">投資心法</a>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+
+  <!-- ── 0. KEY DATA ── -->
+  <div class="summary-grid" style="margin-top: 8px;">
+    <div class="summary-card">
+      <div class="sc-label">美國 10年期公債殖利率</div>
+      <div class="sc-value blue">4.3%</div>
+      <div class="sc-desc">關鍵警戒景線；已突破 4.2 & 4.3</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">美國 3月 CPI 通膨</div>
+      <div class="sc-value red">3.3%</div>
+      <div class="sc-desc">1967年以來單月最大漲幅；油價引發</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">美國 GDP Now (4/9)</div>
+      <div class="sc-value">1.3%</div>
+      <div class="sc-desc">經濟下滑但尚未衰退；形成油價支撐</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">布蘭特原油正常區間</div>
+      <div class="sc-value green">80 / 140</div>
+      <div class="sc-desc">無地緣衝突 $80｜有衝突 $140</div>
+    </div>
+  </div>
+
+  <!-- ── 1. OVERVIEW ── -->
+  <section id="overview" class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2 class="section-title">課程概覽</h2>
+      <span class="section-tag">三堂架構</span>
+    </div>
+
+    <div class="prose">
+      <p>本次課程（2026年4月24日）共分三堂，由主講老師與技術分析老師（基本老師）協同授課，聚焦於<strong>油價結構性轉變、10年期公債殖利率走勢、以及全球股市高點研判</strong>三大核心主題。</p>
+    </div>
+
+    <div class="two-col">
+      <div class="key-point">
+        <h4>第一堂｜邏輯建構</h4>
+        <p>從油價的經濟影響層面切入，分析中東伊朗衝突的供應缺口規模、油價八大產業鏈影響，並複習 2018年殖利率起漲架構作為比較案例。</p>
+      </div>
+      <div class="key-point">
+        <h4>第二堂｜技術分析</h4>
+        <p>以波浪理論 N 字型、多重修正波精算10年期公債殖利率與美元指數的時間空間目標，並對應分析全球股市（台股、日股、港股、韓股）的頭部格局。</p>
+      </div>
+    </div>
+    <div class="key-point neutral" style="margin-top: 0;">
+      <h4>第三堂｜總結收尾</h4>
+      <p>回顧美國 GDP Now 1.3% 的「停滯性通膨」（Stagflation）現況，結合過去20年大宗商品牛市規律——歷史上大宗商品行情的終結，都來自於<strong>聯準會啟動升息週期</strong>，重點提示 Q3 2026（7–9月）的貨幣政策轉向風險。</p>
+    </div>
+  </section>
+
+  <!-- ── 2. MACRO ── -->
+  <section id="macro" class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2 class="section-title">總體經濟現況</h2>
+      <span class="section-tag">Macro</span>
+    </div>
+
+    <div class="key-point alert">
+      <h4>⚠️ 停滯性通膨（Stagflation）警示</h4>
+      <p>美國 GDP Now 僅 1.3%（下滑但未衰退），3月 CPI 通膨卻升至 3.3%，為歷史單月最大漲幅。「通膨把經濟成長吃掉了」——這是停滯性通膨的核心特徵，也是引爆貨幣政策轉向的前兆。</p>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">高通膨、高利率時代的三大結構性原因</h3>
+    <div class="logic-chain">
+      <div class="logic-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">東西方分化</div>
+          <div class="step-desc">全球供應鏈重組，地緣政治緊張，貿易成本上升</div>
+        </div>
+      </div>
+      <div class="logic-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">缺工 · 人口老化</div>
+          <div class="step-desc">勞動市場結構性短缺，薪資通膨難以壓低</div>
+        </div>
+      </div>
+      <div class="logic-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">氣候變遷</div>
+          <div class="step-desc">極端氣候衝擊農產品供應，夏季高溫預計推升物價</div>
+        </div>
+      </div>
+    </div>
+
+    <blockquote>「2022年3月起，10年期公債殖利率出現40年來的結構性轉折向上，高通膨與高利率時代正式來臨。」</blockquote>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">重點觀察數據</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>指標</th><th>數值</th><th>意義</th><th>狀態</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>美國 GDP Now</td><td>1.3%</td><td>下滑但未衰退，形成油價支撐</td><td class="td-warn">⚠️ 警戒</td></tr>
+        <tr><td>3月 CPI</td><td class="td-red">3.3%</td><td>伊朗衝突推升油價，通膨惡化</td><td class="td-red">🔴 危險</td></tr>
+        <tr><td>聯準會衰退門檻</td><td>≤0%</td><td>GDP 降至零以下才算正式衰退</td><td class="td-green">✅ 未觸發</td></tr>
+        <tr><td>服務業 PMI</td><td>擴張</td><td>仍在擴張，支撐經濟不衰退</td><td class="td-green">✅ 正常</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── 3. OIL ── -->
+  <section id="oil" class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2 class="section-title">油價深度分析</h2>
+      <span class="section-tag">Crude Oil</span>
+    </div>
+
+    <div class="key-point positive">
+      <h4>🛢️ 結構性轉變：五年下降趨勢正式終結</h4>
+      <p>布蘭特原油自 2022年3月 至 2026年3月，歷時五年的下降趨勢線已被突破，並站穩 200日均線。這是「結構性轉變」，不是短期波動。按技術分析邏輯，5+3=8，油價有可能延伸至 2027年。</p>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">油價雙情境框架</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>情境</th><th>油價區間</th><th>觸發條件</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>正常經濟（無地緣衝突）</td><td class="td-green">$80 / 桶</td><td>美國未衰退，正常供需</td></tr>
+        <tr><td>地緣衝突（供應端缺口）</td><td class="td-red">$140 / 桶</td><td>2008年 $147、2022年 $139 均驗證</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">這次供應缺口：史上最大</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>事件</th><th>供應端缺口（萬桶/日）</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>第一次石油危機（1970s）</td><td>450</td></tr>
+        <tr><td>第二次石油危機</td><td>560</td></tr>
+        <tr><td>2022 俄烏衝突</td><td>300</td></tr>
+        <tr><td><strong>本次美伊衝突（2026）</strong></td><td class="td-red"><strong>≈2,000（估）</strong></td></tr>
+        <tr><td><strong>合計（過去三次總和）</strong></td><td>1,310～1,360</td></tr>
+      </tbody>
+    </table>
+
+    <div class="key-point alert">
+      <h4>⚠️ 「核談解決問題」不等於供應缺口修復</h4>
+      <p>即使美伊達成核談協議，供應缺口也不可能短時間補足——許多船隻已損毀、工廠停產、基礎設施破壞。這一次的供應端短缺是兩次石油危機加上烏克蘭衝突的總和，不是政治談判能快速解決的。</p>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">原油八大產業鏈影響</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>#</th><th>分類</th><th>生活影響</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>液化天然氣</td><td>化肥、農業生產成本上漲</td></tr>
+        <tr><td>2</td><td>汽油</td><td>汽車燃油、洗車服務漲價</td></tr>
+        <tr><td>3</td><td>石腦油</td><td>塑膠、橡膠製品（含保險套）漲價</td></tr>
+        <tr><td>4</td><td>航空燃油（煤油）</td><td>機票價格上漲，夏季旅遊旺季衝擊大</td></tr>
+        <tr><td>5</td><td>柴油</td><td>物流業大幅受壓，貨運成本轉嫁</td></tr>
+        <tr><td>6</td><td>石蠟</td><td>化妝品、藥膏、保鮮膜漲價</td></tr>
+        <tr><td>7</td><td>船用燃油（重油）</td><td>引擎機油、工業用油漲價</td></tr>
+        <tr><td>8</td><td>瀝青</td><td>道路建設、工程成本上升</td></tr>
+      </tbody>
+    </table>
+
+    <div class="key-point">
+      <h4>美元與油價：從負相關轉為正相關</h4>
+      <p>傳統認知是美元強、油價跌（負相關）。但自 2018年美國超越沙烏地阿拉伯成為全球最大石油生產國後，關係已轉為<strong>正相關</strong>——美元強，代表美國能源出口競爭力增強。美伊衝突更讓歐亞各國被迫向美國購油，強化此一正相關。</p>
+    </div>
+  </section>
+
+  <!-- ── 4. RATES ── -->
+  <section id="rates" class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2 class="section-title">10年期公債殖利率分析</h2>
+      <span class="section-tag">US10Y</span>
+    </div>
+
+    <div class="key-point alert">
+      <h4>殖利率是所有金融資產變化的源頭</h4>
+      <p>不是股市、不是匯率、不是個股，而是<strong>10年期公債殖利率</strong>才是真正應該盯緊的指標。它決定資金成本，影響資產配置輪動，並領先股市頭部與底部的形成。</p>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">三條關鍵景線（Threshold Levels）</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>景線</th><th>意義</th><th>市場反應</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>4.2%</strong></td><td>第一警戒線</td><td>機構開始執行賣股動作；股市見高點</td></tr>
+        <tr><td><strong>4.3%</strong></td><td>第二警戒線</td><td>更大規模賣壓；股市確認高點</td></tr>
+        <tr><td class="td-red"><strong>4.35%</strong></td><td>科技股臨界點</td><td>高估值科技股遭大幅減碼；台韓日股重挫</td></tr>
+        <tr><td class="td-red"><strong>4.6%+</strong></td><td>全倉離場訊號</td><td>立即清空高估值資產</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">N字型空間目標計算</h3>
+    <div class="wave-box">
+      <h4>月線圖 N 字型推算（長期目標）</h4>
+      <div class="wave-row"><span class="wave-label">2020年低點</span><span class="wave-value">0.318%</span></div>
+      <div class="wave-row"><span class="wave-label">2022年高點</span><span class="wave-value">4.983%（≈5.02%）</span></div>
+      <div class="wave-row"><span class="wave-label">計算式</span><span class="wave-value">低點 4.066 + 振幅 1.458 → <span style="color:var(--red)">目標 5.5%+</span></span></div>
+      <hr style="margin: 14px 0; border-color: var(--border);">
+      <div class="wave-row"><span class="wave-label">等三角收斂</span><span class="wave-value">突破後目標 5.42%～5.73%</span></div>
+      <div class="wave-row"><span class="wave-label">4.2 景線公式</span><span class="wave-value">4.2 + 0.261 → 4.461（已觸及 4.487 後回測）</span></div>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">殖利率上漲 → 股市兩大規律（2018年驗證）</h3>
+    <div class="logic-chain">
+      <div class="logic-step">
+        <div class="step-num">①</div>
+        <div class="step-content">
+          <div class="step-title">殖利率突破景線 → 股市見高點</div>
+          <div class="step-desc">2018年2月殖利率突破 2.5%，全球股市同步見頂。2026年 3月突破 4.35%，相同邏輯重演。</div>
+        </div>
+      </div>
+      <div class="logic-step">
+        <div class="step-num">②</div>
+        <div class="step-content">
+          <div class="step-title">殖利率 + 美元同步上漲 → 股市加速下跌</div>
+          <div class="step-desc">兩者同向是「流動性緊縮」訊號，為最危險的組合，股市在此階段將加速崩跌。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5. TECHNICAL ── -->
+  <section id="technical" class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2 class="section-title">技術分析：市場定位</h2>
+      <span class="section-tag">Wave Theory</span>
+    </div>
+
+    <div class="key-point alert">
+      <h4>🔴 核心結論：現在是「高檔頭部的最後震盪」</h4>
+      <p>10年期公債殖利率、美元指數、恐慌指數（VIX）三者均在波浪 3-2 位置，月線 KD 在低檔黃金交叉，三者即將往上走。殖利率與美元上漲 → 流動性緊縮 → 股市頭部確立。</p>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">三大指標同步分析</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>指標</th><th>波浪位置</th><th>月 KD</th><th>形態</th><th>方向</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>10年公債殖利率</td><td>3-2（回測支撐）</td><td class="td-warn">低檔黃金交叉</td><td>多重修正波底部</td><td class="td-red">↑ 向上</td></tr>
+        <tr><td>美元指數 DXY</td><td>3-2（回測支撐）</td><td class="td-warn">低檔黃金交叉</td><td>多重修正波底部</td><td class="td-red">↑ 向上</td></tr>
+        <tr><td>VIX 恐慌指數</td><td>3-2（回測支撐）</td><td class="td-warn">低檔黃金交叉</td><td>上升楔形收斂</td><td class="td-red">↑ 向上</td></tr>
+        <tr><td>全球股市</td><td>頭部完成</td><td>高檔（90以上）</td><td>M頭或圓弧頂</td><td class="td-red">↓ 向下</td></tr>
+      </tbody>
+    </table>
+
+    <div class="two-col">
+      <div class="key-point alert">
+        <h4>股市反彈性質：多頭陷阱</h4>
+        <p>目前全球股市反彈<strong>沒有成交量配合</strong>（下跌量爆大量，上漲量縮）。確認多頭需要「第二隻腳」，現在只有第一隻腳，反彈即是逃命波。策略分析師 Michael 亦稱此波反彈為「多頭陷阱」。</p>
+      </div>
+      <div class="key-point">
+        <h4>2025 vs 2026 關稅急跌對比</h4>
+        <p>2025年4月關稅急跌：<strong>爆大量</strong>，主力進場，反彈延續很長。<br>
+        2026年4月下跌：<strong>無量</strong>，主力未進場，過前高為假突破。這是兩次最大的本質差異。</p>
+      </div>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">油價技術走勢回顧（4月底已驗證）</h3>
+    <div class="wave-box">
+      <h4>油價進場架構（已提前規劃）</h4>
+      <div class="wave-row"><span class="wave-label">時間轉折</span><span class="wave-value">穀雨 4/20-21（13天、21天週期滿足）</span></div>
+      <div class="wave-row"><span class="wave-label">空間支撐</span><span class="wave-value">$89～$91、次級目標 $96</span></div>
+      <div class="wave-row"><span class="wave-label">形態</span><span class="wave-value">下降楔形 + 平台整理（二四浪交替）</span></div>
+      <div class="wave-row"><span class="wave-label">指標訊號</span><span class="wave-value">4/20-21 出現「看漲背離」（KD值破低，油價未破前低）</span></div>
+      <div class="wave-row"><span class="wave-label">結果</span><span class="wave-value"><span style="color:var(--green)">4/21起反彈，本週站上 $100</span></span></div>
+    </div>
+  </section>
+
+  <!-- ── 6. STRATEGY ── -->
+  <section id="strategy" class="section">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2 class="section-title">投資策略建議</h2>
+      <span class="section-tag">Strategy</span>
+    </div>
+
+    <div class="key-point positive">
+      <h4>✅ 目前可持有／布局的方向</h4>
+      <p>能源類股（低估值）、能源基金（與油價正相關）、大宗商品相關。化工類股（石化）月線 KD 在低檔，目前約 $50-55 區間，逢回可布局。</p>
+    </div>
+
+    <div class="key-point alert">
+      <h4>⛔ 避開：高估值科技股</h4>
+      <p>殖利率往上走，資金自動從「高估值成長股（科技股）」流向「低估值價值股（能源股）」。這是資產配置的結構性轉移，不是短期輪動。台灣、韓國、日本均為科技股高度集中國家，殖利率突破 4.35% 後首當其衝。</p>
+    </div>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">選股五步驟框架</h3>
+    <div class="logic-chain">
+      <div class="logic-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">用月線圖做選股篩選</div>
+          <div class="step-desc">先看月線 KD 位置：KD &lt; 20 且黃金交叉向上 → 低檔可布局；KD &gt; 80 → 高檔禁止存股</div>
+        </div>
+      </div>
+      <div class="logic-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">確認宏觀邏輯支撐</div>
+          <div class="step-desc">殖利率方向、美元走勢、油價趨勢是否與標的正相關或負相關</div>
+        </div>
+      </div>
+      <div class="logic-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">規劃時間轉折</div>
+          <div class="step-desc">節氣、央行開會日期、波浪時間費波南西係數（5、8、13、21、34...）</div>
+        </div>
+      </div>
+      <div class="logic-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">計算空間目標</div>
+          <div class="step-desc">N字型、0.382、0.5、0.618 黃金比例作為進出場空間依據</div>
+        </div>
+      </div>
+      <div class="logic-step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">日線指標確認進場</div>
+          <div class="step-desc">出現看漲背離或 KD 低檔交叉，搭配成交量縮（確認支撐），才執行買進</div>
+        </div>
+      </div>
+    </div>
+
+    <blockquote>「不追高，就贏了50%的人；做順上趨勢，就贏了70%的人；用基本面選股，就贏了90%的人；結合月線圖入場，就贏了95%的人。」——啟富達投資心法</blockquote>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">高檔存股的危險</h3>
+    <div class="two-col">
+      <div class="key-point alert">
+        <h4>陷阱1：高點存股</h4>
+        <p>面臨40%以上跌幅時，在極度悲觀的市場中，對「反彈要不要賣」毫無判斷依據，最終套牢無解。沒有五大壓力支撐工具（形態、均線、黃金比例、前波高低點、成交量），就無法判斷何時出場。</p>
+      </div>
+      <div class="key-point alert">
+        <h4>陷阱2：沒有停損機制</h4>
+        <p>投資「買入」很簡單，難的是「何時賣、如何賣」。任何投資都必須在進場前規劃停損機制。合夥開公司、談戀愛都要先規劃「分手條件」，投資亦然。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 7. TIMELINE ── -->
+  <section id="timeline" class="section">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2 class="section-title">關鍵時間節點</h2>
+      <span class="section-tag">Calendar</span>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">2022年3月</div>
+        <div class="tl-text">10年期公債殖利率出現結構性轉折向上（40年趨勢反轉）；布蘭特原油五年下降趨勢起點。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026年3月</div>
+        <div class="tl-text">布蘭特原油突破五年下降趨勢軌道，站穩200日均線。結構性轉變正式確立。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026年2月28日</div>
+        <div class="tl-text">美伊衝突爆發，殖利率突破下降趨勢軌道向上走，美元同步反彈。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026年4月5日（清明）</div>
+        <div class="tl-text">節氣時間轉折。隔日4/6晚8點川普宣布延後兩週再談判。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026年4月20-21日（穀雨）✅ 已驗證</div>
+        <div class="tl-text">油價時間轉折（13天+21天費波南西滿足）、下降楔形完成、KD看漲背離。油價從 $47 反彈至 $100 以上。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026年4月29-30日</div>
+        <div class="tl-text">四大央行同步開會（FOMC等），重要觀察點。美元修正至此滿34天時間轉折。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026年6月 ⭐</div>
+        <div class="tl-text">聯準會公布經濟、通膨預測值與利率點陣圖。殖利率打底13個月（6月）滿足。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026年7月底 ⭐</div>
+        <div class="tl-text">聯準會開會（7/29-30）。殖利率多重修正波34個月時間轉折。美元打底13個月時間轉折。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026年9月 ⭐⭐</div>
+        <div class="tl-text">聯準會公布利率點陣圖。殖利率時間轉折（8+5=13 計算目標）。<strong>貨幣政策轉向（升息）最可能的時間窗口</strong>，也是大宗商品牛市可能終結的訊號。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 8. PHILOSOPHY ── -->
+  <section id="philosophy" class="section">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2 class="section-title">投資心法與人生哲學</h2>
+      <span class="section-tag">Wisdom</span>
+    </div>
+
+    <div class="key-point positive">
+      <h4>核心理念：邏輯為先、線圖為主、新聞為輔</h4>
+      <p>第一步建立邏輯（殖利率→美元→油價的傳導鏈），第二步用技術圖形做時間空間規劃，第三步用新聞驗證思考、而非跟隨新聞做決策。新聞是讓你思考的，不是告訴你答案的。</p>
+    </div>
+
+    <div class="two-col">
+      <div class="key-point neutral">
+        <h4>反人性投資</h4>
+        <p>大家都在談的時候出場，沒人談的時候進場。去年低檔沒人談台肥（37-40元），現在大家都談了（50-55元），那是出場的時候，不是進場的時候。</p>
+      </div>
+      <div class="key-point neutral">
+        <h4>當下產業的悖論</h4>
+        <p>當下熱門的產業不能做長線，因為沒有任何產業能無限成長。當下不好的產業，是準備去攻讀它的時機，因為學完一門學問是四到八年後的事。</p>
+      </div>
+    </div>
+
+    <blockquote>「能力可以將你推上巔峰，但性格決定你在那裡多久。」——課程名句</blockquote>
+    <blockquote>「隔壁炒豬肝，與我不相干。」——別人賺錢與你無關，做好自己的投資紀律才是關鍵。</blockquote>
+    <blockquote>「天下沒有白吃的午餐——不要錢的最貴。任何投資都要有停損機制。」</blockquote>
+
+    <h3 style="font-size: 15px; color: var(--primary); margin: 24px 0 14px;">啟富達投資心法五條</h3>
+    <div class="key-point">
+      <h4>❶ 不在暴漲時買入，在下跌後整到位時買入</h4>
+      <p>等待月線 KD 到低檔黃金交叉後進場，把這變成一種習慣。</p>
+    </div>
+    <div class="key-point">
+      <h4>❷ 不滿倉、持股三隻且不同行業</h4>
+      <p>分散配置，降低個股風險，保持流動性應對突發變化。</p>
+    </div>
+    <div class="key-point">
+      <h4>❸ 不要在熱門股做長線；不要在冷門股做短線</h4>
+      <p>科技股做長線、能源股做短線，都是最容易犯的錯誤。</p>
+    </div>
+    <div class="key-point">
+      <h4>❹ 結合月線圖入場，勝率 95%</h4>
+      <p>月線 KD 低檔黃金交叉是最強的選股篩選條件，遠比看日線、新聞可靠。</p>
+    </div>
+    <div class="key-point">
+      <h4>❺ 投資需要用心經營管理</h4>
+      <p>投資如同經營公司或婚姻——買入（合夥）很簡單，真正難的是停損退出（分手）。沒有事先規劃停損機制，投資終將失敗。</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <p>WMA 財富管理顧問課程｜2026.04.24 課程整理 · 啟富達國際</p>
+  <p style="margin-top: 6px; font-size: 11px; opacity: 0.6;">本報告為課程學習筆記整理，不構成投資建議。投資有風險，決策前請做好獨立研究。</p>
+</footer>
+
+</body>
+</html>
