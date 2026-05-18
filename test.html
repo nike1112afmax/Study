@@ -3,177 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一年 26 個約會主題手冊</title>
+    <title>CFD資訊課程複習索引</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
 
+        /* 免費日式紋樣背景圖（偏淡紙紋／波紋） */
         body { 
             font-family: 'Noto Sans TC', sans-serif; 
+            background-image: url('https://cdn.pixabay.com/photo/2017/08/03/19/52/paper-texture-2572347_1280.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
             background-color: #fdf8f0; /* 淺米白底色，像和紙 */
-            color: #554433; /* 濃淡適中的灰褐文字 */
+            color: #554433; /* 淺灰褐文字 */
+            min-height: 100vh;
         }
         .kira-card {
-            background: rgba(248, 242, 230, 0.8); /* 偏米白半透明 */
+            background: rgba(250, 243, 230, 0.92);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(180, 160, 140, 0.3);
+            border: 1px solid rgba(200, 180, 160, 0.4);
             border-radius: 16px;
-            box-shadow: 0 4px 16px rgba(160, 140, 120, 0.15);
+            box-shadow: 0 4px 18px rgba(170, 150, 130, 0.15);
         }
         .kira-header {
-            background: rgba(255, 248, 235, 0.9);
-            border-bottom: 1px solid rgba(220, 200, 180, 0.5);
+            background: rgba(255, 248, 235, 0.94);
+            border-bottom: 1px solid rgba(210, 195, 175, 0.5);
         }
         .kira-link {
             transition: all 0.3s ease;
         }
         .kira-link:hover {
-            background: rgba(210, 200, 180, 0.3);
-            border-color: rgba(150, 130, 110, 0.5);
+            background: rgba(220, 210, 190, 0.5);
+            border-color: rgba(160, 140, 120, 0.5);
             transform: translateX(6px);
         }
-        .season-title {
-            color: #9a5c40; /* 暖木色標題 */
-            border-bottom: 1px dashed #d9cbb8;
-            padding-bottom: 4px;
+
+        /* 小邊欄／角落日式線條插圖 */
+        .motif-corner {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 120px;
+            height: 120px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .motif-corner svg {
+            width: 100%;
+            height: 100%;
+            fill: #9a5c40;
         }
     </style>
 </head>
-<body class="min-h-screen px-4 py-6">
+<body class="px-4 py-6 relative">
 
-    <div class="max-w-4xl mx-auto">
+    <!-- 小日式線條插圖（可自選 SVG 或用下面示意圖） -->
+    <div class="motif-corner">
+        <!-- 免費日式線條插圖 SVG（示意用，可換成你喜歡的圖） -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <path d="M10 70 V90 H90 V70 L50 30 Z" fill="none" stroke="#9a5c40" stroke-width="1.5"/>
+            <path d="M15 68 L85 68" stroke="#9a5c40" stroke-width="0.8"/>
+            <path d="M25 65 Q40 55 55 65 Q70 75 85 65" stroke="#9a5c40" fill="none" stroke-width="0.6"/>
+        </svg>
+    </div>
+
+    <div class="max-w-4xl mx-auto relative z-10">
 
         <!-- Header -->
         <header class="kira-header p-6 mb-8 rounded-2xl text-center">
             <h1 class="text-3xl md:text-4xl font-bold mb-3 text-gray-800">
-                一年 26 個約會主題手冊
+                CFD資訊課程複習索引
             </h1>
             <p class="text-gray-600 text-sm md:text-base">
-                每兩週一個約會主題，慢慢走，慢慢聊
+                一年約會有 20–26 個課程檔案，預留格子，慢慢補齊
             </p>
         </header>
 
-        <!-- 26 個約會主題區塊（分季節） -->
-        <div class="space-y-8">
+        <!-- 未來預留 20–26 個主題的卡片區塊 -->
+        <div class="kira-card p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 border-b border-gray-300 pb-2 text-gray-700">
+                📚 課程列表（目前 5 個，可擴展 20–26 個）
+            </h2>
 
-            <!-- 第一季：1–2 月（主題 1–5） -->
-            <section class="kira-card p-6">
-                <h2 class="text-lg font-semibold season-title mb-4">
-                    一月 ～ 二月｜春寒微暖
-                </h2>
-                <nav class="space-y-3">
-                    <a href="#theme1" class="kira-link group flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-white/70">
-                        <div class="flex items-center">
-                            <span class="text-xl mr-3 group-hover:scale-110 transition-transform">🌸</span>
-                            <div>
-                                <div class="text-sm md:text-base font-medium text-gray-800 group-hover:text-amber-700 transition-colors">主題 1｜初春咖啡店散步</div>
-                                <div class="text-xs text-gray-500">手沖咖啡、低語、小巷裡的陽光</div>
-                            </div>
+            <nav class="space-y-4">
+                <!-- 項目 1 -->
+                <a href="http://nike1112afmax.github.io/Study/AI 勞動力衝擊與經濟轉型.html" 
+                   target="_blank" 
+                   class="kira-link group flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-white/70">
+                    <div class="flex items-center">
+                        <span class="text-xl mr-3 group-hover:scale-110 transition-transform">📊</span>
+                        <div>
+                            <div class="text-sm md:text-base font-medium text-gray-800 group-hover:text-amber-700 transition-colors">AI 勞動力衝擊經濟調查</div>
+                            <div class="text-xs text-gray-500">探討 AI 生產力、失業率與經濟結構轉型的深度研究</div>
                         </div>
-                        <span class="text-gray-400 group-hover:text-amber-600 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </span>
-                    </a>
-                    <a href="#theme2" class="kira-link group flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-white/70">
-                        <div class="flex items-center">
-                            <span class="text-xl mr-3 group-hover:scale-110 transition-transform">🚶‍♀️</span>
-                            <div>
-                                <div class="text-sm md:text-base font-medium text-gray-800 group-hover:text-amber-700 transition-colors">主題 2｜市區老街漫遊</div>
-                                <div class="text-xs text-gray-500">老店、小吃、舊建築的回憶</div>
-                            </div>
-                        </div>
-                        <span class="text-gray-400 group-hover:text-amber-600 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </span>
-                    </a>
-                    <!-- 可依此複製成 1–5 個主題 -->
-                </nav>
-            </section>
+                    </div>
+                    <span class="text-gray-400 group-hover:text-amber-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </span>
+                </a>
 
-            <!-- 第二季：3–5 月（主題 6–13） -->
-            <section class="kira-card p-6">
-                <h2 class="text-lg font-semibold season-title mb-4">
-                    三月 ～ 五月｜春花微光
-                </h2>
-                <nav class="space-y-3">
-                    <a href="#theme6" class="kira-link group flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-white/70">
-                        <div class="flex items-center">
-                            <span class="text-xl mr-3 group-hover:scale-110 transition-transform">🎨</span>
-                            <div>
-                                <div class="text-sm md:text-base font-medium text-gray-800 group-hover:text-amber-700 transition-colors">主題 6｜藝文咖啡夜</div>
-                                <div class="text-xs text-gray-500">小小畫廊、咖啡、輕音樂</div>
-                            </div>
+                <!-- 項目 2 -->
+                <a href="https://nike1112afmax.github.io/cfd-20260313/index.html" 
+                   target="_blank" 
+                   class="kira-link group flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-white/70">
+                    <div class="flex items-center">
+                        <span class="text-xl mr-3 group-hover:scale-110 transition-transform">📊</span>
+                        <div>
+                            <div class="text-sm md:text-base font-medium text-gray-800 group-hover:text-amber-700 transition-colors">資訊班 20260313</div>
+                            <div class="text-xs text-gray-500">油價的深入觀點</div>
                         </div>
-                        <span class="text-gray-400 group-hover:text-amber-600 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </span>
-                    </a>
-                    <!-- 此處可再放入主題 7–13 -->
-                </nav>
-            </section>
+                    </div>
+                    <span class="text-gray-400 group-hover:text-amber-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </span>
+                </a>
 
-            <!-- 第三季：6–8 月（主題 14–19） -->
-            <section class="kira-card p-6">
-                <h2 class="text-lg font-semibold season-title mb-4">
-                    六月 ～ 八月｜盛夏微涼
-                </h2>
-                <nav class="space-y-3">
-                    <a href="#theme14" class="kira-link group flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-white/70">
-                        <div class="flex items-center">
-                            <span class="text-xl mr-3 group-hover:scale-110 transition-transform">🍦</span>
-                            <div>
-                                <div class="text-sm md:text-base font-medium text-gray-800 group-hover:text-amber-700 transition-colors">主題 14｜夏夜刨冰與夜市</div>
-                                <div class="text-xs text-gray-500">小攤、燈光、涼涼的甜味</div>
-                            </div>
+                <!-- 項目 3 -->
+                <a href="https://nike1112afmax.github.io/Study/20260327.html" 
+                   target="_blank" 
+                   class="kira-link group flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-white/70">
+                    <div class="flex items-center">
+                        <span class="text-xl mr-3 group-hover:scale-110 transition-transform">📊</span>
+                        <div>
+                            <div class="text-sm md:text-base font-medium text-gray-800 group-hover:text-amber-700 transition-colors">資訊班 20260327</div>
+                            <div class="text-xs text-gray-500">油價的追蹤-漲到五月</div>
                         </div>
-                        <span class="text-gray-400 group-hover:text-amber-600 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </span>
-                    </a>
-                    <!-- 此處可再放入主題 15–19 -->
-                </nav>
-            </section>
+                    </div>
+                    <span class="text-gray-400 group-hover:text-amber-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </span>
+                </a>
 
-            <!-- 第四季：9–12 月（主題 20–26） -->
-            <section class="kira-card p-6">
-                <h2 class="text-lg font-semibold season-title mb-4">
-                    九月 ～ 十二月｜秋深冬暖
-                </h2>
-                <nav class="space-y-3">
-                    <a href="#theme20" class="kira-link group flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-white/70">
-                        <div class="flex items-center">
-                            <span class="text-xl mr-3 group-hover:scale-110 transition-transform">🍂</span>
-                            <div>
-                                <div class="text-sm md:text-base font-medium text-gray-800 group-hover:text-amber-700 transition-colors">主題 20｜秋日公園踩落葉</div>
-                                <div class="text-xs text-gray-500">暖色樹葉、散步、隨意聊天</div>
-                            </div>
+                <!-- 項目 4 -->
+                <a href="https://nike1112afmax.github.io/Study/20260424.html" 
+                   target="_blank" 
+                   class="kira-link group flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-white/70">
+                    <div class="flex items-center">
+                        <span class="text-xl mr-3 group-hover:scale-110 transition-transform">📊</span>
+                        <div>
+                            <div class="text-sm md:text-base font-medium text-gray-800 group-hover:text-amber-700 transition-colors">資訊班 20260424</div>
+                            <div class="text-xs text-gray-500">油價的漲勢還沒結束 要打第二隻腳</div>
                         </div>
-                        <span class="text-gray-400 group-hover:text-amber-600 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </span>
-                    </a>
-                    <!-- 此處可再放入主題 21–26 -->
-                </nav>
-            </section>
+                    </div>
+                    <span class="text-gray-400 group-hover:text-amber-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </span>
+                </a>
 
+                <!-- 項目 5 -->
+                <a href="https://nike1112afmax.github.io/Study/20260508.html" 
+                   target="_blank" 
+                   class="kira-link group flex items-center justify-between p-4 rounded-lg border border-gray-200 bg-white/70">
+                    <div class="flex items-center">
+                        <span class="text-xl mr-3 group-hover:scale-110 transition-transform">📊</span>
+                        <div>
+                            <div class="text-sm md:text-base font-medium text-gray-800 group-hover:text-amber-700 transition-colors">資訊班 20260508</div>
+                            <div class="text-xs text-gray-500">油價觀察六月中是否有出現背離</div>
+                        </div>
+                    </div>
+                    <span class="text-gray-400 group-hover:text-amber-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </span>
+                </a>
+
+                <!-- 未來可在此以同樣格式加入項目 6–26 -->
+                <!-- 每個都是複製一個上方的 <a>，改標題與連結即可 -->
+
+            </nav>
         </div>
 
         <!-- Footer -->
-        <footer class="mt-12 text-center text-gray-500 text-xs md:text-sm">
-            <p>© 2026 約會手帳小舎 | 每兩週更新一個約會主題</p>
+        <footer class="mt-10 text-center text-gray-500 text-xs md:text-sm">
+            <p>© 2026 粉紅阿肥研究中心 | 持續更新中，計劃每年新增 20–26 個課程檔案</p>
         </footer>
-
     </div>
-
 </body>
 </html>
