@@ -511,30 +511,128 @@
 </head>
 <body>
 
-<!-- ===== STICKY HEADER ===== -->
-<header class="site-header">
+<!-- ===== STICKY HEADER（請整段替換） ===== -->
+<header id="site-header" class="site-header" style="position:sticky;top:0;z-index:1000;">
+  <style>
+    .site-header {
+      backdrop-filter: blur(6px);
+      background: rgba(253,248,240,0.95);
+      box-shadow: 0 2px 8px rgba(80,60,40,0.06);
+      border-bottom: 1px solid rgba(180,160,140,0.12);
+      transition: box-shadow .18s ease, padding .18s ease;
+    }
+    .header-inner {
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 20px;
+    }
+
+    /* 品牌區：使用 <img> 作為 logo */
+    .header-brand { display:flex; align-items:center; gap:12px; }
+    .brand-logo {
+      width:52px; height:52px; flex:0 0 52px; display:flex; align-items:center; justify-content:center;
+      background: linear-gradient(180deg,#f0dca8,#e7c786);
+      border-radius:10px; overflow:hidden;
+      box-shadow:0 2px 6px rgba(110,80,50,0.06);
+    }
+    .brand-logo img {
+      width:100%; height:100%; object-fit:cover; display:block;
+    }
+    .brand-fallback {
+      font-weight:700; color:#3b2f1f; font-size:18px;
+    }
+    .brand-text h1 {
+      margin:0; font-size:16px; color:#352b20; font-weight:700;
+      letter-spacing:0.2px;
+    }
+    .brand-text p {
+      margin:0; font-size:12px; color:#7a6a5a;
+    }
+
+    /* 右側按鈕群 */
+    .header-actions { display:flex; gap:10px; align-items:center; }
+    .btn {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; font-size:13px; border-radius:999px;
+      border:1px solid rgba(150,130,110,0.12);
+      background:rgba(255,250,242,0.9); color:#3b2f1f; cursor:pointer;
+      text-decoration:none;
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+      box-shadow: 0 1px 0 rgba(120,100,80,0.03);
+    }
+    .btn:hover { transform:translateY(-3px); box-shadow:0 6px 18px rgba(80,60,40,0.08); }
+    .btn.primary {
+      background:linear-gradient(180deg,#f2d98b,#e9c66a);
+      border-color: rgba(150,120,70,0.12);
+      color:#352a17;
+    }
+    .btn.ghost {
+      background:transparent;
+      border-color: rgba(120,100,80,0.08);
+    }
+    .hide-sm { display:inline-block; }
+
+    /* 響應式 */
+    @media (max-width:720px) {
+      .brand-text h1 { font-size:14px; }
+      .brand-logo { width:44px; height:44px; flex:0 0 44px; border-radius:8px; }
+      .brand-logo img { width:100%; height:100%; }
+      .hide-sm { display:none; }
+      .header-inner { padding:10px 14px; }
+    }
+  </style>
+
   <div class="header-inner">
     <div class="header-brand">
-      <div class="brand-logo">FD</div>
+      <div class="brand-logo" aria-hidden="true">
+        <!-- 使用附檔 image.jpeg 作為 Logo（請把下面 src 改成你實際上傳檔案路徑） -->
+        <img src="image.jpeg" alt="FD logo" onerror="this.style.display='none'">
+        <!-- fallback 文字（當圖片載入失敗時顯示） -->
+        <div class="brand-fallback" style="display:none;">FD</div>
+      </div>
       <div class="brand-text">
         <h1>啟富達國際 · WMA 財富管理顧問課程</h1>
         <p>WEALTH MANAGEMENT ADVISOR · 2026.05.08</p>
       </div>
     </div>
-    <div class="header-download">
-      <a href="https://drive.google.com/drive/folders/1JXtclgNXaM8YSVN7GM8IFQ9ZIhH5WBn1?usp=drive_link" target="_blank">
-        📥 <span class="hide-sm">下載講義</span>
+
+    <div class="header-actions">
+      <!-- 下載講義 -->
+      <a class="btn" href="https://drive.google.com/drive/folders/1JXtclgNXaM8YSVN7GM8IFQ9ZIhH5WBn1?usp=drive_link" target="_blank" rel="noopener">
+        <span style="font-size:16px;">📥</span>
+        <span class="hide-sm">下載講義</span>
       </a>
-       <!-- 回首頁按鈕 -->
-<nav class="mb-6 text-center">
-    <a href="https://nike1112afmax.github.io/Study/index1.html"
-       class="inline-block px-5 py-2 text-sm font-medium text-gray-700 bg-amber-50 rounded-full border border-amber-200 hover:bg-amber-100 hover:text-amber-800 transition-colors">
-        🪴回首頁
-    </a>
-</nav>
+
+      <!-- 回首頁（主按鈕） -->
+      <a class="btn primary" href="https://nike1112afmax.github.io/Study/index1.html">
+        <span style="font-size:16px;">🏠</span>
+        <span class="hide-sm">回首頁</span>
+      </a>
     </div>
   </div>
- 
+</header>
+
+<script>
+  // 選用：滾動時加入縮小陰影效果（可保留或刪除）
+  (function(){
+    const header = document.getElementById('site-header');
+    if(!header) return;
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.style.boxShadow = '0 6px 20px rgba(80,60,40,0.08)';
+        header.style.padding = '6px 0';
+      } else {
+        header.style.boxShadow = '0 2px 8px rgba(80,60,40,0.06)';
+        header.style.padding = '';
+      }
+    });
+  })();
+</script>
+
 </header>
 
 <!-- ===== HERO ===== -->
