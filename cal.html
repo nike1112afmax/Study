@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>黃金切割率投資計算工具</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;background:#f5f4f0;color:#1a1a18;min-height:100vh;padding:2rem 1rem}
+.page{max-width:760px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:6px;color:#1a1a18}
+.subtitle{font-size:13px;color:#888780;margin-bottom:1.5rem}
+.tabs{display:flex;gap:4px;margin-bottom:1.5rem;border-bottom:1px solid #d3d1c7;padding-bottom:0}
+.tab{padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:#888780;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color 0.15s}
+.tab:hover{color:#1a1a18}
+.tab.active{color:#1a1a18;border-bottom:2px solid #1a1a18}
+.section{display:none}.section.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1rem}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:1rem}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;color:#888780;font-weight:500;letter-spacing:0.02em;text-transform:uppercase}
+.field input{border:1px solid #d3d1c7;border-radius:6px;padding:9px 11px;font-size:14px;background:#fff;color:#1a1a18;width:100%;transition:border-color 0.15s}
+.field input:focus{outline:none;border-color:#888780;box-shadow:0 0 0 3px rgba(0,0,0,0.04)}
+.field input.override{border-color:#378ADD;background:rgba(55,138,221,0.04)}
+.card{background:#fff;border:1px solid #d3d1c7;border-radius:10px;overflow:hidden;margin-bottom:1rem}
+.rtable{width:100%;border-collapse:collapse;font-size:13px}
+.rtable th{text-align:left;padding:9px 14px;font-size:11px;font-weight:500;color:#888780;background:#f5f4f0;border-bottom:1px solid #d3d1c7;letter-spacing:0.02em;text-transform:uppercase}
+.rtable td{padding:9px 14px;border-bottom:1px solid #f1efe8;color:#1a1a18}
+.rtable tr:last-child td{border-bottom:none}
+.rtable tr:hover td{background:#fafaf8}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;background:#f1efe8;color:#5f5e5a}
+.badge.blue{background:rgba(55,138,221,0.1);color:#185FA5}
+.val{font-weight:500;font-variant-numeric:tabular-nums}
+.stitle{font-size:12px;font-weight:500;color:#888780;margin-bottom:8px;margin-top:1.25rem;letter-spacing:0.04em;text-transform:uppercase}
+.stitle:first-child{margin-top:0}
+.info{background:#f5f4f0;border-radius:6px;padding:11px 14px;font-size:12px;color:#5f5e5a;margin-bottom:1rem;line-height:1.8;border-left:3px solid #d3d1c7}
+.metric-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1rem}
+.mc{background:#f5f4f0;border-radius:8px;padding:11px 13px}
+.mc-label{font-size:11px;color:#888780;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.03em}
+.mc-val{font-size:18px;font-weight:500;color:#1a1a18;font-variant-numeric:tabular-nums}
+.mc-sub{font-size:11px;color:#b4b2a9;margin-top:2px}
+.divider{height:1px;background:#f1efe8;margin:1.25rem 0}
+.combo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+.combo-card{border:1px solid #d3d1c7;border-radius:8px;padding:10px 10px 8px;cursor:pointer;transition:all 0.15s;background:#fff}
+.combo-card:hover{border-color:#888780;background:#fafaf8}
+.combo-card.active{border-color:#378ADD;background:rgba(55,138,221,0.05)}
+.combo-card .ratio{font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.combo-card .sub{font-size:10px;color:#b4b2a9;line-height:1.5}
+.wave-out-table{width:100%;border-collapse:collapse;font-size:13px}
+.wave-out-table th{font-size:11px;font-weight:500;color:#888780;padding:9px 14px;background:#f5f4f0;border-bottom:1px solid #d3d1c7;text-align:left;text-transform:uppercase;letter-spacing:0.02em}
+.wave-out-table th.r{text-align:right}
+.wave-out-table td{padding:9px 14px;border-bottom:1px solid #f1efe8;color:#1a1a18}
+.wave-out-table td.r{text-align:right;font-variant-numeric:tabular-nums}
+.wave-out-table tr:last-child td{border-bottom:none}
+.wave-out-table tr:hover td{background:#fafaf8}
+.wave-out-table tr.invalid td{color:#b4b2a9}
+.wave-out-table tr.manual-row td{background:rgba(55,138,221,0.04);font-weight:500}
+@media(max-width:560px){
+  .combo-grid{grid-template-columns:repeat(2,1fr)}
+  .grid4{grid-template-columns:1fr 1fr}
+  .metric-row{grid-template-columns:1fr 1fr}
+  .grid2,.grid3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>黃金切割率投資計算工具</h1>
+  <p class="subtitle">支撐與壓力 · 型態對稱法 · 上升波測算（波浪理論）</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('down')">下跌支撐</button>
+    <button class="tab" onclick="switchTab('up')">上漲壓力</button>
+    <button class="tab" onclick="switchTab('sym')">型態對稱法</button>
+    <button class="tab" onclick="switchTab('wave')">上升波測算</button>
+  </div>
+
+  <!-- 下跌支撐 -->
+  <div id="tab-down" class="section active">
+    <p class="stitle">輸入高低點</p>
+    <div class="grid2">
+      <div class="field"><label>高點（High）</label><input type="number" id="d-high" placeholder="例：55.5" oninput="calcDown()"></div>
+      <div class="field"><label>低點（Low）</label><input type="number" id="d-low" placeholder="例：42.65" oninput="calcDown()"></div>
+    </div>
+    <div class="card"><table class="rtable">
+      <thead><tr><th>回檔比率</th><th>支撐價位</th></tr></thead>
+      <tbody id="down-body"><tr><td colspan="2" style="color:#b4b2a9;padding:18px;text-align:center">請輸入高低點數值</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <!-- 上漲壓力 -->
+  <div id="tab-up" class="section">
+    <p class="stitle">輸入低高點</p>
+    <div class="grid2">
+      <div class="field"><label>低點（Low）</label><input type="number" id="u-low" placeholder="例：32.6" oninput="calcUp()"></div>
+      <div class="field"><label>高點（High）</label><input type="number" id="u-high" placeholder="例：43.45" oninput="calcUp()"></div>
+    </div>
+    <div class="card"><table class="rtable">
+      <thead><tr><th>延伸比率</th><th>壓力價位</th></tr></thead>
+      <tbody id="up-body"><tr><td colspan="2" style="color:#b4b2a9;padding:18px;text-align:center">請輸入低高點數值</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <!-- 型態對稱法 -->
+  <div id="tab-sym" class="section">
+    <div class="grid2" style="margin-bottom:1rem">
+      <div>
+        <p class="stitle">上漲壓力</p>
+        <div class="field" style="margin-bottom:10px"><label>底部（Bottom）</label><input type="number" id="su-bot" placeholder="例：31.25" oninput="calcSym()"></div>
+        <div class="field"><label>頸線（Neckline）</label><input type="number" id="su-neck" placeholder="例：43.2" oninput="calcSym()"></div>
+      </div>
+      <div>
+        <p class="stitle">下跌跌幅</p>
+        <div class="field" style="margin-bottom:10px"><label>頭部（Head）</label><input type="number" id="sd-head" placeholder="例：119.5" oninput="calcSym()"></div>
+        <div class="field"><label>頸線（Neckline）</label><input type="number" id="sd-neck" placeholder="例：92" oninput="calcSym()"></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card"><table class="rtable"><thead><tr><th>倍數</th><th>目標壓力</th></tr></thead>
+      <tbody id="sym-up"><tr><td colspan="2" style="color:#b4b2a9;padding:14px;text-align:center;font-size:12px">請輸入數值</td></tr></tbody></table></div>
+      <div class="card"><table class="rtable"><thead><tr><th>倍數</th><th>目標跌幅</th></tr></thead>
+      <tbody id="sym-dn"><tr><td colspan="2" style="color:#b4b2a9;padding:14px;text-align:center;font-size:12px">請輸入數值</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- 上升波測算 -->
+  <div id="tab-wave" class="section">
+    <div class="info">
+      · 第1浪幅度 = W₁高點 − W₁起點<br>
+      · 第3浪高點 = W₂低點 + 幅度 × <b>第3浪倍率</b>（由組合決定）<br>
+      · 第4浪低點 = W₃高點 − (W₃高點 − W₂低點) × 回檔比率　（或填入已知值）<br>
+      · 第5浪高點 = W₄低點 + 幅度 × <b>第5浪倍率</b>（由組合決定）
+    </div>
+
+    <p class="stitle">已知數值（必填）</p>
+    <div class="grid4">
+      <div class="field"><label>第1浪起點 W₁S</label><input type="number" id="w1s" placeholder="例：3490" oninput="calcWave()"></div>
+      <div class="field"><label>第1浪高點 W₁H</label><input type="number" id="w1h" placeholder="例：4607" oninput="calcWave()"></div>
+      <div class="field"><label>第2浪低點 W₂L</label><input type="number" id="w2l" placeholder="例：4103" oninput="calcWave()"></div>
+      <div class="field"><label>第3浪高點 W₃H（選填）</label><input type="number" id="w3h-in" placeholder="不填則由倍率推算" oninput="calcWave()"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="stitle">選擇上升比例組合（第1浪 : 第3浪 : 第5浪倍率）</p>
+    <div class="combo-grid" id="combo-grid"></div>
+
+    <div class="divider"></div>
+
+    <p class="stitle">第4浪低點（選填：已知時直接填入，否則由各回檔比率推算）</p>
+    <div class="grid3">
+      <div class="field"><label>已知第4浪低點 W₄L</label><input type="number" id="w4l-in" placeholder="填入後覆蓋回檔推算" class="override" oninput="calcWave()"></div>
+    </div>
+
+    <div id="wave-results" style="display:none">
+      <div class="metric-row">
+        <div class="mc"><div class="mc-label">第1浪幅度</div><div class="mc-val" id="m-amp1">—</div><div class="mc-sub">W₁H − W₁S</div></div>
+        <div class="mc"><div class="mc-label">第3浪高點</div><div class="mc-val" id="m-w3h">—</div><div class="mc-sub" id="m-w3h-sub"></div></div>
+        <div class="mc"><div class="mc-label">選定組合第5浪目標</div><div class="mc-val" id="m-w5sel">—</div><div class="mc-sub" id="m-w5sel-sub"></div></div>
+      </div>
+      <p class="stitle">各第4浪回檔 × 第5浪目標</p>
+      <div class="card"><table class="wave-out-table">
+        <thead><tr>
+          <th>第4浪回檔比率</th>
+          <th class="r">第4浪低點</th>
+          <th class="r" id="th-w5">第5浪目標</th>
+        </tr></thead>
+        <tbody id="wave-body"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const RATIOS=[
+  {r:0.191,label:'19.1%'},{r:0.382,label:'38.2%'},{r:0.500,label:'50.0%'},
+  {r:0.618,label:'61.8%'},{r:0.809,label:'80.9%'}
+];
+const COMBOS=[
+  {label:'1 : 1 : 1',   w3:1,    w5:1,     sub:'等幅三浪'},
+  {label:'1 : 1 : 2',   w3:1,    w5:2,     sub:'第5浪延伸'},
+  {label:'1 : 2 : 1',   w3:2,    w5:1,     sub:'第3浪延伸'},
+  {label:'1 : 2 : 1.5', w3:2,    w5:1.5,   sub:'第3浪延伸'},
+  {label:'1 : 2 : 2',   w3:2,    w5:2,     sub:'第3、5浪均延伸'},
+  {label:'1 : 1.5 : 2', w3:1.5,  w5:2,     sub:'第5浪強勢'},
+  {label:'1 : 1 : 0.5', w3:1,    w5:0.5,   sub:'第5浪縮短'},
+  {label:'1 : 1 : 0.618',w3:1,   w5:0.618, sub:'第5浪黃金縮短'},
+];
+let selCombo=0;
+
+function fmt(v,d=2){return(isNaN(v)||v===null)?'—':Number(v).toFixed(d)}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
+  const m={down:0,up:1,sym:2,wave:3};
+  document.querySelectorAll('.tab')[m[t]].classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+}
+
+function calcDown(){
+  const h=parseFloat(document.getElementById('d-high').value);
+  const l=parseFloat(document.getElementById('d-low').value);
+  const tb=document.getElementById('down-body');
+  if(isNaN(h)||isNaN(l)||h<=l){
+    tb.innerHTML='<tr><td colspan="2" style="color:#b4b2a9;padding:18px;text-align:center">請確認高點 > 低點</td></tr>';return;
+  }
+  const amp=h-l;
+  tb.innerHTML=RATIOS.map(({r,label})=>`<tr><td><span class="badge">${label}</span></td><td class="val">${fmt(h-amp*r)}</td></tr>`).join('');
+}
+
+function calcUp(){
+  const l=parseFloat(document.getElementById('u-low').value);
+  const h=parseFloat(document.getElementById('u-high').value);
+  const tb=document.getElementById('up-body');
+  if(isNaN(l)||isNaN(h)||h<=l){
+    tb.innerHTML='<tr><td colspan="2" style="color:#b4b2a9;padding:18px;text-align:center">請確認高點 > 低點</td></tr>';return;
+  }
+  const amp=h-l;
+  tb.innerHTML=RATIOS.map(({r,label})=>`<tr><td><span class="badge">${label}</span></td><td class="val">${fmt(l+amp*(1+r))}</td></tr>`).join('');
+}
+
+function calcSym(){
+  const bot=parseFloat(document.getElementById('su-bot').value);
+  const un=parseFloat(document.getElementById('su-neck').value);
+  const head=parseFloat(document.getElementById('sd-head').value);
+  const dn=parseFloat(document.getElementById('sd-neck').value);
+  const mults=['一倍','兩倍','三倍','四倍'];
+  const tbu=document.getElementById('sym-up');
+  const tbd=document.getElementById('sym-dn');
+  if(!isNaN(bot)&&!isNaN(un)&&un>bot){
+    const s=un-bot;
+    tbu.innerHTML=mults.map((m,i)=>`<tr><td>${m}頸線</td><td class="val">${fmt(un+s*(i+1))}</td></tr>`).join('');
+  } else {
+    tbu.innerHTML='<tr><td colspan="2" style="color:#b4b2a9;padding:14px;text-align:center;font-size:12px">請輸入數值</td></tr>';
+  }
+  if(!isNaN(head)&&!isNaN(dn)&&head>dn){
+    const s=head-dn;
+    tbd.innerHTML=mults.map((m,i)=>`<tr><td>${m}頸線</td><td class="val">${fmt(dn-s*(i+1))}</td></tr>`).join('');
+  } else {
+    tbd.innerHTML='<tr><td colspan="2" style="color:#b4b2a9;padding:14px;text-align:center;font-size:12px">請輸入數值</td></tr>';
+  }
+}
+
+function buildCombos(){
+  document.getElementById('combo-grid').innerHTML=COMBOS.map((c,i)=>`
+    <div class="combo-card${i===selCombo?' active':''}" onclick="selCombo=${i};buildCombos();calcWave()">
+      <div class="ratio">${c.label}</div>
+      <div class="sub">W3×${c.w3} / W5×${c.w5}<br>${c.sub}</div>
+    </div>`).join('');
+}
+
+function calcWave(){
+  const w1s=parseFloat(document.getElementById('w1s').value);
+  const w1h=parseFloat(document.getElementById('w1h').value);
+  const w2l=parseFloat(document.getElementById('w2l').value);
+  const w3h_in=parseFloat(document.getElementById('w3h-in').value);
+  const w4l_in=parseFloat(document.getElementById('w4l-in').value);
+  const resDiv=document.getElementById('wave-results');
+  if(isNaN(w1s)||isNaN(w1h)||isNaN(w2l)||w1h<=w1s){resDiv.style.display='none';return;}
+
+  const amp1=w1h-w1s;
+  const cb=COMBOS[selCombo];
+  const w3h_calc=w2l+amp1*cb.w3;
+  const w3h=isNaN(w3h_in)?w3h_calc:w3h_in;
+  const amp3=w3h-w2l;
+
+  document.getElementById('m-amp1').textContent=fmt(amp1);
+  document.getElementById('m-w3h').textContent=fmt(w3h);
+  document.getElementById('m-w3h-sub').textContent=isNaN(w3h_in)?`W₂L + 幅度×${cb.w3}（推算）`:'手動填入';
+  document.getElementById('th-w5').textContent=`第5浪目標 (×${cb.w5})`;
+
+  const hasManual=!isNaN(w4l_in);
+  const tbody=document.getElementById('wave-body');
+
+  if(hasManual){
+    const w5=w4l_in+amp1*cb.w5;
+    document.getElementById('m-w5sel').textContent=fmt(w5);
+    document.getElementById('m-w5sel-sub').textContent=`W₄L(已知) + 幅度×${cb.w5}`;
+    tbody.innerHTML=`<tr class="manual-row">
+      <td><span class="badge blue">已知值</span></td>
+      <td class="r val">${fmt(w4l_in)}</td>
+      <td class="r val">${fmt(w5)}</td>
+    </tr>`;
+  } else {
+    let firstValid=null;
+    tbody.innerHTML=RATIOS.map(({r,label})=>{
+      const w4=w3h-amp3*r;
+      if(w4<=w1s){
+        return `<tr class="invalid"><td><span class="badge">${label}</span></td><td class="r" colspan="2" style="font-size:12px">不合法（第4浪低點 ≤ 第1浪起點）</td></tr>`;
+      }
+      if(firstValid===null) firstValid={w4,r,label};
+      const w5=w4+amp1*cb.w5;
+      return `<tr><td><span class="badge">${label}</span></td><td class="r val">${fmt(w4)}</td><td class="r val">${fmt(w5)}</td></tr>`;
+    }).join('');
+    if(firstValid){
+      document.getElementById('m-w5sel').textContent=fmt(firstValid.w4+amp1*cb.w5);
+      document.getElementById('m-w5sel-sub').textContent=`以 ${firstValid.label} 回檔W₄L`;
+    } else {
+      document.getElementById('m-w5sel').textContent='—';
+      document.getElementById('m-w5sel-sub').textContent='';
+    }
+  }
+  resDiv.style.display='block';
+}
+
+buildCombos();
+</script>
+</body>
+</html>
