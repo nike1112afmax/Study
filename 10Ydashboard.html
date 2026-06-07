@@ -485,6 +485,7 @@
 <script>
 const FRED = 'https://api.stlouisfed.org/fred/series/observations';
 const KEY  = 'dbba37c1668a05b454005e1bcc21ac7c';
+const PROXY = 'https://corsproxy.io/?url=';
 
 const COUNTRIES = [
   { id:'DGS10',           label:'美國',    color:'#4d9eff', dash:[] },
@@ -507,13 +508,23 @@ function getStart(r) {
 function today() { return new Date().toISOString().split('T')[0]; }
 
 async function fredFetch(seriesId, start, end) {
-  const url = `${FRED}?series_id=${seriesId}&api_key=${KEY}&file_type=json&observation_start=${start}&observation_end=${end}`;
-  const r = await fetch(url);
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  const j = await r.json();
-  return (j.observations || [])
-    .filter(o => o.value !== '.')
-    .map(o => ({ d: o.date, v: parseFloat(o.value) }));
+  const fredUrl = `${FRED}?series_id=${seriesId}&api_key=${KEY}&file_type=json&observation_start=${start}&observation_end=${end}`;
+  const proxies = [
+    `https://corsproxy.io/?url=${encodeURIComponent(fredUrl)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(fredUrl)}`,
+  ];
+  let lastErr;
+  for (const proxyUrl of proxies) {
+    try {
+      const r = await fetch(proxyUrl);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const text = await r.text();
+      const j = JSON.parse(text);
+      const obs = j.observations || (j.contents ? JSON.parse(j.contents).observations : []) || [];
+      return obs.filter(o => o.value !== '.').map(o => ({ d: o.date, v: parseFloat(o.value) }));
+    } catch(e) { lastErr = e; }
+  }
+  throw lastErr;
 }
 
 function buildLegend() {
