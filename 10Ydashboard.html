@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球公債殖利率 & 市場情緒儀表板</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --bg2: #13161d;
+    --bg3: #1a1e28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0;
+    --text2: #8b90a0;
+    --text3: #555a6a;
+    --blue: #4d9eff;
+    --green: #3ecf8e;
+    --orange: #f7a830;
+    --red: #f06060;
+    --purple: #a78bfa;
+    --teal: #2dd4bf;
+    --accent: #4d9eff;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 0 8px var(--blue);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .topbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  .topbar-subtitle {
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .refresh-btn:hover {
+    background: var(--bg3);
+    color: var(--text);
+    border-color: var(--blue);
+  }
+
+  .refresh-btn svg {
+    width: 13px; height: 13px;
+    transition: transform 0.4s;
+  }
+
+  .refresh-btn.loading svg { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 32px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 12px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+  }
+
+  .range-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+  }
+
+  .range-tab {
+    padding: 4px 10px;
+    border-radius: 5px;
+    border: none;
+    background: transparent;
+    color: var(--text3);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .range-tab.active {
+    background: var(--bg2);
+    color: var(--text);
+    border: 1px solid var(--border2);
+  }
+
+  .range-tab:hover:not(.active) { color: var(--text2); }
+
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .legend-line {
+    width: 20px;
+    height: 2px;
+    border-radius: 1px;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 260px;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 900px) {
+    .metrics-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .container { padding: 20px 16px; }
+    .topbar { padding: 12px 16px; }
+  }
+
+  .metric-tile {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    transition: border-color 0.15s;
+  }
+
+  .metric-tile:hover { border-color: var(--border2); }
+
+  .mt-label {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+
+  .mt-value {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 3px;
+  }
+
+  .mt-change {
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .mt-change.up { color: var(--red); }
+  .mt-change.dn { color: var(--green); }
+  .mt-change.nt { color: var(--text3); }
+
+  .divider { margin: 28px 0; }
+
+  .sentiment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 700px) {
+    .sentiment-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .gauge-tile {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    text-align: center;
+    transition: border-color 0.15s;
+  }
+
+  .gauge-tile:hover { border-color: var(--border2); }
+
+  .gauge-label {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .gauge-value {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+  }
+
+  .gauge-desc {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .gauge-sub {
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .color-red { color: var(--red); }
+  .color-orange { color: var(--orange); }
+  .color-green { color: var(--green); }
+  .color-blue { color: var(--blue); }
+  .color-text2 { color: var(--text2); }
+
+  .ext-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--blue);
+    text-decoration: none;
+    margin-top: 6px;
+    opacity: 0.8;
+  }
+
+  .ext-link:hover { opacity: 1; }
+
+  .sub-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 600px) {
+    .sub-charts { grid-template-columns: 1fr; }
+  }
+
+  .sub-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+  }
+
+  .sub-card-title {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .sub-chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 140px;
+  }
+
+  .loading-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 40px;
+    color: var(--text3);
+    font-size: 13px;
+  }
+
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  .error-msg {
+    color: var(--red);
+    font-size: 12px;
+    padding: 12px;
+    background: rgba(240,96,96,0.08);
+    border: 1px solid rgba(240,96,96,0.2);
+    border-radius: var(--radius-sm);
+    margin: 8px 0;
+  }
+
+  .trend-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .trend-up { background: rgba(240,96,96,0.15); color: var(--red); }
+  .trend-dn { background: rgba(62,207,142,0.15); color: var(--green); }
+  .trend-fl { background: rgba(139,144,160,0.15); color: var(--text2); }
+
+  #lastUpdate {
+    font-size: 11px;
+    color: var(--text3);
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo-dot"></div>
+    <div>
+      <div class="topbar-title">全球公債殖利率 & 市場情緒</div>
+      <div class="topbar-subtitle">10年期公債 · 即時資料</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span id="lastUpdate"></span>
+    <button class="refresh-btn" id="refreshBtn" onclick="loadAll()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M23 4v6h-6M1 20v-6h6"/>
+        <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+      </svg>
+      重新整理
+    </button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 殖利率區塊 -->
+  <div class="section-label">10年期公債殖利率走勢</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">5國殖利率比較</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="range-tabs" id="rangeTabs">
+          <button class="range-tab" data-r="1M">1M</button>
+          <button class="range-tab active" data-r="3M">3M</button>
+          <button class="range-tab" data-r="6M">6M</button>
+          <button class="range-tab" data-r="1Y">1Y</button>
+          <button class="range-tab" data-r="2Y">2Y</button>
+        </div>
+      </div>
+    </div>
+    <div class="legend-row" id="yieldLegend"></div>
+    <div class="chart-wrap" id="yieldChartWrap">
+      <div class="loading-overlay"><div class="spinner"></div>載入殖利率資料...</div>
+    </div>
+    <div class="metrics-grid" id="yieldMetrics"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 情緒指標區塊 -->
+  <div class="section-label">市場情緒指標</div>
+
+  <div class="sentiment-grid" id="sentimentGauges">
+    <div class="loading-overlay"><div class="spinner"></div></div>
+  </div>
+
+  <div class="sub-charts" id="subCharts"></div>
+
+  <div id="buffettCardWrap" style="display:none">
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-header">
+        <div class="card-title">美股巴菲特指標（近2年）— Wilshire 5000 ÷ GDP</div>
+      </div>
+      <div class="chart-wrap" style="height:180px">
+        <canvas id="buffettCanvas" role="img" aria-label="美股巴菲特指標近2年走勢"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const FRED = 'https://api.stlouisfed.org/fred/series/observations';
+const KEY  = 'dbba37c1668a05b454005e1bcc21ac7c';
+
+const COUNTRIES = [
+  { id:'DGS10',           label:'美國',    color:'#4d9eff', dash:[] },
+  { id:'IRLTLT01DEM156N', label:'德國(EU)', color:'#3ecf8e', dash:[6,3] },
+  { id:'IRLTLT01GBM156N', label:'英國',    color:'#f7a830', dash:[3,3] },
+  { id:'IRLTLT01JPM156N', label:'日本',    color:'#a78bfa', dash:[8,4] },
+  { id:'IRLTLT01AUM156N', label:'澳洲',    color:'#2dd4bf', dash:[4,2] },
+];
+
+let yieldChart = null, vixChart = null, buffettChart = null;
+let curRange = '3M';
+
+function getStart(r) {
+  const d = new Date();
+  const map = {'1M':1,'3M':3,'6M':6,'1Y':12,'2Y':24};
+  d.setMonth(d.getMonth() - (map[r] || 3));
+  return d.toISOString().split('T')[0];
+}
+
+function today() { return new Date().toISOString().split('T')[0]; }
+
+async function fredFetch(seriesId, start, end) {
+  const url = `${FRED}?series_id=${seriesId}&api_key=${KEY}&file_type=json&observation_start=${start}&observation_end=${end}`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const j = await r.json();
+  return (j.observations || [])
+    .filter(o => o.value !== '.')
+    .map(o => ({ d: o.date, v: parseFloat(o.value) }));
+}
+
+function buildLegend() {
+  document.getElementById('yieldLegend').innerHTML = COUNTRIES.map(c => `
+    <span class="legend-item">
+      <span class="legend-line" style="background:${c.color};${c.dash.length ? 'background:transparent;border-bottom:2px dashed '+c.color : ''}"></span>
+      ${c.label}
+    </span>`).join('');
+}
+
+function trendBadge(data) {
+  if (data.length < 10) return '';
+  const recent = data.slice(-5).reduce((a,b) => a + b.v, 0) / 5;
+  const prev   = data.slice(-15,-10).reduce((a,b) => a + b.v, 0) / 5;
+  const diff = recent - prev;
+  if (diff >  0.15) return '<span class="trend-badge trend-up">上升</span>';
+  if (diff < -0.15) return '<span class="trend-badge trend-dn">下降</span>';
+  return '<span class="trend-badge trend-fl">持平</span>';
+}
+
+function mkChartOpts(extra) {
+  return {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { display: false }, tooltip: {
+      backgroundColor: '#1a1e28',
+      borderColor: 'rgba(255,255,255,0.1)',
+      borderWidth: 1,
+      titleColor: '#8b90a0',
+      bodyColor: '#e8eaf0',
+      titleFont: { size: 11 },
+      bodyFont: { size: 12 },
+      padding: 10,
+      ...(extra?.tooltip || {})
+    }},
+    scales: {
+      x: {
+        ticks: { maxTicksLimit: 8, font: { size: 10 }, color: '#555a6a', autoSkip: true },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        border: { display: false }
+      },
+      y: {
+        ticks: { font: { size: 10 }, color: '#555a6a', ...(extra?.yTicks || {}) },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        border: { display: false }
+      }
+    }
+  };
+}
+
+async function loadYields(range) {
+  const wrap = document.getElementById('yieldChartWrap');
+  const metEl = document.getElementById('yieldMetrics');
+  wrap.innerHTML = '<div class="loading-overlay"><div class="spinner"></div>載入中...</div>';
+  metEl.innerHTML = '';
+
+  const start = getStart(range), end = today();
+  try {
+    const all = await Promise.all(COUNTRIES.map(c => fredFetch(c.id, start, end)));
+    const dates = [...new Set(all.flatMap(d => d.map(p => p.d)))].sort();
+
+    const canvas = document.createElement('canvas');
+    canvas.id = 'yieldCanvas';
+    canvas.setAttribute('role', 'img');
+    canvas.setAttribute('aria-label', '5國10年期公債殖利率走勢');
+    wrap.innerHTML = '';
+    wrap.appendChild(canvas);
+
+    const datasets = COUNTRIES.map((c, i) => {
+      const mp = Object.fromEntries(all[i].map(p => [p.d, p.v]));
+      return {
+        label: c.label,
+        data: dates.map(d => mp[d] ?? null),
+        borderColor: c.color,
+        backgroundColor: c.color + '15',
+        borderWidth: 1.8,
+        borderDash: c.dash,
+        pointRadius: 0, pointHoverRadius: 5,
+        tension: 0.3, spanGaps: true,
+        fill: false
+      };
+    });
+
+    if (yieldChart) yieldChart.destroy();
+    const opts = mkChartOpts({
+      tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y?.toFixed(2)}%` } },
+      yTicks: { callback: v => v.toFixed(1) + '%' }
+    });
+    yieldChart = new Chart(canvas, { type: 'line', data: { labels: dates, datasets }, options: opts });
+
+    metEl.innerHTML = COUNTRIES.map((c, i) => {
+      const d = all[i]; if (!d.length) return '';
+      const lat = d[d.length-1].v, prv = d[d.length-2]?.v ?? lat;
+      const chg = lat - prv;
+      const cc = chg > 0.005 ? 'up' : chg < -0.005 ? 'dn' : 'nt';
+      const ar = chg > 0.005 ? '▲' : chg < -0.005 ? '▼' : '—';
+      return `
+        <div class="metric-tile">
+          <div class="mt-label">${c.label} 10Y</div>
+          <div class="mt-value" style="color:${c.color}">${lat.toFixed(2)}%</div>
+          <div class="mt-change ${cc}">${ar} ${Math.abs(chg).toFixed(3)}%</div>
+          ${trendBadge(d)}
+        </div>`;
+    }).join('');
+
+    const ld = all[0]?.[all[0].length-1]?.d ?? '';
+    document.getElementById('lastUpdate').textContent = ld ? `最後更新：${ld}` : '';
+  } catch(e) {
+    wrap.innerHTML = `<div class="error-msg">殖利率資料載入失敗：${e.message}</div>`;
+  }
+}
+
+async function loadSentiment() {
+  const gEl = document.getElementById('sentimentGauges');
+  const cEl = document.getElementById('subCharts');
+  gEl.innerHTML = '<div class="loading-overlay"><div class="spinner"></div></div>';
+
+  const m3start = getStart('3M'), y2start = getStart('2Y'), end = today();
+
+  try {
+    const [vix, wilshire, gdp] = await Promise.all([
+      fredFetch('VIXCLS', m3start, end),
+      fredFetch('WILL5000INDFC', y2start, end),
+      fredFetch('GDP', y2start, end),
+    ]);
+
+    // Buffett indicator
+    const gdpMap = {};
+    gdp.forEach(p => { gdpMap[p.d] = p.v; });
+    const gdpDates = gdp.map(p => p.d).sort();
+    const buffett = [];
+    wilshire.forEach(p => {
+      const gd = gdpDates.filter(d => d <= p.d).pop();
+      if (gd && gdpMap[gd]) buffett.push({ d: p.d, v: parseFloat(((p.v / gdpMap[gd]) * 100).toFixed(1)) });
+    });
+
+    const vLat = vix.length ? vix[vix.length-1].v : null;
+    const vPrv = vix.length > 1 ? vix[vix.length-2].v : vLat;
+    const vChg = vLat != null ? vLat - vPrv : 0;
+    const vCls = vLat > 30 ? 'color-red' : vLat > 20 ? 'color-orange' : 'color-green';
+    const vDesc = vLat > 30 ? '高恐慌' : vLat > 20 ? '中度警戒' : '低波動';
+
+    const bLat = buffett.length ? buffett[buffett.length-1].v : null;
+    const bCls = bLat > 150 ? 'color-red' : bLat > 100 ? 'color-orange' : 'color-green';
+    const bDesc = bLat > 200 ? '極度高估' : bLat > 150 ? '明顯高估' : bLat > 100 ? '略微高估' : bLat > 75 ? '合理估值' : '低估';
+
+    gEl.innerHTML = `
+      <div class="gauge-tile">
+        <div class="gauge-label">VIX 恐慌指數</div>
+        <div class="gauge-value ${vCls}">${vLat != null ? vLat.toFixed(1) : '—'}</div>
+        <div class="gauge-desc ${vCls}">${vDesc}</div>
+        <div class="gauge-sub">${vChg >= 0 ? '▲' : '▼'} ${Math.abs(vChg).toFixed(2)} 前日</div>
+      </div>
+      <div class="gauge-tile">
+        <div class="gauge-label">美股巴菲特指標</div>
+        <div class="gauge-value ${bCls}">${bLat != null ? bLat.toFixed(0) + '%' : '—'}</div>
+        <div class="gauge-desc ${bCls}">${bDesc}</div>
+        <div class="gauge-sub">Wilshire5000 ÷ GDP</div>
+      </div>
+      <div class="gauge-tile">
+        <div class="gauge-label">CNN 恐懼貪婪指數</div>
+        <div class="gauge-value color-text2">—</div>
+        <div class="gauge-desc" style="color:#555a6a">需直接查閱</div>
+        <a class="ext-link" href="https://edition.cnn.com/markets/fear-and-greed" target="_blank">
+          前往 CNN ↗
+        </a>
+      </div>
+      <div class="gauge-tile">
+        <div class="gauge-label">AAII 情緒調查</div>
+        <div class="gauge-value color-text2" style="font-size:20px;padding-top:6px">週報</div>
+        <div class="gauge-desc" style="color:#555a6a">每週四更新</div>
+        <a class="ext-link" href="https://www.aaii.com/sentimentsurvey" target="_blank">
+          前往 AAII ↗
+        </a>
+      </div>
+      <div class="gauge-tile">
+        <div class="gauge-label">Put / Call Ratio</div>
+        <div class="gauge-value color-text2" style="font-size:20px;padding-top:6px">日報</div>
+        <div class="gauge-desc" style="color:#555a6a">每日更新</div>
+        <a class="ext-link" href="https://www.cboe.com/us/options/market_statistics/daily/" target="_blank">
+          前往 CBOE ↗
+        </a>
+      </div>
+      <div class="gauge-tile">
+        <div class="gauge-label">台股巴菲特指標</div>
+        <div class="gauge-value color-text2" style="font-size:20px;padding-top:6px">季報</div>
+        <div class="gauge-desc" style="color:#555a6a">季度更新</div>
+        <a class="ext-link" href="https://www.twse.com.tw/zh/statistics/statisticsData.html" target="_blank">
+          前往 TWSE ↗
+        </a>
+      </div>`;
+
+    // Sub charts
+    cEl.innerHTML = `
+      <div class="sub-card">
+        <div class="sub-card-title">VIX 近3個月走勢</div>
+        <div class="sub-chart-wrap"><canvas id="vixCanvas" role="img" aria-label="VIX近3個月走勢"></canvas></div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-card-title">美股巴菲特指標近2年</div>
+        <div class="sub-chart-wrap"><canvas id="buffCanvas" role="img" aria-label="巴菲特指標近2年走勢"></canvas></div>
+      </div>`;
+
+    // VIX chart
+    if (vix.length) {
+      const vOpts = mkChartOpts({ yTicks: { callback: v => v.toFixed(0) } });
+      vOpts.plugins.tooltip.callbacks = { label: c => ` VIX: ${c.parsed.y?.toFixed(1)}` };
+      vixChart = new Chart(document.getElementById('vixCanvas'), {
+        type: 'line',
+        data: {
+          labels: vix.map(p => p.d),
+          datasets: [{ label: 'VIX', data: vix.map(p => p.v),
+            borderColor: '#f06060', backgroundColor: 'rgba(240,96,96,0.08)',
+            borderWidth: 1.5, pointRadius: 0, tension: 0.3, fill: true }]
+        },
+        options: vOpts
+      });
+    }
+
+    // Buffett chart
+    if (buffett.length) {
+      const bOpts = mkChartOpts({ yTicks: { callback: v => v + '%' } });
+      bOpts.plugins.tooltip.callbacks = { label: c => ` 巴菲特: ${c.parsed.y?.toFixed(1)}%` };
+      buffettChart = new Chart(document.getElementById('buffCanvas'), {
+        type: 'line',
+        data: {
+          labels: buffett.map(p => p.d),
+          datasets: [{ label: '巴菲特指標', data: buffett.map(p => p.v),
+            borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.08)',
+            borderWidth: 1.5, pointRadius: 0, tension: 0.3, fill: true }]
+        },
+        options: bOpts
+      });
+    }
+
+  } catch(e) {
+    gEl.innerHTML = `<div class="error-msg">情緒資料載入失敗：${e.message}</div>`;
+  }
+}
+
+async function loadAll() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('loading');
+  await Promise.all([loadYields(curRange), loadSentiment()]);
+  btn.classList.remove('loading');
+}
+
+// Range tabs
+document.getElementById('rangeTabs').addEventListener('click', e => {
+  if (!e.target.dataset.r) return;
+  document.querySelectorAll('.range-tab').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  curRange = e.target.dataset.r;
+  loadYields(curRange);
+});
+
+buildLegend();
+loadAll();
+</script>
+</body>
+</html>
