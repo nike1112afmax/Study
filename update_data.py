@@ -60,7 +60,7 @@ def main():
     # 美國 10Y（yfinance ^TNX，值需 ÷10）
     print('Fetching us (yfinance ^TNX)...')
     try:
-        data['us'] = yf_fetch('^TNX', m3, today, divide10=True)
+        data['us'] = yf_fetch('^TNX', m3, today, divide10=False)
         print(f'  → {len(data["us"])} records, latest: {data["us"][-1] if data["us"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}, fallback to FRED DGS10')
