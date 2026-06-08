@@ -5,7 +5,7 @@
   - 美國 10Y：yfinance ^TNX（日度）
   - 德/英/日/澳 10Y：FRED 月度（拉2年確保3M視窗有資料）
   - VIX：FRED VIXCLS（日度）
-  - Wilshire 5000：yfinance ^W5000（日度）
+  - Wilshire 5000：yfinance ^FTW5000（日度，十億美元市值）
   - GDP：FRED GDPC1（季度）
 """
 
@@ -27,7 +27,7 @@ FRED_YIELDS = {
     'au': 'IRLTLT01AUM156N',
 }
 
-def yf_fetch(symbol, start, end, divide10=False):
+def yf_fetch(symbol, start, end, divide10=False, multiply10=False):
     df = yf.Ticker(symbol).history(start=start, end=end, interval='1d', auto_adjust=False)
     if df.empty:
         return []
@@ -37,6 +37,8 @@ def yf_fetch(symbol, start, end, divide10=False):
         if v > 0:
             if divide10:
                 v = round(v / 10, 4)
+            if multiply10:
+                v = round(v * 10, 4)
             result.append({'d': idx.strftime('%Y-%m-%d'), 'v': round(v, 4)})
     return sorted(result, key=lambda x: x['d'])
 
@@ -60,7 +62,7 @@ def main():
     # 美國 10Y（yfinance ^TNX，值需 ÷10）
     print('Fetching us (yfinance ^TNX)...')
     try:
-        data['us'] = yf_fetch('^TNX', m3, today, divide10=False)
+        data['us'] = yf_fetch('^TNX', m3, today, multiply10=True)
         print(f'  → {len(data["us"])} records, latest: {data["us"][-1] if data["us"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}, fallback to FRED DGS10')
@@ -89,10 +91,10 @@ def main():
         print(f'  → ERROR: {e}')
         data['vix'] = []
 
-    # Wilshire 5000（yfinance ^W5000）
-    print('Fetching wilshire (yfinance ^W5000)...')
+    # Wilshire 5000（yfinance ^FTW5000，單位：十億美元市值）
+    print('Fetching wilshire (yfinance ^FTW5000)...')
     try:
-        data['wilshire'] = yf_fetch('^W5000', y2, today)
+        data['wilshire'] = yf_fetch('^FTW5000', y2, today)
         print(f'  → {len(data["wilshire"])} records, latest: {data["wilshire"][-1] if data["wilshire"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}')
