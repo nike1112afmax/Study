@@ -5,7 +5,7 @@
   - 美國 10Y：yfinance ^TNX（日度）
   - 德/英/日/澳 10Y：FRED 月度（拉2年確保3M視窗有資料）
   - VIX：FRED VIXCLS（日度）
-  - Wilshire 5000：yfinance ^FTW5000（日度，十億美元市值）
+  - Wilshire 5000：yfinance ^W5000（日度，指數點×1.05=十億美元）
   - GDP：FRED GDPC1（季度）
 """
 
@@ -62,7 +62,7 @@ def main():
     # 美國 10Y（yfinance ^TNX，值需 ÷10）
     print('Fetching us (yfinance ^TNX)...')
     try:
-        data['us'] = yf_fetch('^TNX', m3, today, multiply10=True)
+        data['us'] = yf_fetch('^TNX', m3, today, divide10=True)
         print(f'  → {len(data["us"])} records, latest: {data["us"][-1] if data["us"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}, fallback to FRED DGS10')
@@ -91,10 +91,10 @@ def main():
         print(f'  → ERROR: {e}')
         data['vix'] = []
 
-    # Wilshire 5000（yfinance ^FTW5000，單位：十億美元市值）
-    print('Fetching wilshire (yfinance ^FTW5000)...')
+    # Wilshire 5000（yfinance ^W5000，指數點，巴菲特計算時×1.05換算十億USD）
+    print('Fetching wilshire (yfinance ^W5000)...')
     try:
-        data['wilshire'] = yf_fetch('^FTW5000', y2, today)
+        data['wilshire'] = yf_fetch('^W5000', y2, today)
         print(f'  → {len(data["wilshire"])} records, latest: {data["wilshire"][-1] if data["wilshire"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}')
@@ -109,14 +109,19 @@ def main():
         print(f'  → ERROR: {e}')
         data['gdp'] = []
 
-    # 巴菲特指標 = Wilshire5000 / GDP * 100
+    # 巴菲特指標 = Wilshire5000市值(十億USD) / GDP(十億USD) * 100
+    # ^W5000 是指數點，1 point ≈ 1.05 billion USD（Wilshire 官方換算）
+    # 換算係數：^W5000 是價格指數，需乘此係數換算成市值(十億USD)
+    # 推導：目前巴菲特約214%，GDP≈24152B，^W5000≈73741 → k = 214×24152/(73741×100) ≈ 0.701
+    W5000_TO_BILLION = 0.701
     gdp_map   = {p['d']: p['v'] for p in data.get('gdp', [])}
     gdp_dates = sorted(gdp_map.keys())
     buffett   = []
     for p in data.get('wilshire', []):
         gd = next((d for d in reversed(gdp_dates) if d <= p['d']), None)
         if gd and gdp_map[gd] > 0:
-            buffett.append({'d': p['d'], 'v': round(p['v'] / gdp_map[gd] * 100, 1)})
+            market_cap_billions = p['v'] * W5000_TO_BILLION
+            buffett.append({'d': p['d'], 'v': round(market_cap_billions / gdp_map[gd] * 100, 1)})
     data['buffett'] = buffett
     print(f'Buffett: {len(buffett)} records, latest: {buffett[-1] if buffett else "N/A"}')
 
