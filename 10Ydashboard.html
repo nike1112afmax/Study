@@ -243,6 +243,17 @@ function filterByRange(arr, range) {
   return arr.filter(p => p.d >= cutStr);
 }
 
+// 月度資料補點：將最後一筆延伸到今天，讓圖表右端不斷線
+function extendMonthly(arr) {
+  if (arr.length < 2) return arr;
+  const today = new Date().toISOString().split('T')[0];
+  const last = arr[arr.length - 1];
+  if (last.d < today) {
+    return [...arr, { d: today, v: last.v }];
+  }
+  return arr;
+}
+
 function trendBadge(arr) {
   if (arr.length < 15) return '';
   const recent = arr.slice(-5).reduce((a,b) => a + b.v, 0) / 5;
@@ -284,7 +295,12 @@ function renderYield(range) {
   const wrap = document.getElementById('yieldWrap');
   const metEl = document.getElementById('yieldMetrics');
 
-  const filtered = COUNTRIES.map(c => filterByRange(raw[c.key] || [], range));
+  // 美國是日度資料，其他是月度，月度資料補點讓線延伸到今天
+  const filtered = COUNTRIES.map(c => {
+    const arr = raw[c.key] || [];
+    const f = filterByRange(arr, range);
+    return c.key === 'us' ? f : extendMonthly(f);
+  });
   const dates = [...new Set(filtered.flatMap(d => d.map(p => p.d)))].sort();
 
   // rebuild canvas
