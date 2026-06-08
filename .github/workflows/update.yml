@@ -2,8 +2,8 @@ name: Update Dashboard Data
 
 on:
   schedule:
-    - cron: '0 22 * * 1-5'   # 每週一到五 UTC 22:00（台灣時間 06:00）
-  workflow_dispatch:           # 允許手動觸發
+    - cron: '0 22 * * 1-5'
+  workflow_dispatch:
 
 jobs:
   update:
@@ -24,7 +24,9 @@ jobs:
         run: pip install requests
 
       - name: Fetch FRED data
-        run: python Study/update_data.py
+        run: |
+          cd Study
+          python update_data.py
 
       - name: Commit and push data.json
         run: |
