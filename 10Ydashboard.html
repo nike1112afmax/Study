@@ -191,7 +191,9 @@
         <button class="range-tab" data-r="1M">1M</button>
         <button class="range-tab active" data-r="3M">3M</button>
         <button class="range-tab" data-r="6M">6M</button>
-        <button class="range-tab" data-r="ALL">ALL</button>
+        <button class="range-tab" data-r="1Y">1Y</button>
+        <button class="range-tab" data-r="3Y">3Y</button>
+        <button class="range-tab" data-r="ALL">ALL(20Y)</button>
       </div>
     </div>
     <div class="legend-row" id="yieldLegend"></div>
@@ -236,7 +238,7 @@ async function loadData() {
 
 function filterByRange(arr, range) {
   if (range === 'ALL' || !arr.length) return arr;
-  const days = { '1M': 31, '3M': 92, '6M': 183 };
+  const days = { '1M': 31, '3M': 92, '6M': 183, '1Y': 365, '3Y': 1095 };
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - (days[range] || 92));
   const cutStr = cutoff.toISOString().split('T')[0];
