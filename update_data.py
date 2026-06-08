@@ -1,141 +1,91 @@
 #!/usr/bin/env python3
 """
-每日抓取10年期公債殖利率與情緒指標，存成 data.json
-- 全部改用 yfinance（Yahoo Finance），GitHub Actions 可正常存取
-- GDP 維持用 FRED（唯一沒有替代的季度資料）
+診斷版 update_data.py
+測試 yfinance / stooq / FRED 哪些在 GitHub Actions 上可以存取
 """
 
-import json
-import sys
+import json, sys, requests, csv, io
 from datetime import date, timedelta
 from pathlib import Path
 
-try:
-    import yfinance as yf
-except ImportError:
-    print("Installing yfinance...")
-    import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "yfinance"])
-    import yfinance as yf
-
-import requests
+# 安裝 yfinance
+import subprocess
+subprocess.check_call([sys.executable, "-m", "pip", "install", "yfinance", "-q"])
+import yfinance as yf
 
 FRED_KEY  = 'dbba37c1668a05b454005e1bcc21ac7c'
 FRED_BASE = 'https://api.stlouisfed.org/fred/series/observations'
 
-# Yahoo Finance 代碼
-YF_YIELDS = {
-    'us': '^TNX',           # 美國 10Y（× 直接是 % 值）
-    'de': '^TMBMKDE-10Y',   # 德國 10Y
-    'gb': '^TMBMKGB-10Y',   # 英國 10Y
-    'jp': '^TMBMKJP-10Y',   # 日本 10Y
-    'au': '^TMBMKAU-10Y',   # 澳洲 10Y
+today = date.today().isoformat()
+m3    = (date.today() - timedelta(days=92)).isoformat()
+
+print("="*60)
+print(f"Date range: {m3} ~ {today}")
+print("="*60)
+
+# ── 1. 測試 yfinance ──────────────────────────────────────────
+print("\n[1] yfinance tests:")
+yf_symbols = {
+    'us_TNX':   '^TNX',
+    'de_10Y':   '^TMBMKDE-10Y',
+    'vix':      '^VIX',
+    'wilshire': '^W5000',
 }
-
-def yf_fetch(symbol, start, end):
-    """用 yfinance 抓歷史收盤價"""
-    ticker = yf.Ticker(symbol)
-    df = ticker.history(start=start, end=end, interval='1d', auto_adjust=False)
-    if df.empty:
-        return []
-    result = []
-    for idx, row in df.iterrows():
-        d = idx.strftime('%Y-%m-%d')
-        v = round(float(row['Close']), 4)
-        if v > 0:
-            result.append({'d': d, 'v': v})
-    return sorted(result, key=lambda x: x['d'])
-
-def fred_fetch(series_id, start, end):
-    r = requests.get(FRED_BASE, params={
-        'series_id': series_id,
-        'api_key': FRED_KEY,
-        'file_type': 'json',
-        'observation_start': start,
-        'observation_end': end,
-    }, timeout=30)
-    r.raise_for_status()
-    obs = r.json().get('observations', [])
-    return [{'d': o['date'], 'v': float(o['value'])}
-            for o in obs if o['value'] != '.']
-
-def main():
-    today     = date.today().isoformat()
-    m3        = (date.today() - timedelta(days=92)).isoformat()
-    y2        = (date.today() - timedelta(days=730)).isoformat()
-    y3        = (date.today() - timedelta(days=1095)).isoformat()
-
-    data = {}
-
-    # 10Y 公債殖利率（Yahoo Finance）
-    for key, symbol in YF_YIELDS.items():
-        print(f'Fetching {key} ({symbol})...')
-        try:
-            result = yf_fetch(symbol, m3, today)
-            # ^TNX 是 ×10 的值（44.7 = 4.47%），需除以 10
-            if key == 'us' and result and result[-1]['v'] > 20:
-                result = [{'d': p['d'], 'v': round(p['v'] / 10, 4)} for p in result]
-                print(f'  → TNX unit correction applied (/10)')
-            data[key] = result
-            print(f'  → {len(result)} records, latest: {result[-1] if result else "N/A"}')
-        except Exception as e:
-            print(f'  → ERROR: {e}')
-            data[key] = []
-
-    # VIX（Yahoo Finance）
-    print('Fetching vix (^VIX)...')
+for name, sym in yf_symbols.items():
     try:
-        data['vix'] = yf_fetch('^VIX', m3, today)
-        print(f'  → {len(data["vix"])} records, latest: {data["vix"][-1] if data["vix"] else "N/A"}')
+        df = yf.Ticker(sym).history(start=m3, end=today, interval='1d', auto_adjust=False)
+        if df.empty:
+            print(f'  [{name}] NO DATA')
+        else:
+            c = df.iloc[-1]['Close']
+            print(f'  [{name}] OK - {len(df)} records, latest close={c:.4f} ({df.index[-1].strftime("%Y-%m-%d")})')
     except Exception as e:
-        print(f'  → ERROR: {e}')
-        # fallback: FRED
-        try:
-            data['vix'] = fred_fetch('VIXCLS', m3, today)
-            print(f'  → FRED fallback: {len(data["vix"])} records')
-        except:
-            data['vix'] = []
+        print(f'  [{name}] ERROR: {e}')
 
-    # Wilshire 5000（Yahoo Finance ^W5000）
-    print('Fetching wilshire (^W5000)...')
+# ── 2. 測試 stooq ─────────────────────────────────────────────
+print("\n[2] stooq tests:")
+stooq_symbols = {
+    'us_stooq': 'us10ytj.b',
+    'de_stooq': 'de10ytj.b',
+    'vix_stooq': '^vix',
+}
+for name, sym in stooq_symbols.items():
+    url = f'https://stooq.com/q/d/l/?s={sym}&d1={m3.replace("-","")}&d2={today.replace("-","")}&i=d'
     try:
-        data['wilshire'] = yf_fetch('^W5000', y2, today)
-        print(f'  → {len(data["wilshire"])} records, latest: {data["wilshire"][-1] if data["wilshire"] else "N/A"}')
+        r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
+        lines = r.text.strip().split('\n')
+        if r.status_code == 200 and len(lines) > 2:
+            print(f'  [{name}] OK - {len(lines)-1} records, last: {lines[-1]}')
+        else:
+            print(f'  [{name}] FAIL - status={r.status_code}, body={r.text[:60]}')
     except Exception as e:
-        print(f'  → ERROR: {e}, fallback to FRED...')
-        try:
-            data['wilshire'] = fred_fetch('WILL5000INDFC', y2, today)
-            print(f'  → FRED fallback: {len(data["wilshire"])} records')
-        except Exception as e2:
-            print(f'  → FRED fallback ERROR: {e2}')
-            data['wilshire'] = []
+        print(f'  [{name}] ERROR: {e}')
 
-    # GDP（FRED，唯一沒有替代的）
-    print('Fetching gdp (FRED GDPC1)...')
+# ── 3. 測試 FRED ──────────────────────────────────────────────
+print("\n[3] FRED tests:")
+fred_series = {
+    'DGS10':        'US 10Y',
+    'VIXCLS':       'VIX',
+    'WILL5000INDFC':'Wilshire5000',
+    'GDPC1':        'GDP',
+}
+for sid, name in fred_series.items():
     try:
-        data['gdp'] = fred_fetch('GDPC1', y3, today)
-        print(f'  → {len(data["gdp"])} records, latest: {data["gdp"][-1] if data["gdp"] else "N/A"}')
+        r = requests.get(FRED_BASE, params={
+            'series_id': sid, 'api_key': FRED_KEY, 'file_type': 'json',
+            'observation_start': m3, 'observation_end': today,
+            'limit': 3, 'sort_order': 'desc'
+        }, timeout=15)
+        obs = [o for o in r.json().get('observations', []) if o['value'] != '.']
+        if obs:
+            print(f'  [{sid}] OK - latest: {obs[0]["date"]} = {obs[0]["value"]}')
+        else:
+            print(f'  [{sid}] NO DATA (status={r.status_code})')
     except Exception as e:
-        print(f'  → ERROR: {e}')
-        data['gdp'] = []
+        print(f'  [{sid}] ERROR: {e}')
 
-    # 巴菲特指標 = Wilshire5000 / GDP * 100
-    gdp_map   = {p['d']: p['v'] for p in data.get('gdp', [])}
-    gdp_dates = sorted(gdp_map.keys())
-    buffett   = []
-    for p in data.get('wilshire', []):
-        gd = next((d for d in reversed(gdp_dates) if d <= p['d']), None)
-        if gd and gdp_map[gd] > 0:
-            buffett.append({'d': p['d'], 'v': round(p['v'] / gdp_map[gd] * 100, 1)})
-    data['buffett'] = buffett
-    print(f'Buffett: {len(buffett)} records, latest: {buffett[-1] if buffett else "N/A"}')
+print("\n" + "="*60)
+print("Diagnosis complete.")
 
-    data['updated'] = today
-
-    out = Path(__file__).parent / 'data.json'
-    out.write_text(json.dumps(data, separators=(',', ':')))
-    print(f'\n✓ data.json saved ({out.stat().st_size:,} bytes)')
-    print(f'✓ Updated: {today}')
-
-if __name__ == '__main__':
-    main()
+# 存一個空的 data.json 避免 git commit 失敗
+Path('data.json').write_text(json.dumps({'updated': today, '_note': 'diagnosis run'}))
