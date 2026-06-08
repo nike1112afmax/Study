@@ -56,13 +56,14 @@ def main():
     m3    = (date.today() - timedelta(days=92)).isoformat()
     y2    = (date.today() - timedelta(days=730)).isoformat()
     y3    = (date.today() - timedelta(days=1095)).isoformat()
+    y20   = (date.today() - timedelta(days=365*20)).isoformat()
 
     data = {}
 
     # 美國 10Y（yfinance ^TNX 回傳小數 0.4536，×100 = 4.536%）
     print('Fetching us (yfinance ^TNX)...')
     try:
-        data['us'] = yf_fetch('^TNX', m3, today, multiply10=True)
+        data['us'] = yf_fetch('^TNX', y20, today, multiply10=True)
         print(f'  → {len(data["us"])} records, latest: {data["us"][-1] if data["us"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}, fallback to FRED DGS10')
@@ -76,7 +77,7 @@ def main():
     for key, sid in FRED_YIELDS.items():
         print(f'Fetching {key} (FRED {sid})...')
         try:
-            data[key] = fred_fetch(sid, y2, today)
+            data[key] = fred_fetch(sid, y20, today)
             print(f'  → {len(data[key])} records, latest: {data[key][-1] if data[key] else "N/A"}')
         except Exception as e:
             print(f'  → ERROR: {e}')
@@ -85,7 +86,7 @@ def main():
     # VIX（FRED VIXCLS）
     print('Fetching vix (FRED VIXCLS)...')
     try:
-        data['vix'] = fred_fetch('VIXCLS', m3, today)
+        data['vix'] = fred_fetch('VIXCLS', y20, today)
         print(f'  → {len(data["vix"])} records, latest: {data["vix"][-1] if data["vix"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}')
@@ -94,7 +95,7 @@ def main():
     # Wilshire 5000（yfinance ^W5000，指數點，巴菲特計算時×1.05換算十億USD）
     print('Fetching wilshire (yfinance ^W5000)...')
     try:
-        data['wilshire'] = yf_fetch('^W5000', y2, today)
+        data['wilshire'] = yf_fetch('^W5000', y20, today)
         print(f'  → {len(data["wilshire"])} records, latest: {data["wilshire"][-1] if data["wilshire"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}')
@@ -103,7 +104,7 @@ def main():
     # GDP（FRED GDPC1）
     print('Fetching gdp (FRED GDPC1)...')
     try:
-        data['gdp'] = fred_fetch('GDPC1', y3, today)
+        data['gdp'] = fred_fetch('GDPC1', y20, today)
         print(f'  → {len(data["gdp"])} records, latest: {data["gdp"][-1] if data["gdp"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}')
