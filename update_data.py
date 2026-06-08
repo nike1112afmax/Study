@@ -1,65 +1,49 @@
 #!/usr/bin/env python3
 """
 每日抓取10年期公債殖利率與情緒指標，存成 data.json
-- 10Y公債(美/德/英/日/澳) + VIX：stooq.com（日度）
-- Wilshire5000 / GDP：FRED API（巴菲特指標用）
+- 全部改用 yfinance（Yahoo Finance），GitHub Actions 可正常存取
+- GDP 維持用 FRED（唯一沒有替代的季度資料）
 """
 
-import requests
 import json
-import csv
-import io
+import sys
 from datetime import date, timedelta
 from pathlib import Path
+
+try:
+    import yfinance as yf
+except ImportError:
+    print("Installing yfinance...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "yfinance"])
+    import yfinance as yf
+
+import requests
 
 FRED_KEY  = 'dbba37c1668a05b454005e1bcc21ac7c'
 FRED_BASE = 'https://api.stlouisfed.org/fred/series/observations'
 
-STOOQ_YIELDS = {
-    'us': 'us10ytj.b',
-    'de': 'de10ytj.b',
-    'gb': 'gb10ytj.b',
-    'jp': 'jp10ytj.b',
-    'au': 'au10ytj.b',
+# Yahoo Finance 代碼
+YF_YIELDS = {
+    'us': '^TNX',           # 美國 10Y（× 直接是 % 值）
+    'de': '^TMBMKDE-10Y',   # 德國 10Y
+    'gb': '^TMBMKGB-10Y',   # 英國 10Y
+    'jp': '^TMBMKJP-10Y',   # 日本 10Y
+    'au': '^TMBMKAU-10Y',   # 澳洲 10Y
 }
 
-def stooq_fetch(symbol, start, end):
-    url = f'https://stooq.com/q/d/l/?s={symbol}&d1={start.replace("-","")}&d2={end.replace("-","")}&i=d'
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'}
-    r = requests.get(url, headers=headers, timeout=30)
-    r.raise_for_status()
-    reader = csv.DictReader(io.StringIO(r.text))
+def yf_fetch(symbol, start, end):
+    """用 yfinance 抓歷史收盤價"""
+    ticker = yf.Ticker(symbol)
+    df = ticker.history(start=start, end=end, interval='1d', auto_adjust=False)
+    if df.empty:
+        return []
     result = []
-    for row in reader:
-        try:
-            v = float(row['Close'])
-            result.append({'d': row['Date'], 'v': v})
-        except (KeyError, ValueError):
-            continue
-    result = sorted(result, key=lambda x: x['d'])
-
-    # 自動偵測單位：若最大值 < 2，代表是小數格式（0.044 = 4.4%），乘以100換算
-    if result:
-        max_v = max(p['v'] for p in result)
-        if max_v < 2.0:
-            result = [{'d': p['d'], 'v': round(p['v'] * 100, 4)} for p in result]
-            print(f'  → unit conversion applied (max was {max_v:.4f}, multiplied by 100)')
-
-    return result
-
-def stooq_fetch_vix(start, end):
-    """VIX 用獨立函式，不做單位換算"""
-    url = f'https://stooq.com/q/d/l/?s=^vix&d1={start.replace("-","")}&d2={end.replace("-","")}&i=d'
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'}
-    r = requests.get(url, headers=headers, timeout=30)
-    r.raise_for_status()
-    reader = csv.DictReader(io.StringIO(r.text))
-    result = []
-    for row in reader:
-        try:
-            result.append({'d': row['Date'], 'v': round(float(row['Close']), 2)})
-        except (KeyError, ValueError):
-            continue
+    for idx, row in df.iterrows():
+        d = idx.strftime('%Y-%m-%d')
+        v = round(float(row['Close']), 4)
+        if v > 0:
+            result.append({'d': d, 'v': v})
     return sorted(result, key=lambda x: x['d'])
 
 def fred_fetch(series_id, start, end):
@@ -76,55 +60,57 @@ def fred_fetch(series_id, start, end):
             for o in obs if o['value'] != '.']
 
 def main():
-    today = date.today().isoformat()
-    m3    = (date.today() - timedelta(days=92)).isoformat()
-    y2    = (date.today() - timedelta(days=730)).isoformat()
-    y3    = (date.today() - timedelta(days=1095)).isoformat()
+    today     = date.today().isoformat()
+    m3        = (date.today() - timedelta(days=92)).isoformat()
+    y2        = (date.today() - timedelta(days=730)).isoformat()
+    y3        = (date.today() - timedelta(days=1095)).isoformat()
 
     data = {}
 
-    # 10Y 公債殖利率（stooq）
-    for key, symbol in STOOQ_YIELDS.items():
-        print(f'Fetching {key} yield (stooq {symbol})...')
+    # 10Y 公債殖利率（Yahoo Finance）
+    for key, symbol in YF_YIELDS.items():
+        print(f'Fetching {key} ({symbol})...')
         try:
-            data[key] = stooq_fetch(symbol, m3, today)
-            if data[key]:
-                print(f'  → {len(data[key])} records, latest: {data[key][-1]}')
-            else:
-                print(f'  → NO DATA')
+            result = yf_fetch(symbol, m3, today)
+            # ^TNX 是 ×10 的值（44.7 = 4.47%），需除以 10
+            if key == 'us' and result and result[-1]['v'] > 20:
+                result = [{'d': p['d'], 'v': round(p['v'] / 10, 4)} for p in result]
+                print(f'  → TNX unit correction applied (/10)')
+            data[key] = result
+            print(f'  → {len(result)} records, latest: {result[-1] if result else "N/A"}')
         except Exception as e:
             print(f'  → ERROR: {e}')
             data[key] = []
 
-    # VIX（stooq）
-    print('Fetching vix (stooq ^vix)...')
+    # VIX（Yahoo Finance）
+    print('Fetching vix (^VIX)...')
     try:
-        data['vix'] = stooq_fetch_vix(m3, today)
-        if data['vix']:
-            print(f'  → {len(data["vix"])} records, latest: {data["vix"][-1]}')
-        else:
-            print(f'  → NO DATA')
+        data['vix'] = yf_fetch('^VIX', m3, today)
+        print(f'  → {len(data["vix"])} records, latest: {data["vix"][-1] if data["vix"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}')
-        # VIX fallback: FRED
-        print('  → Fallback to FRED VIXCLS...')
+        # fallback: FRED
         try:
             data['vix'] = fred_fetch('VIXCLS', m3, today)
-            print(f'  → FRED fallback: {len(data["vix"])} records, latest: {data["vix"][-1] if data["vix"] else "N/A"}')
-        except Exception as e2:
-            print(f'  → FRED fallback ERROR: {e2}')
+            print(f'  → FRED fallback: {len(data["vix"])} records')
+        except:
             data['vix'] = []
 
-    # Wilshire 5000（FRED）
-    print('Fetching wilshire (FRED WILL5000INDFC)...')
+    # Wilshire 5000（Yahoo Finance ^W5000）
+    print('Fetching wilshire (^W5000)...')
     try:
-        data['wilshire'] = fred_fetch('WILL5000INDFC', y2, today)
+        data['wilshire'] = yf_fetch('^W5000', y2, today)
         print(f'  → {len(data["wilshire"])} records, latest: {data["wilshire"][-1] if data["wilshire"] else "N/A"}')
     except Exception as e:
-        print(f'  → ERROR: {e}')
-        data['wilshire'] = []
+        print(f'  → ERROR: {e}, fallback to FRED...')
+        try:
+            data['wilshire'] = fred_fetch('WILL5000INDFC', y2, today)
+            print(f'  → FRED fallback: {len(data["wilshire"])} records')
+        except Exception as e2:
+            print(f'  → FRED fallback ERROR: {e2}')
+            data['wilshire'] = []
 
-    # GDP（FRED GDPC1）
+    # GDP（FRED，唯一沒有替代的）
     print('Fetching gdp (FRED GDPC1)...')
     try:
         data['gdp'] = fred_fetch('GDPC1', y3, today)
@@ -133,7 +119,7 @@ def main():
         print(f'  → ERROR: {e}')
         data['gdp'] = []
 
-    # 巴菲特指標
+    # 巴菲特指標 = Wilshire5000 / GDP * 100
     gdp_map   = {p['d']: p['v'] for p in data.get('gdp', [])}
     gdp_dates = sorted(gdp_map.keys())
     buffett   = []
