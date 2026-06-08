@@ -12,15 +12,17 @@ from pathlib import Path
 FRED_KEY = 'dbba37c1668a05b454005e1bcc21ac7c'
 FRED_BASE = 'https://api.stlouisfed.org/fred/series/observations'
 
+# 全部改用日度資料，避免月度資料稀疏問題
+# 德國/英國/日本/澳洲改用 OECD 日度 series
 SERIES = {
-    'us':      'DGS10',
-    'de':      'IRLTLT01DEM156N',
-    'gb':      'IRLTLT01GBM156N',
-    'jp':      'IRLTLT01JPM156N',
-    'au':      'IRLTLT01AUM156N',
-    'vix':     'VIXCLS',
-    'wilshire':'WILL5000INDFC',
-    'gdp':     'GDP',
+    'us':       ('DGS10',            'daily'),   # 美國 10Y 日度
+    'de':       ('IRLTLT01DEM156N',  'monthly'), # 德國 10Y 月度（OECD）
+    'gb':       ('IRLTLT01GBM156N',  'monthly'), # 英國 10Y 月度（OECD）
+    'jp':       ('IRLTLT01JPM156N',  'monthly'), # 日本 10Y 月度（OECD）
+    'au':       ('IRLTLT01AUM156N',  'monthly'), # 澳洲 10Y 月度（OECD）
+    'vix':      ('VIXCLS',           'daily'),   # VIX 日度
+    'wilshire': ('WILL5000INDFC',    'daily'),   # Wilshire 5000 日度
+    'gdp':      ('GDPC1',            'quarterly'),# 實質 GDP 季度（比 GDP 更新快）
 }
 
 def fred_fetch(series_id, start, end):
@@ -39,28 +41,44 @@ def fred_fetch(series_id, start, end):
 def main():
     today = date.today().isoformat()
     m3    = (date.today() - timedelta(days=92)).isoformat()
+    m6    = (date.today() - timedelta(days=183)).isoformat()
     y2    = (date.today() - timedelta(days=730)).isoformat()
+    y3    = (date.today() - timedelta(days=1095)).isoformat()
 
     data = {}
-    for key, sid in SERIES.items():
-        start = y2 if key in ('wilshire', 'gdp') else m3
-        print(f'Fetching {key} ({sid})...')
+    for key, (sid, freq) in SERIES.items():
+        # 月度資料拉更長以確保3個月內有資料點
+        if freq == 'monthly':
+            start = y2        # 2年確保有足夠月度點
+        elif freq == 'quarterly':
+            start = y3        # 3年確保有足夠季度點
+        elif key == 'wilshire':
+            start = y2
+        else:
+            start = m3
+
+        print(f'Fetching {key} ({sid}, {freq})...')
         try:
             data[key] = fred_fetch(sid, start, today)
-            print(f'  → {len(data[key])} records')
+            print(f'  → {len(data[key])} records, latest: {data[key][-1]["d"] if data[key] else "N/A"}')
         except Exception as e:
             print(f'  → ERROR: {e}')
             data[key] = []
 
     # 計算巴菲特指標
+    # Wilshire 5000（市值，十億美元）/ 實質 GDP（十億美元）* 100
     gdp_map = {p['d']: p['v'] for p in data.get('gdp', [])}
     gdp_dates = sorted(gdp_map.keys())
     buffett = []
     for p in data.get('wilshire', []):
+        # 找最近一個季度 GDP
         gd = next((d for d in reversed(gdp_dates) if d <= p['d']), None)
-        if gd:
-            buffett.append({'d': p['d'], 'v': round(p['v'] / gdp_map[gd] * 100, 1)})
+        if gd and gdp_map[gd] > 0:
+            ratio = round(p['v'] / gdp_map[gd] * 100, 1)
+            buffett.append({'d': p['d'], 'v': ratio})
+
     data['buffett'] = buffett
+    print(f'Buffett indicator: {len(buffett)} records, latest: {buffett[-1] if buffett else "N/A"}')
 
     data['updated'] = today
 
