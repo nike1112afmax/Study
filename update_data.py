@@ -60,10 +60,10 @@ def main():
 
     data = {}
 
-    # 美國 10Y（yfinance ^TNX 回傳小數 0.4536，×100 = 4.536%）
+    # 美國 10Y（yfinance ^TNX 直接回傳 4.536，不需換算）
     print('Fetching us (yfinance ^TNX)...')
     try:
-        data['us'] = yf_fetch('^TNX', y20, today, multiply10=True)
+        data['us'] = yf_fetch('^TNX', y20, today)
         print(f'  → {len(data["us"])} records, latest: {data["us"][-1] if data["us"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}, fallback to FRED DGS10')
