@@ -55,17 +55,7 @@
   .refresh-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--blue); }
   .refresh-btn svg { width: 13px; height: 13px; transition: transform .4s; }
   .refresh-btn.loading svg { animation: spin .8s linear infinite; }
-  .trigger-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 7px 14px; border-radius: var(--radius-sm);
-    border: 1px solid var(--border2); background: transparent;
-    color: var(--text2); font-size: 12px; cursor: pointer; transition: all .15s;
-  }
-  .trigger-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--green); }
-  .trigger-btn.running { border-color: var(--orange); color: var(--orange); cursor: not-allowed; }
-  .trigger-btn.done { border-color: var(--green); color: var(--green); }
-  .trigger-btn svg { width: 13px; height: 13px; }
-  .trigger-btn.running svg { animation: spin .8s linear infinite; }
+
   @keyframes spin { to { transform: rotate(360deg); } }
   .container { max-width: 1200px; margin: 0 auto; padding: 28px 32px; }
   .section-label {
@@ -182,13 +172,7 @@
   </div>
   <div class="topbar-right">
     <span id="lastUpdate"></span>
-    <button class="trigger-btn" id="triggerBtn" onclick="triggerActions()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
-      </svg>
-      <span id="triggerLabel">更新資料</span>
-    </button>
-    <button class="refresh-btn" id="refreshBtn" onclick="init()">
+<button class="refresh-btn" id="refreshBtn" onclick="init()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M23 4v6h-6M1 20v-6h6"/>
         <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
@@ -502,56 +486,3 @@ document.getElementById('rangeTabs').addEventListener('click', e => {
 
 buildLegend();
 init();
-
-async function triggerActions() {
-  const btn = document.getElementById('triggerBtn');
-  const label = document.getElementById('triggerLabel');
-  if (btn.classList.contains('running')) return;
-
-  btn.classList.add('running');
-  label.textContent = '觸發中...';
-
-  try {
-    const res = await fetch(
-      'https://api.github.com/repos/nike1112afmax/Study/actions/workflows/update.yml/dispatches',
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer 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',
-          'Accept': 'application/vnd.github+json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ref: 'main' })
-      }
-    );
-
-    if (res.status === 204) {
-      btn.classList.remove('running');
-      btn.classList.add('done');
-      label.textContent = '✓ 已觸發';
-
-      // 45秒後自動重新整理頁面讀取新資料
-      let count = 45;
-      const timer = setInterval(() => {
-        count--;
-        label.textContent = `載入中 ${count}s`;
-        if (count <= 0) {
-          clearInterval(timer);
-          init();
-          btn.classList.remove('done');
-          label.textContent = '更新資料';
-        }
-      }, 1000);
-    } else {
-      throw new Error(`Status ${res.status}`);
-    }
-  } catch(e) {
-    btn.classList.remove('running');
-    label.textContent = '失敗，請重試';
-    setTimeout(() => { label.textContent = '更新資料'; }, 3000);
-    console.error('Trigger error:', e);
-  }
-}
-</script>
-</body>
-</html>
