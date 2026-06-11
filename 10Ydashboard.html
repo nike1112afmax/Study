@@ -544,7 +544,7 @@ const ECON_INDICATORS = {
       { key:'us_pce',        label:'PCE 個人消費支出',    yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月末公布' },
       { key:'us_core_pce',   label:'核心 PCE',            yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月末公布' },
       { key:'us_ppi',        label:'PPI 生產者物價指數',  yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#f7a830', note:'月中公布' },
-      { key:'us_payroll',    label:'非農就業人數',         unit:'K',  fmt: v=>(v/1000).toFixed(0)+'M', color:'#2dd4bf', note:'每月第一個週五' },
+      { key:'us_payroll',    label:'非農就業人數',         mom:true, fmt: v=>v>=0?'+'+Math.round(v)+'K':Math.round(v)+'K', color:'#2dd4bf', note:'每月第一個週五' },
       { key:'us_unemployment',label:'失業率',             unit:'%',  fmt: v=>v.toFixed(1)+'%', color:'#f06060', note:'每月第一個週五' },
       { key:'us_gdp',        label:'實質 GDP',            unit:'B$', fmt: v=>'$'+(v/1000).toFixed(1)+'T', color:'#a78bfa', note:'季度公布' },
     ],
@@ -574,9 +574,11 @@ const ECON_INDICATORS = {
   tw: {
     title: '🇹🇼 台灣',
     items: [
-      { key:'tw_cpi', label:'CPI 消費者物價指數', yoy:false, fmt: v=>v.toFixed(2)+'%', color:'#f7a830', note:'月中公布' },
+
     ],
-    links: []
+    links: [
+      { label:'CPI 消費者物價指數', note:'每月月初公布', url:'https://www.macromicro.me/collections/12/tw-price-relative/112/tw-cpi' },
+    ]
   }
 };
 
@@ -625,7 +627,10 @@ function renderEcon() {
       if (!arr.length) continue;
       const lat = arr[arr.length-1];
       const prv = arr.length > 1 ? arr[arr.length-2] : null;
-      const chg = prv ? lat.v - prv.v : 0;
+      // mom:true → 顯示月增量（差值），原始資料用千人，轉成K
+      const displayVal = item.mom ? (prv ? (lat.v - prv.v) : 0) : lat.v;
+      const prevVal    = item.mom ? (arr.length > 2 ? arr[arr.length-3].v - arr[arr.length-2].v : 0) : (prv ? prv.v : null);
+      const chg = prevVal != null ? displayVal - prevVal : 0;
       const chgSign = chg > 0 ? '▲' : chg < 0 ? '▼' : '—';
       const chgCls = chg > 0 ? 'color-red' : chg < 0 ? 'color-green' : 'color-text2';
       const canvasId = `ec_${item.key}`;
@@ -635,9 +640,9 @@ function renderEcon() {
           <div class="econ-card-title">${item.label}</div>
           <div class="econ-card-update">${item.note}<br><span style="color:var(--text3)">${lat.d}</span></div>
         </div>
-        <div class="econ-value" style="color:${item.color}">${item.fmt(lat.v)}</div>
+        <div class="econ-value" style="color:${item.color}">${item.fmt(displayVal)}</div>
         <div class="econ-prev">
-          ${prv ? `前值 ${item.fmt(prv.v)} <span class="${chgCls}">${chgSign} ${Math.abs(chg).toFixed(2)}</span>` : ''}
+          ${prevVal != null ? `前值 ${item.fmt(prevVal)} <span class="${chgCls}">${chgSign} ${Math.abs(chg).toFixed(0)}</span>` : ''}
         </div>
         <div class="econ-chart-wrap"><canvas id="${canvasId}"></canvas></div>
       </div>`;
@@ -664,7 +669,10 @@ function renderEcon() {
     for (const item of region.items) {
       const rawArr = raw[item.key] || [];
       if (!rawArr.length) continue;
-      const arr = item.yoy ? calcYoY(rawArr) : rawArr;
+      let arr;
+      if (item.yoy) arr = calcYoY(rawArr);
+      else if (item.mom) arr = rawArr.slice(1).map((p,i) => ({d:p.d, v: p.v - rawArr[i].v}));
+      else arr = rawArr;
       if (arr.length) renderMiniChart(`ec_${item.key}`, arr, item.color);
     }
   }
