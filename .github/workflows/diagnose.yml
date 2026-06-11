@@ -19,4 +19,4 @@ jobs:
         run: pip install requests
 
       - name: Run diagnosis
-        run: python Study/diagnose.py
+        run: python diagnose.py
