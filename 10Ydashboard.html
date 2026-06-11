@@ -560,15 +560,15 @@ const ECON_INDICATORS = {
       { key:'eu_cpi', label:'CPI 消費者物價指數', yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月中公布' },
     ],
     links: [
-      { label:'製造業 PMI（Markit）', note:'每月月初公布', url:'https://hk.investing.com/economic-calendar/european-manufacturing-purchasing-managers-index-(pmi)-201' },
-      { label:'服務業 PMI（Markit）', note:'每月月初公布', url:'https://hk.investing.com/economic-calendar/hizmet-sat%C4%B1n-alma-m%C3%BCd%C3%BCrleri-endeksi-(pmi)-272' },
+      { label:'製造業 PMI（Markit）', note:'月初公布', url:'https://hk.investing.com/economic-calendar/european-manufacturing-purchasing-managers-index-(pmi)-201' },
+      { label:'服務業 PMI（Markit）', note:'月初公布', url:'https://hk.investing.com/economic-calendar/hizmet-sat%C4%B1n-alma-m%C3%BCd%C3%BCrleri-endeksi-(pmi)-272' },
     ]
   },
   jp: {
     title: '🇯🇵 日本',
     items: [],
     links: [
-      { label:'CPI 消費者物價指數', note:'每月中公布', url:'https://hk.investing.com/economic-calendar/national-cpi-992' },
+      { label:'CPI 消費者物價指數', note:'月中公布', url:'https://hk.investing.com/economic-calendar/national-cpi-992' },
     ]
   },
   tw: {
@@ -577,7 +577,7 @@ const ECON_INDICATORS = {
 
     ],
     links: [
-      { label:'CPI 消費者物價指數', note:'每月月初公布', url:'https://www.macromicro.me/collections/12/tw-price-relative/112/tw-cpi' },
+      { label:'CPI 消費者物價指數', note:'月初公布', url:'https://www.macromicro.me/collections/12/tw-price-relative/112/tw-cpi' },
     ]
   }
 };
@@ -642,7 +642,7 @@ function renderEcon() {
         </div>
         <div class="econ-value" style="color:${item.color}">${item.fmt(displayVal)}</div>
         <div class="econ-prev">
-          ${prevVal != null ? `前值 ${item.fmt(prevVal)} <span class="${chgCls}">${chgSign} ${Math.abs(chg).toFixed(0)}</span>` : ''}
+          ${prevVal != null ? `前值 ${item.fmt(prevVal)} <span class="${chgCls}">${chgSign} ${Math.abs(chg).toFixed(2)}</span>` : ''}
         </div>
         <div class="econ-chart-wrap"><canvas id="${canvasId}"></canvas></div>
       </div>`;
