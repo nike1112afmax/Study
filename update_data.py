@@ -34,7 +34,7 @@ FRED_ECON = {
     'us_core_cpi':   'CPILFESL',
     'us_pce':        'PCEPI',
     'us_core_pce':   'PCEPILFE',
-    'us_ppi':        'PPIACO',
+    'us_ppi':        'PPIFID',
     'us_payroll':    'PAYEMS',
     'us_unemployment':'UNRATE',
     'us_gdp':        'GDPC1',
