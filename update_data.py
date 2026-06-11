@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-每日抓取10年期公債殖利率與情緒指標，存成 data.json
+每日抓取10年期公債殖利率、情緒指標與經濟數據，存成 data.json
 資料來源（經 GitHub Actions 實測確認可用）：
   - 美國 10Y：yfinance ^TNX（日度）
-  - 德/英/日/澳 10Y：FRED 月度（拉2年確保3M視窗有資料）
+  - 德/英/日/澳 10Y：FRED 月度
   - VIX：FRED VIXCLS（日度）
-  - Wilshire 5000：yfinance ^W5000（日度，指數點×1.05=十億美元）
+  - Wilshire 5000：yfinance ^W5000（日度）
   - GDP：FRED GDPC1（季度）
+  - 經濟指標：FRED 月度/季度
 """
 
 import json, sys, requests
@@ -27,7 +28,21 @@ FRED_YIELDS = {
     'au': 'IRLTLT01AUM156N',
 }
 
-def yf_fetch(symbol, start, end, divide10=False, multiply10=False):
+# 經濟指標 FRED series（已驗證可用）
+FRED_ECON = {
+    'us_cpi':        'CPIAUCSL',
+    'us_core_cpi':   'CPILFESL',
+    'us_pce':        'PCEPI',
+    'us_core_pce':   'PCEPILFE',
+    'us_ppi':        'PPIACO',
+    'us_payroll':    'PAYEMS',
+    'us_unemployment':'UNRATE',
+    'us_gdp':        'GDPC1',
+    'eu_cpi':        'CP0000EZ19M086NEST',
+    'tw_cpi':        'TWNPCPIPCPPPT',
+}
+
+def yf_fetch(symbol, start, end):
     df = yf.Ticker(symbol).history(start=start, end=end, interval='1d', auto_adjust=False)
     if df.empty:
         return []
@@ -35,10 +50,6 @@ def yf_fetch(symbol, start, end, divide10=False, multiply10=False):
     for idx, row in df.iterrows():
         v = float(row['Close'])
         if v > 0:
-            if divide10:
-                v = round(v / 10, 4)
-            if multiply10:
-                v = round(v * 10, 4)
             result.append({'d': idx.strftime('%Y-%m-%d'), 'v': round(v, 4)})
     return sorted(result, key=lambda x: x['d'])
 
@@ -53,14 +64,12 @@ def fred_fetch(series_id, start, end):
 
 def main():
     today = date.today().isoformat()
-    m3    = (date.today() - timedelta(days=92)).isoformat()
     y2    = (date.today() - timedelta(days=730)).isoformat()
-    y3    = (date.today() - timedelta(days=1095)).isoformat()
     y20   = (date.today() - timedelta(days=365*20)).isoformat()
 
     data = {}
 
-    # 美國 10Y（yfinance ^TNX 直接回傳 4.536，不需換算）
+    # 美國 10Y
     print('Fetching us (yfinance ^TNX)...')
     try:
         data['us'] = yf_fetch('^TNX', y20, today)
@@ -68,12 +77,11 @@ def main():
     except Exception as e:
         print(f'  → ERROR: {e}, fallback to FRED DGS10')
         try:
-            data['us'] = fred_fetch('DGS10', m3, today)
-            print(f'  → FRED fallback: {len(data["us"])} records')
+            data['us'] = fred_fetch('DGS10', y20, today)
         except:
             data['us'] = []
 
-    # 德/英/日/澳 10Y（FRED 月度，拉2年）
+    # 德/英/日/澳 10Y
     for key, sid in FRED_YIELDS.items():
         print(f'Fetching {key} (FRED {sid})...')
         try:
@@ -83,7 +91,7 @@ def main():
             print(f'  → ERROR: {e}')
             data[key] = []
 
-    # VIX（FRED VIXCLS）
+    # VIX
     print('Fetching vix (FRED VIXCLS)...')
     try:
         data['vix'] = fred_fetch('VIXCLS', y20, today)
@@ -92,7 +100,7 @@ def main():
         print(f'  → ERROR: {e}')
         data['vix'] = []
 
-    # Wilshire 5000（yfinance ^W5000，指數點，巴菲特計算時×1.05換算十億USD）
+    # Wilshire 5000
     print('Fetching wilshire (yfinance ^W5000)...')
     try:
         data['wilshire'] = yf_fetch('^W5000', y20, today)
@@ -101,7 +109,7 @@ def main():
         print(f'  → ERROR: {e}')
         data['wilshire'] = []
 
-    # GDP（FRED GDPC1）
+    # GDP
     print('Fetching gdp (FRED GDPC1)...')
     try:
         data['gdp'] = fred_fetch('GDPC1', y20, today)
@@ -110,10 +118,7 @@ def main():
         print(f'  → ERROR: {e}')
         data['gdp'] = []
 
-    # 巴菲特指標 = Wilshire5000市值(十億USD) / GDP(十億USD) * 100
-    # ^W5000 是指數點，1 point ≈ 1.05 billion USD（Wilshire 官方換算）
-    # 換算係數：^W5000 是價格指數，需乘此係數換算成市值(十億USD)
-    # 推導：目前巴菲特約214%，GDP≈24152B，^W5000≈73741 → k = 214×24152/(73741×100) ≈ 0.701
+    # 巴菲特指標
     W5000_TO_BILLION = 0.701
     gdp_map   = {p['d']: p['v'] for p in data.get('gdp', [])}
     gdp_dates = sorted(gdp_map.keys())
@@ -125,6 +130,16 @@ def main():
             buffett.append({'d': p['d'], 'v': round(market_cap_billions / gdp_map[gd] * 100, 1)})
     data['buffett'] = buffett
     print(f'Buffett: {len(buffett)} records, latest: {buffett[-1] if buffett else "N/A"}')
+
+    # 經濟指標（全部拉 20 年歷史）
+    for key, sid in FRED_ECON.items():
+        print(f'Fetching {key} (FRED {sid})...')
+        try:
+            data[key] = fred_fetch(sid, y20, today)
+            print(f'  → {len(data[key])} records, latest: {data[key][-1] if data[key] else "N/A"}')
+        except Exception as e:
+            print(f'  → ERROR: {e}')
+            data[key] = []
 
     data['updated'] = today
 
