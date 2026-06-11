@@ -517,16 +517,33 @@ function renderSentiment() {
   }
 }
 
+
+// YoY 計算：把指數序列轉成年增率 %
+function calcYoY(arr) {
+  const dateMap = {};
+  arr.forEach(p => { dateMap[p.d] = p.v; });
+  const result = [];
+  for (const p of arr) {
+    const prevYear = (parseInt(p.d.slice(0,4)) - 1).toString();
+    const prevDate = prevYear + p.d.slice(4);
+    if (dateMap[prevDate] && dateMap[prevDate] > 0) {
+      const yoy = (p.v - dateMap[prevDate]) / dateMap[prevDate] * 100;
+      result.push({ d: p.d, v: Math.round(yoy * 100) / 100 });
+    }
+  }
+  return result;
+}
+
 // 經濟指標設定
 const ECON_INDICATORS = {
   us: {
     title: '🇺🇸 美國',
     items: [
-      { key:'us_cpi',        label:'CPI 消費者物價指數',  unit:'',   fmt: v=>v.toFixed(1), color:'#4d9eff', note:'月初公布' },
-      { key:'us_core_cpi',   label:'核心 CPI',            unit:'',   fmt: v=>v.toFixed(1), color:'#4d9eff', note:'月初公布' },
-      { key:'us_pce',        label:'PCE 個人消費支出',    unit:'',   fmt: v=>v.toFixed(1), color:'#3ecf8e', note:'月末公布' },
-      { key:'us_core_pce',   label:'核心 PCE',            unit:'',   fmt: v=>v.toFixed(1), color:'#3ecf8e', note:'月末公布' },
-      { key:'us_ppi',        label:'PPI 生產者物價指數',  unit:'',   fmt: v=>v.toFixed(1), color:'#f7a830', note:'月中公布' },
+      { key:'us_cpi',        label:'CPI 消費者物價指數',  yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#4d9eff', note:'月初公布' },
+      { key:'us_core_cpi',   label:'核心 CPI',            yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#4d9eff', note:'月初公布' },
+      { key:'us_pce',        label:'PCE 個人消費支出',    yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月末公布' },
+      { key:'us_core_pce',   label:'核心 PCE',            yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月末公布' },
+      { key:'us_ppi',        label:'PPI 生產者物價指數',  yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#f7a830', note:'月中公布' },
       { key:'us_payroll',    label:'非農就業人數',         unit:'K',  fmt: v=>(v/1000).toFixed(0)+'M', color:'#2dd4bf', note:'每月第一個週五' },
       { key:'us_unemployment',label:'失業率',             unit:'%',  fmt: v=>v.toFixed(1)+'%', color:'#f06060', note:'每月第一個週五' },
       { key:'us_gdp',        label:'實質 GDP',            unit:'B$', fmt: v=>'$'+(v/1000).toFixed(1)+'T', color:'#a78bfa', note:'季度公布' },
@@ -540,7 +557,7 @@ const ECON_INDICATORS = {
   eu: {
     title: '🇪🇺 歐元區',
     items: [
-      { key:'eu_cpi', label:'CPI 消費者物價指數', unit:'', fmt: v=>v.toFixed(1), color:'#3ecf8e', note:'月中公布' },
+      { key:'eu_cpi', label:'CPI 消費者物價指數', yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月中公布' },
     ],
     links: [
       { label:'製造業 PMI（Markit）', note:'每月月初公布', url:'https://hk.investing.com/economic-calendar/european-manufacturing-purchasing-managers-index-(pmi)-201' },
@@ -557,7 +574,7 @@ const ECON_INDICATORS = {
   tw: {
     title: '🇹🇼 台灣',
     items: [
-      { key:'tw_cpi', label:'CPI 消費者物價指數', unit:'', fmt: v=>v.toFixed(2), color:'#f7a830', note:'月中公布' },
+      { key:'tw_cpi', label:'CPI 消費者物價指數', yoy:false, fmt: v=>v.toFixed(2)+'%', color:'#f7a830', note:'月中公布' },
     ],
     links: []
   }
@@ -602,7 +619,9 @@ function renderEcon() {
 
     // 資料卡片
     for (const item of region.items) {
-      const arr = raw[item.key] || [];
+      const rawArr = raw[item.key] || [];
+      if (!rawArr.length) continue;
+      const arr = item.yoy ? calcYoY(rawArr) : rawArr;
       if (!arr.length) continue;
       const lat = arr[arr.length-1];
       const prv = arr.length > 1 ? arr[arr.length-2] : null;
@@ -643,7 +662,9 @@ function renderEcon() {
   // 渲染迷你圖
   for (const region of Object.values(ECON_INDICATORS)) {
     for (const item of region.items) {
-      const arr = raw[item.key] || [];
+      const rawArr = raw[item.key] || [];
+      if (!rawArr.length) continue;
+      const arr = item.yoy ? calcYoY(rawArr) : rawArr;
       if (arr.length) renderMiniChart(`ec_${item.key}`, arr, item.color);
     }
   }
