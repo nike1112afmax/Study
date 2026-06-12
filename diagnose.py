@@ -1,56 +1,48 @@
 #!/usr/bin/env python3
 """
-診斷腳本 v2：測試修正後的 Series ID
+診斷腳本：測試重要資產價格 yfinance 代碼是否可用
 """
 
-import requests
+import subprocess, sys
+subprocess.check_call([sys.executable, "-m", "pip", "install", "yfinance", "-q"])
+import yfinance as yf
 from datetime import date, timedelta
 
-FRED_KEY  = 'dbba37c1668a05b454005e1bcc21ac7c'
-FRED_BASE = 'https://api.stlouisfed.org/fred/series/observations'
-
-# 修正後的 series（只測試上次失敗 / 空的項目）
-SERIES = {
-    # PMI - 用 S&P Global Markit 系列（FRED 上有完整資料）
-    'US Mfg PMI':        'MANEMP',          # 先試這個
-    'US Mfg PMI (ISM)':  'USNAPMFG',        # 備選
-    'US Mfg PMI (Markit)':'USMFGPM',        # 備選
-    'US Svc PMI':        'USNAPMNO',        # ISM Non-Mfg
-    'US Svc PMI (Markit)':'USSRVPM',        # 備選
-    # 原油庫存 - WCRSTUS1 是對的但可能需要不同參數
-    'Crude Inv (WCRSTUS1)': 'WCRSTUS1',
-    'Crude Inv (WCESTUS1)': 'WCESTUS1',     # 不含SPR
-    # 日本 CPI - 改用不同的 OECD series
-    'JP CPI (JPNCPIALLMINMEI)': 'JPNCPIALLMINMEI',  # 原本的，確認為何空
-    'JP CPI (CPALTT01JPM661S)': 'CPALTT01JPM661S',  # 備選
-    # EU PMI
-    'EU Mfg PMI (DEUMFGPMISMMT)': 'DEUMFGPMISMMT',  # 德國製造業PMI
-    'EU Svc PMI (DEUSRVPMISMMT)': 'DEUSRVPMISMMT',  # 德國服務業PMI
+ASSETS = {
+    '美元指數':   'DX-Y.NYB',
+    '歐元指數':   'EUR=X',
+    '歐元指數2':  '^XEU',
+    '美元兌日圓': 'USDJPY=X',
+    '美元兌台幣': 'TWD=X',
+    '美元兌台幣2':'USDTWD=X',
+    '美元兌人民幣':'CNY=X',
+    '美元兌人民幣2':'USDCNY=X',
+    '紐約黃金':   'GC=F',
+    '金蟲指數':   'HUI',
+    '金蟲指數2':  'GDX',
+    '金蟲指數3':  '^HUI',
+    'CRB指數':    '^CRBQ',
+    'CRB指數2':   'CRBQ',
+    'CRB指數3':   '^CRY',
+    '布蘭特原油': 'BZ=F',
+    '紐約原油':   'CL=F',
 }
 
-start = (date.today() - timedelta(days=365*2)).isoformat()
+start = (date.today() - timedelta(days=5)).isoformat()
 end   = date.today().isoformat()
 
-print(f"{'指標':<35} {'Series ID':<30} {'狀態':<10} {'最新日期':<15} {'最新值'}")
-print("-" * 110)
+print(f"{'資產':<15} {'代碼':<20} {'狀態':<10} {'最新值':<15} {'日期'}")
+print("-" * 75)
 
-for name, sid in SERIES.items():
+for name, symbol in ASSETS.items():
     try:
-        r = requests.get(FRED_BASE, params={
-            'series_id': sid, 'api_key': FRED_KEY,
-            'file_type': 'json',
-            'observation_start': start,
-            'observation_end': end,
-            'sort_order': 'desc', 'limit': 3
-        }, timeout=30)
-        r.raise_for_status()
-        obs = [o for o in r.json().get('observations', []) if o['value'] != '.']
-        if obs:
-            latest = obs[0]
-            print(f"{name:<35} {sid:<30} {'✅ OK':<10} {latest['date']:<15} {latest['value']}")
+        df = yf.Ticker(symbol).history(start=start, end=end, interval='1d', auto_adjust=False)
+        if df.empty:
+            print(f"{name:<15} {symbol:<20} {'⚠️ EMPTY':<10}")
         else:
-            print(f"{name:<35} {sid:<30} {'⚠️ EMPTY':<10} {'—':<15} 無資料")
+            latest = df.iloc[-1]
+            print(f"{name:<15} {symbol:<20} {'✅ OK':<10} {latest['Close']:<15.4f} {df.index[-1].strftime('%Y-%m-%d')}")
     except Exception as e:
-        print(f"{name:<35} {sid:<30} {'❌ ERROR':<10} {str(e)[:40]}")
+        print(f"{name:<15} {symbol:<20} {'❌ ERROR':<10} {str(e)[:30]}")
 
 print("\n完成！")
