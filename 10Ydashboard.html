@@ -512,36 +512,36 @@ function renderSentiment() {
       <div class="gauge-desc ${vCls}">${vDesc}</div>
       <div class="gauge-sub">${vChg >= 0 ? '▲' : '▼'} ${Math.abs(vChg).toFixed(2)} 前日</div>
     </a>
-    <div class="gauge-tile">
+    <a class="gauge-tile clickable-tile" href="https://www.macromicro.me/collections/34/us-stock-relative/406/us-buffet-index-gspc" target="_blank" rel="noopener">
       <div class="gauge-label">美股巴菲特指標</div>
       <div class="gauge-value ${bCls}">${bLat != null ? bLat.toFixed(0) + '%' : '—'}</div>
       <div class="gauge-desc ${bCls}">${bDesc}</div>
       <div class="gauge-sub">Wilshire5000 ÷ GDP</div>
-    </div>
-    <div class="gauge-tile">
+    </a>
+    <a class="gauge-tile clickable-tile" href="https://edition.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener">
       <div class="gauge-label">CNN 恐懼貪婪指數</div>
       <div class="gauge-value color-text2">—</div>
       <div class="gauge-desc" style="color:#555a6a">需直接查閱</div>
-      <a class="ext-link" href="https://edition.cnn.com/markets/fear-and-greed" target="_blank">前往 CNN ↗</a>
-    </div>
-    <div class="gauge-tile">
+      <div class="ext-link" style="justify-content:center">前往 CNN ↗</div>
+    </a>
+    <a class="gauge-tile clickable-tile" href="https://www.aaii.com/sentimentsurvey" target="_blank" rel="noopener">
       <div class="gauge-label">AAII 情緒調查</div>
       <div class="gauge-value color-text2" style="font-size:20px;padding-top:6px">週報</div>
       <div class="gauge-desc" style="color:#555a6a">每週四更新</div>
-      <a class="ext-link" href="https://www.aaii.com/sentimentsurvey" target="_blank">前往 AAII ↗</a>
-    </div>
-    <div class="gauge-tile">
+      <div class="ext-link" style="justify-content:center">前往 AAII ↗</div>
+    </a>
+    <a class="gauge-tile clickable-tile" href="https://www.cboe.com/us/options/market_statistics/daily/" target="_blank" rel="noopener">
       <div class="gauge-label">Put / Call Ratio</div>
       <div class="gauge-value color-text2" style="font-size:20px;padding-top:6px">日報</div>
       <div class="gauge-desc" style="color:#555a6a">每日更新</div>
-      <a class="ext-link" href="https://www.cboe.com/us/options/market_statistics/daily/" target="_blank">前往 CBOE ↗</a>
-    </div>
-    <div class="gauge-tile">
+      <div class="ext-link" style="justify-content:center">前往 CBOE ↗</div>
+    </a>
+    <a class="gauge-tile clickable-tile" href="https://www.twse.com.tw/zh/statistics/statisticsData.html" target="_blank" rel="noopener">
       <div class="gauge-label">台股巴菲特指標</div>
       <div class="gauge-value color-text2" style="font-size:20px;padding-top:6px">季報</div>
       <div class="gauge-desc" style="color:#555a6a">季度更新</div>
-      <a class="ext-link" href="https://www.twse.com.tw/zh/statistics/statisticsData.html" target="_blank">前往 TWSE ↗</a>
-    </div>`;
+      <div class="ext-link" style="justify-content:center">前往 TWSE ↗</div>
+    </a>`;
 
   cEl.innerHTML = `
     <div class="sub-card">
