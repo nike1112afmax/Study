@@ -153,6 +153,7 @@ def main():
         'asset_hui':    '^HUI',
         'asset_brent':  'BZ=F',
         'asset_wti':    'CL=F',
+        'asset_iron':   'TIO=F',
     }
     for key, symbol in ASSET_SYMBOLS.items():
         print(f'Fetching {key} (yfinance {symbol})...')
