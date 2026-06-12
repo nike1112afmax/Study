@@ -210,6 +210,45 @@
   }
   .pdf-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--green); }
   .pdf-btn svg { width: 13px; height: 13px; }
+
+  /* Hover 高光效果 */
+  .clickable-tile {
+    cursor: pointer;
+    transition: all .2s ease;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+  }
+  .clickable-tile:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.25) !important;
+    background: rgba(255,255,255,0.05) !important;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .clickable-tile:hover .gauge-label,
+  .clickable-tile:hover .mt-label { color: var(--text2); }
+
+  /* 資產價格區塊 */
+  .assets-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  @media(max-width:1000px){ .assets-grid{grid-template-columns:repeat(3,1fr)} }
+  @media(max-width:600px){ .assets-grid{grid-template-columns:repeat(2,1fr)} }
+  .asset-tile {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+  }
+  .asset-label { font-size: 10px; color: var(--text3); letter-spacing:.04em; text-transform:uppercase; margin-bottom: 6px; }
+  .asset-value { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 3px; }
+  .asset-change { font-size: 11px; }
+  .asset-change.up { color: var(--red); }
+  .asset-change.dn { color: var(--green); }
+  .asset-change.nt { color: var(--text3); }
+  .asset-date { font-size: 10px; color: var(--text3); margin-top: 4px; }
+  .asset-loading { font-size: 11px; color: var(--text3); padding: 20px 0; text-align:center; }
 </style>
 </head>
 <body>
@@ -259,6 +298,14 @@
     <div class="data-note" id="dataNote"></div>
   </div>
 
+  <div class="divider"></div>
+
+
+  <!-- 重要資產價格 -->
+  <div class="section-label">重要資產價格</div>
+  <div class="assets-grid" id="assetsGrid">
+    <div class="asset-loading">載入中...</div>
+  </div>
   <div class="divider"></div>
 
   <!-- 市場情緒 -->
@@ -422,19 +469,22 @@ function renderYield(range) {
     )
   });
 
+  const YIELD_LINKS = { us: 'https://schrts.co/VXsnZzRZ' };
   metEl.innerHTML = COUNTRIES.map((c, i) => {
     const d = filtered[i]; if (!d.length) return '';
     const lat = d[d.length-1].v, prv = d[d.length-2]?.v ?? lat;
     const chg = lat - prv;
     const cc = chg > 0.005 ? 'up' : chg < -0.005 ? 'dn' : 'nt';
     const ar = chg > 0.005 ? '▲' : chg < -0.005 ? '▼' : '—';
-    return `
-      <div class="metric-tile">
+    const link = YIELD_LINKS[c.key];
+    const open = link ? `<a class="metric-tile clickable-tile" href="${link}" target="_blank" rel="noopener">` : '<div class="metric-tile">';
+    const close = link ? '</a>' : '</div>';
+    return open + `
         <div class="mt-label">${c.label} 10Y</div>
         <div class="mt-value" style="color:${c.color}">${lat.toFixed(2)}%</div>
         <div class="mt-change ${cc}">${ar} ${Math.abs(chg).toFixed(3)}%</div>
         ${trendBadge(d)}
-      </div>`;
+      ` + close;
   }).join('');
 }
 
@@ -456,12 +506,12 @@ function renderSentiment() {
   const bDesc = bLat > 200 ? '極度高估' : bLat > 150 ? '明顯高估' : bLat > 100 ? '略微高估' : bLat > 75 ? '合理估值' : '低估';
 
   gEl.innerHTML = `
-    <div class="gauge-tile">
+    <a class="gauge-tile clickable-tile" href="https://schrts.co/mxsmpgJy" target="_blank" rel="noopener">
       <div class="gauge-label">VIX 恐慌指數</div>
       <div class="gauge-value ${vCls}">${vLat != null ? vLat.toFixed(1) : '—'}</div>
       <div class="gauge-desc ${vCls}">${vDesc}</div>
       <div class="gauge-sub">${vChg >= 0 ? '▲' : '▼'} ${Math.abs(vChg).toFixed(2)} 前日</div>
-    </div>
+    </a>
     <div class="gauge-tile">
       <div class="gauge-label">美股巴菲特指標</div>
       <div class="gauge-value ${bCls}">${bLat != null ? bLat.toFixed(0) + '%' : '—'}</div>
@@ -597,6 +647,53 @@ const ECON_INDICATORS = {
   }
 };
 
+
+// 重要資產設定
+const ASSETS_CONFIG = [
+  { key:'dxy',    label:'美元指數',     symbol:'DX-Y.NYB', fmt: v=>v.toFixed(2),  color:'#4d9eff', url:'https://schrts.co/HwDBgEUE' },
+  { key:'eurusd', label:'歐元/美元',    symbol:'EUR=X',    fmt: v=>v.toFixed(4),  color:'#3ecf8e', url:'https://schrts.co/ijNNqHsf' },
+  { key:'usdjpy', label:'美元/日圓',    symbol:'USDJPY=X', fmt: v=>v.toFixed(2),  color:'#a78bfa', url:'https://finance.sina.com.cn/money/forex/hq/USDJPY.shtml' },
+  { key:'usdtwd', label:'美元/台幣',    symbol:'TWD=X',    fmt: v=>v.toFixed(3),  color:'#f7a830', url:'https://finance.sina.com.cn/money/forex/hq/USDTWD.shtml' },
+  { key:'usdcny', label:'美元/人民幣',  symbol:'CNY=X',    fmt: v=>v.toFixed(4),  color:'#2dd4bf', url:'https://finance.sina.com.cn/money/forex/hq/USDCNY.shtml' },
+  { key:'gold',   label:'紐約黃金',     symbol:'GC=F',     fmt: v=>v.toFixed(1),  color:'#f7a830', url:'https://finance.sina.com.cn/futures/quotes/GC.shtml' },
+  { key:'hui',    label:'金蟲指數',     symbol:'^HUI',     fmt: v=>v.toFixed(2),  color:'#3ecf8e', url:'https://schrts.co/VMaAAFHi' },
+  { key:'crb',    label:'CRB 大宗商品', symbol:null,       fmt: null,             color:'#8b90a0', url:'https://schrts.co/vTFMezqK' },
+  { key:'brent',  label:'布蘭特原油',   symbol:'BZ=F',     fmt: v=>v.toFixed(2),  color:'#f06060', url:'https://finance.sina.com.cn/futures/quotes/OIL.shtml' },
+  { key:'wti',    label:'紐約原油',     symbol:'CL=F',     fmt: v=>v.toFixed(2),  color:'#f06060', url:'https://finance.sina.com.cn/futures/quotes/CL.shtml' },
+];
+
+function renderAssets() {
+  const grid = document.getElementById('assetsGrid');
+  if (!raw) return;
+
+  grid.innerHTML = ASSETS_CONFIG.map(a => {
+    const arr = raw['asset_' + a.key] || [];
+    const lat = arr.length ? arr[arr.length-1] : null;
+    const prv = arr.length > 1 ? arr[arr.length-2] : null;
+
+    // CRB 或無資料 → 連結卡片
+    if (!lat || !a.symbol) {
+      return `<a class="asset-tile clickable-tile" href="${a.url}" target="_blank" rel="noopener">
+        <div class="asset-label">${a.label}</div>
+        <div class="asset-value color-text2" style="font-size:14px;padding-top:4px">查看數據 ↗</div>
+        <div class="asset-date">點擊前往</div>
+      </a>`;
+    }
+
+    const chg = prv ? lat.v - prv.v : 0;
+    const chgPct = prv && prv.v ? (chg / prv.v * 100) : 0;
+    const cc = chg > 0 ? 'up' : chg < 0 ? 'dn' : 'nt';
+    const ar = chg > 0 ? '▲' : chg < 0 ? '▼' : '—';
+
+    return `<a class="asset-tile clickable-tile" href="${a.url}" target="_blank" rel="noopener">
+      <div class="asset-label">${a.label}</div>
+      <div class="asset-value" style="color:${a.color}">${a.fmt(lat.v)}</div>
+      <div class="asset-change ${cc}">${ar} ${Math.abs(chgPct).toFixed(2)}%</div>
+      <div class="asset-date">${lat.d}</div>
+    </a>`;
+  }).join('');
+}
+
 function renderMiniChart(canvasId, arr, color) {
   // 只顯示近 2 年
   const cutoff = new Date();
@@ -714,12 +811,14 @@ async function init() {
   document.getElementById('yieldWrap').innerHTML = '<div class="loading-box"><div class="spinner"></div>載入 data.json...</div>';
   document.getElementById('sentimentGauges').innerHTML = '<div class="loading-box"><div class="spinner"></div></div>';
   document.getElementById('subCharts').innerHTML = '';
+  document.getElementById('assetsGrid').innerHTML = '<div class="asset-loading">載入中...</div>';
   document.getElementById('econSection').innerHTML = '<div class="loading-box"><div class="spinner"></div>載入經濟數據...</div>';
 
   try {
     raw = await loadData();
     renderYield(curRange);
     renderSentiment();
+    renderAssets();
     renderEcon();
     const upd = raw.updated || '';
     document.getElementById('lastUpdate').textContent = upd ? `資料日期：${upd}` : '';
