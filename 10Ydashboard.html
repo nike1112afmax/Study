@@ -511,13 +511,14 @@ function renderSentiment() {
       <div class="gauge-value ${vCls}">${vLat != null ? vLat.toFixed(1) : '—'}</div>
       <div class="gauge-desc ${vCls}">${vDesc}</div>
       <div class="gauge-sub">${vChg >= 0 ? '▲' : '▼'} ${Math.abs(vChg).toFixed(2)} 前日</div>
+      <div class="ext-link" style="justify-content:center;margin-top:6px">數據參考 ↗</div>
     </a>
     <a class="gauge-tile clickable-tile" href="https://www.macromicro.me/collections/34/us-stock-relative/406/us-buffet-index-gspc" target="_blank" rel="noopener">
       <div class="gauge-label">美股巴菲特指標</div>
       <div class="gauge-value ${bCls}">${bLat != null ? bLat.toFixed(0) + '%' : '—'}</div>
       <div class="gauge-desc ${bCls}">${bDesc}</div>
-      <div class="gauge-sub">Wilshire5000 ÷ GDP</div>
-      <div style="font-size:10px;color:var(--text3);margin-top:6px;line-height:1.4">數值僅供參考<br>各平台計算方式略有差異</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px">數值僅供參考，各平台計算方式略有差異</div>
+      <div class="ext-link" style="justify-content:center;margin-top:6px">數據參考 ↗</div>
     </a>
     <a class="gauge-tile clickable-tile" href="https://edition.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener">
       <div class="gauge-label">CNN 恐懼貪婪指數</div>
