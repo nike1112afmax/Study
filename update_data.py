@@ -145,7 +145,7 @@ def main():
     # 重要資產價格（yfinance，近20年）
     ASSET_SYMBOLS = {
         'asset_dxy':    'DX-Y.NYB',
-        'asset_eurusd': 'EUR=X',
+        'asset_eurusd': 'EURUSD=X',
         'asset_usdjpy': 'USDJPY=X',
         'asset_usdtwd': 'TWD=X',
         'asset_usdcny': 'CNY=X',
