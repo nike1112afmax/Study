@@ -141,6 +141,30 @@ def main():
             print(f'  → ERROR: {e}')
             data[key] = []
 
+
+    # 重要資產價格（yfinance，近20年）
+    ASSET_SYMBOLS = {
+        'asset_dxy':    'DX-Y.NYB',
+        'asset_eurusd': 'EUR=X',
+        'asset_usdjpy': 'USDJPY=X',
+        'asset_usdtwd': 'TWD=X',
+        'asset_usdcny': 'CNY=X',
+        'asset_gold':   'GC=F',
+        'asset_hui':    '^HUI',
+        'asset_brent':  'BZ=F',
+        'asset_wti':    'CL=F',
+    }
+    for key, symbol in ASSET_SYMBOLS.items():
+        print(f'Fetching {key} (yfinance {symbol})...')
+        try:
+            data[key] = yf_fetch(symbol, y20, today)
+            # 移除 nan 值
+            data[key] = [p for p in data[key] if p['v'] == p['v'] and p['v'] > 0]
+            print(f'  → {len(data[key])} records, latest: {data[key][-1] if data[key] else "N/A"}')
+        except Exception as e:
+            print(f'  → ERROR: {e}')
+            data[key] = []
+
     data['updated'] = today
 
     out = Path(__file__).parent / 'data.json'
