@@ -38,6 +38,8 @@ FRED_ECON = {
     'us_payroll':    'PAYEMS',
     'us_unemployment':'UNRATE',
     'us_gdp':        'GDPC1',
+    'us_michigan':   'UMCSENT',
+    'us_confboard':  'CONCCONF',
     'eu_cpi':        'CP0000EZ19M086NEST',
     'tw_cpi':        'TWNPCPIPCPPPT',
 }
@@ -109,7 +111,7 @@ def main():
         print(f'  → ERROR: {e}')
         data['wilshire'] = []
 
-    # GDP
+    # GDP（實質 GDP）
     print('Fetching gdp (FRED GDPC1)...')
     try:
         data['gdp'] = fred_fetch('GDPC1', y20, today)
@@ -118,7 +120,7 @@ def main():
         print(f'  → ERROR: {e}')
         data['gdp'] = []
 
-    # 巴菲特指標
+    # 巴菲特指標 = Wilshire5000市值(十億USD) / GDP(十億USD) * 100
     W5000_TO_BILLION = 0.701
     gdp_map   = {p['d']: p['v'] for p in data.get('gdp', [])}
     gdp_dates = sorted(gdp_map.keys())
