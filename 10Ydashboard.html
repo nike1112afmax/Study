@@ -610,7 +610,7 @@ function calcYoY(arr) {
     const prevDate = prevYear + p.d.slice(4);
     if (dateMap[prevDate] && dateMap[prevDate] > 0) {
       const yoy = (p.v - dateMap[prevDate]) / dateMap[prevDate] * 100;
-      result.push({ d: p.d, v: Math.round(yoy * 100) / 100 });
+      result.push({ d: p.d, v: Math.round(yoy * 100) / 100, p: p.p });
     }
   }
   return result;
@@ -764,9 +764,11 @@ function renderEcon() {
       if (!arr.length) continue;
       const lat = arr[arr.length-1];
       const prv = arr.length > 1 ? arr[arr.length-2] : null;
-      // mom:true → 顯示月增量（差值），原始資料用千人，轉成K
+      // mom:true → 顯示月增量（差值）
       const displayVal = item.mom ? (prv ? (lat.v - prv.v) : 0) : lat.v;
       const prevVal    = item.mom ? (arr.length > 2 ? arr[arr.length-3].v - arr[arr.length-2].v : 0) : (prv ? prv.v : null);
+      // 公布日：優先用最新一筆的 p，mom 用原始 rawArr 的 p
+      const pubDate = item.mom ? (rawArr[rawArr.length-1].p || rawArr[rawArr.length-1].d) : (lat.p || lat.d);
       const chg = prevVal != null ? displayVal - prevVal : 0;
       const chgSign = chg > 0 ? '▲' : chg < 0 ? '▼' : '—';
       const chgCls = chg > 0 ? 'color-red' : chg < 0 ? 'color-green' : 'color-text2';
@@ -775,7 +777,7 @@ function renderEcon() {
       html += `<div class="econ-card">
         <div class="econ-card-header">
           <div class="econ-card-title">${item.label}</div>
-          <div class="econ-card-update">${item.note}<br><span style="color:var(--text3)">${lat.p || lat.d}</span></div>
+          <div class="econ-card-update">${item.note}<br><span style="color:var(--text3)">${pubDate}</span></div>
         </div>
         <div class="econ-value" style="color:${item.color}">${item.fmt(displayVal)}</div>
         <div class="econ-prev">
@@ -808,7 +810,7 @@ function renderEcon() {
       if (!rawArr.length) continue;
       let arr;
       if (item.yoy) arr = calcYoY(rawArr);
-      else if (item.mom) arr = rawArr.slice(1).map((p,i) => ({d:p.d, v: p.v - rawArr[i].v}));
+      else if (item.mom) arr = rawArr.slice(1).map((p,i) => ({d:p.d, v: p.v - rawArr[i].v, p: p.p}));
       else arr = rawArr;
       if (arr.length) renderMiniChart(`ec_${item.key}`, arr, item.color);
     }
