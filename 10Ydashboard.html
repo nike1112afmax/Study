@@ -775,7 +775,7 @@ function renderEcon() {
       html += `<div class="econ-card">
         <div class="econ-card-header">
           <div class="econ-card-title">${item.label}</div>
-          <div class="econ-card-update">${item.note}<br><span style="color:var(--text3)">${lat.d}</span></div>
+          <div class="econ-card-update">${item.note}<br><span style="color:var(--text3)">${lat.p || lat.d}</span></div>
         </div>
         <div class="econ-value" style="color:${item.color}">${item.fmt(displayVal)}</div>
         <div class="econ-prev">
