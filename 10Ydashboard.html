@@ -601,6 +601,12 @@ function renderSentiment() {
 
 
 // YoY 計算：把指數序列轉成年增率 %
+
+function fmtDataPeriod(d) {
+  if (!d) return '';
+  const parts = d.split('-');
+  return `${parts[0]}年${parseInt(parts[1])}月份數據`;
+}
 function calcYoY(arr) {
   const dateMap = {};
   arr.forEach(p => { dateMap[p.d] = p.v; });
@@ -767,8 +773,6 @@ function renderEcon() {
       // mom:true → 顯示月增量（差值）
       const displayVal = item.mom ? (prv ? (lat.v - prv.v) : 0) : lat.v;
       const prevVal    = item.mom ? (arr.length > 2 ? arr[arr.length-3].v - arr[arr.length-2].v : 0) : (prv ? prv.v : null);
-      // 公布日：優先用最新一筆的 p，mom 用原始 rawArr 的 p
-      const pubDate = item.mom ? (rawArr[rawArr.length-1].p || rawArr[rawArr.length-1].d) : (lat.p || lat.d);
       const chg = prevVal != null ? displayVal - prevVal : 0;
       const chgSign = chg > 0 ? '▲' : chg < 0 ? '▼' : '—';
       const chgCls = chg > 0 ? 'color-red' : chg < 0 ? 'color-green' : 'color-text2';
@@ -777,7 +781,7 @@ function renderEcon() {
       html += `<div class="econ-card">
         <div class="econ-card-header">
           <div class="econ-card-title">${item.label}</div>
-          <div class="econ-card-update">${item.note}<br><span style="color:var(--text3)">${pubDate}</span></div>
+          <div class="econ-card-update">${item.note}<br><span style="color:var(--text3)">${fmtDataPeriod(lat.d)}</span></div>
         </div>
         <div class="econ-value" style="color:${item.color}">${item.fmt(displayVal)}</div>
         <div class="econ-prev">
