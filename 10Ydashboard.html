@@ -717,40 +717,7 @@ function renderAssets() {
 }
 
 
-// 下次公布時間（基於 investing.com 實際行事曆）
-function getNextRelease(key) {
-  const now = new Date();
-  now.setHours(0,0,0,0);
 
-  // 實際公布日期表（依 investing.com 2026 行事曆）
-  const SCHEDULE = {
-    'us_cpi':          ['2026-07-15','2026-08-12','2026-09-11','2026-10-14','2026-11-12','2026-12-11'],
-    'us_core_cpi':     ['2026-07-15','2026-08-12','2026-09-11','2026-10-14','2026-11-12','2026-12-11'],
-    'us_ppi':          ['2026-07-14','2026-08-11','2026-09-10','2026-10-13','2026-11-11','2026-12-10'],
-    'us_pce':          ['2026-06-25','2026-07-31','2026-08-28','2026-09-25','2026-10-30','2026-11-25'],
-    'us_core_pce':     ['2026-06-25','2026-07-31','2026-08-28','2026-09-25','2026-10-30','2026-11-25'],
-    'us_payroll':      ['2026-07-02','2026-08-06','2026-09-04','2026-10-02','2026-11-06','2026-12-04'],
-    'us_unemployment': ['2026-07-02','2026-08-06','2026-09-04','2026-10-02','2026-11-06','2026-12-04'],
-    'us_michigan':     ['2026-06-19','2026-07-17','2026-08-14','2026-09-18','2026-10-16','2026-11-20'],
-    'us_gdp':          ['2026-06-25','2026-07-30','2026-10-29','2027-01-29'],
-    'eu_cpi':          ['2026-07-17','2026-08-19','2026-09-17','2026-10-17','2026-11-19','2026-12-17'],
-  };
-
-  function fmt(d) {
-    return `${d.getMonth()+1}/${d.getDate()}`;
-  }
-
-  const dates = SCHEDULE[key];
-  if (!dates) return '';
-
-  // 找第一個還沒過的日期
-  for (const s of dates) {
-    const d = new Date(s);
-    d.setHours(0,0,0,0);
-    if (d > now) return fmt(d);
-  }
-  return '待公布';
-}
 
 function renderMiniChart(canvasId, arr, color) {
   // 只顯示近 2 年
@@ -808,7 +775,7 @@ function renderEcon() {
       html += `<div class="econ-card">
         <div class="econ-card-header">
           <div class="econ-card-title">${item.label}</div>
-          <div class="econ-card-update">${item.note}<br><span style="color:var(--text3)">${lat.d}</span>${getNextRelease(item.key) ? `<br><span style="color:var(--blue);font-size:10px">下次 ${getNextRelease(item.key)}</span>` : ''}</div>
+          <div class="econ-card-update">${item.note}<br><span style="color:var(--text3)">${lat.d}</span></div>
         </div>
         <div class="econ-value" style="color:${item.color}">${item.fmt(displayVal)}</div>
         <div class="econ-prev">
