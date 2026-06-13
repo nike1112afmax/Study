@@ -39,7 +39,6 @@ FRED_ECON = {
     'us_unemployment':'UNRATE',
     'us_gdp':        'GDPC1',
     'us_michigan':   'UMCSENT',
-    'us_confboard':  'CSCICP03USM665S',
     'eu_cpi':        'CP0000EZ19M086NEST',
     'tw_cpi':        'TWNPCPIPCPPPT',
 }
