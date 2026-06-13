@@ -60,8 +60,14 @@ def fred_fetch(series_id, start, end):
         'file_type': 'json', 'observation_start': start, 'observation_end': end,
     }, timeout=30)
     r.raise_for_status()
-    return [{'d': o['date'], 'v': float(o['value'])}
-            for o in r.json().get('observations', []) if o['value'] != '.']
+    result = []
+    for o in r.json().get('observations', []):
+        if o['value'] == '.': continue
+        row = {'d': o['date'], 'v': float(o['value'])}
+        if o.get('realtime_start'):
+            row['p'] = o['realtime_start']  # p = publish date（實際公布日）
+        result.append(row)
+    return result
 
 def main():
     today = date.today().isoformat()
