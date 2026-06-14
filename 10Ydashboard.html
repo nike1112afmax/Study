@@ -250,6 +250,15 @@
   .asset-date { font-size: 10px; color: var(--text3); margin-top: 4px; }
   .asset-loading { font-size: 11px; color: var(--text3); padding: 20px 0; text-align:center; }
 </style>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1DC1SBCEPH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1DC1SBCEPH');
+  </script>
 </head>
 <body>
 
@@ -685,6 +694,7 @@ const ASSETS_CONFIG = [
   { key:'hui',    label:'金蟲指數',     symbol:'^HUI',     fmt: v=>v.toFixed(2),  color:'#3ecf8e', url:'https://schrts.co/VMaAAFHi' },
   { key:'crb',    label:'CRB 大宗商品', symbol:null,       fmt: null,             color:'#8b90a0', url:'https://schrts.co/vTFMezqK' },
   { key:'brent',  label:'布蘭特原油',   symbol:'BZ=F',     fmt: v=>v.toFixed(2),  color:'#f06060', url:'https://finance.sina.com.cn/futures/quotes/OIL.shtml' },
+  { key:'brent_dark', label:'布蘭特原油-暗盤', symbol:null, fmt: null, color:'#f06060', url:'https://finance.sina.com.cn/money/forex/hq/BTCOILNP.shtml' },
   { key:'wti',    label:'紐約原油',     symbol:'CL=F',     fmt: v=>v.toFixed(2),  color:'#f06060', url:'https://finance.sina.com.cn/futures/quotes/CL.shtml' },
   { key:'iron',   label:'鐵礦石期貨',   symbol:'TIO=F',    fmt: v=>v.toFixed(2),  color:'#f7a830', url:'https://www.macromicro.me/charts/33462/iron-ore-futures' },
   { key:'hrc',    label:'熱軋鋼卷 HRC', symbol:null,       fmt: null,             color:'#8b90a0', url:'https://en.macromicro.me/charts/1310/china-hot-rolled-coils-futures' },
