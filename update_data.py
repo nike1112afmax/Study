@@ -43,6 +43,18 @@ FRED_ECON = {
     'tw_cpi':        'TWNPCPIPCPPPT',
 }
 
+
+def yf_fetch_realtime(symbol):
+    """用 fast_info 抓即時報價，回傳單筆最新數據"""
+    try:
+        info = yf.Ticker(symbol).fast_info
+        price = getattr(info, 'last_price', None)
+        if price and float(price) > 0:
+            return float(price)
+    except:
+        pass
+    return None
+
 def yf_fetch(symbol, start, end):
     df = yf.Ticker(symbol).history(start=start, end=end, interval='1d', auto_adjust=False)
     if df.empty:
@@ -76,10 +88,18 @@ def main():
 
     data = {}
 
-    # 美國 10Y
+    # 美國 10Y（yfinance ^TNX + fast_info 即時）
     print('Fetching us (yfinance ^TNX)...')
     try:
-        data['us'] = yf_fetch('^TNX', y20, today)
+        arr = yf_fetch('^TNX', y20, today)
+        realtime = yf_fetch_realtime('^TNX')
+        if realtime:
+            rt_date = date.today().isoformat()
+            if not arr or arr[-1]['d'] < rt_date:
+                arr.append({'d': rt_date, 'v': round(realtime, 4)})
+            else:
+                arr[-1]['v'] = round(realtime, 4)
+        data['us'] = arr
         print(f'  → {len(data["us"])} records, latest: {data["us"][-1] if data["us"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}, fallback to FRED DGS10')
@@ -98,11 +118,19 @@ def main():
             print(f'  → ERROR: {e}')
             data[key] = []
 
-    # VIX（yfinance ^VIX，比 FRED 更即時）
+    # VIX（yfinance ^VIX + fast_info 即時）
     print('Fetching vix (yfinance ^VIX)...')
     try:
-        data['vix'] = yf_fetch('^VIX', y20, today)
-        data['vix'] = [p for p in data['vix'] if p['v'] == p['v'] and p['v'] > 0]
+        arr = yf_fetch('^VIX', y20, today)
+        arr = [p for p in arr if p['v'] == p['v'] and p['v'] > 0]
+        realtime = yf_fetch_realtime('^VIX')
+        if realtime:
+            rt_date = date.today().isoformat()
+            if not arr or arr[-1]['d'] < rt_date:
+                arr.append({'d': rt_date, 'v': round(realtime, 4)})
+            else:
+                arr[-1]['v'] = round(realtime, 4)
+        data['vix'] = arr
         print(f'  → {len(data["vix"])} records, latest: {data["vix"][-1] if data["vix"] else "N/A"}')
     except Exception as e:
         print(f'  → ERROR: {e}, fallback to FRED VIXCLS')
@@ -170,9 +198,20 @@ def main():
     for key, symbol in ASSET_SYMBOLS.items():
         print(f'Fetching {key} (yfinance {symbol})...')
         try:
-            data[key] = yf_fetch(symbol, y20, today)
-            # 移除 nan 值
-            data[key] = [p for p in data[key] if p['v'] == p['v'] and p['v'] > 0]
+            # 先抓歷史資料
+            arr = yf_fetch(symbol, y20, today)
+            arr = [p for p in arr if p['v'] == p['v'] and p['v'] > 0]
+            # 再用 fast_info 補上最新即時價
+            realtime = yf_fetch_realtime(symbol)
+            if realtime:
+                rt_date = date.today().isoformat()
+                # 如果最後一筆不是今天，加入今天的即時價
+                if not arr or arr[-1]['d'] < rt_date:
+                    arr.append({'d': rt_date, 'v': round(realtime, 4)})
+                else:
+                    # 更新今天的數值為即時價
+                    arr[-1]['v'] = round(realtime, 4)
+            data[key] = arr
             print(f'  → {len(data[key])} records, latest: {data[key][-1] if data[key] else "N/A"}')
         except Exception as e:
             print(f'  → ERROR: {e}')
