@@ -98,14 +98,19 @@ def main():
             print(f'  → ERROR: {e}')
             data[key] = []
 
-    # VIX
-    print('Fetching vix (FRED VIXCLS)...')
+    # VIX（yfinance ^VIX，比 FRED 更即時）
+    print('Fetching vix (yfinance ^VIX)...')
     try:
-        data['vix'] = fred_fetch('VIXCLS', y20, today)
+        data['vix'] = yf_fetch('^VIX', y20, today)
+        data['vix'] = [p for p in data['vix'] if p['v'] == p['v'] and p['v'] > 0]
         print(f'  → {len(data["vix"])} records, latest: {data["vix"][-1] if data["vix"] else "N/A"}')
     except Exception as e:
-        print(f'  → ERROR: {e}')
-        data['vix'] = []
+        print(f'  → ERROR: {e}, fallback to FRED VIXCLS')
+        try:
+            data['vix'] = fred_fetch('VIXCLS', y20, today)
+            print(f'  → FRED fallback: {len(data["vix"])} records')
+        except:
+            data['vix'] = []
 
     # Wilshire 5000
     print('Fetching wilshire (yfinance ^W5000)...')
