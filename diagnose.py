@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 """
-測試 yfinance 各指標能否抓到最新盤中/即時數據
-使用 fast_info 取得即時報價（非收盤價）
+測試 yfinance fast_info 即時報價
 """
-
 import subprocess, sys
 subprocess.check_call([sys.executable, "-m", "pip", "install", "yfinance", "-q"])
 import yfinance as yf
-from datetime import date, timedelta
 
 SYMBOLS = {
     '美國10Y':    '^TNX',
@@ -25,7 +22,7 @@ SYMBOLS = {
     'Wilshire':   '^W5000',
 }
 
-print("=== 方法一：fast_info（即時報價）===")
+print("=== fast_info 即時報價測試 ===")
 print(f"{'指標':<15} {'代碼':<15} {'狀態':<10} {'即時價格':<15} {'前收盤'}")
 print("-" * 70)
 
@@ -34,30 +31,12 @@ for name, symbol in SYMBOLS.items():
         info = yf.Ticker(symbol).fast_info
         price = getattr(info, 'last_price', None)
         prev  = getattr(info, 'previous_close', None)
-        if price and price > 0:
-            print(f"{name:<15} {symbol:<15} {'✅ OK':<10} {price:<15.4f} {prev:.4f if prev else '—'}")
+        if price and float(price) > 0:
+            prev_str = f"{float(prev):.4f}" if prev is not None else '—'
+            print(f"{name:<15} {symbol:<15} {'✅ OK':<10} {float(price):<15.4f} {prev_str}")
         else:
-            print(f"{name:<15} {symbol:<15} {'⚠️ EMPTY':<10}")
+            print(f"{name:<15} {symbol:<15} {'⚠️ EMPTY':<10} price={price}")
     except Exception as e:
-        print(f"{name:<15} {symbol:<15} {'❌ ERROR':<10} {str(e)[:30]}")
-
-print("\n=== 方法二：history 最新一筆（收盤價）===")
-print(f"{'指標':<15} {'代碼':<15} {'狀態':<10} {'收盤價':<15} {'日期'}")
-print("-" * 70)
-
-start = (date.today() - timedelta(days=5)).isoformat()
-end   = date.today().isoformat()
-
-for name, symbol in SYMBOLS.items():
-    try:
-        df = yf.Ticker(symbol).history(start=start, end=end, interval='1d', auto_adjust=False)
-        df = df[df['Close'].notna() & (df['Close'] > 0)]
-        if df.empty:
-            print(f"{name:<15} {symbol:<15} {'⚠️ EMPTY':<10}")
-        else:
-            latest = df.iloc[-1]
-            print(f"{name:<15} {symbol:<15} {'✅ OK':<10} {latest['Close']:<15.4f} {df.index[-1].strftime('%Y-%m-%d')}")
-    except Exception as e:
-        print(f"{name:<15} {symbol:<15} {'❌ ERROR':<10} {str(e)[:30]}")
+        print(f"{name:<15} {symbol:<15} {'❌ ERROR':<10} {str(e)[:35]}")
 
 print("\n完成！")
