@@ -792,15 +792,13 @@ function renderEcon() {
 
       html += `<div class="econ-card">
         <div class="econ-card-header">
-          <div style="flex:1">
-            <div class="econ-card-title">${item.label}</div>
-            ${item.fred_delay ? `<div style="font-size:10px;color:var(--text3);margin-top:3px">⚠️ FRED數據延後1~2個月更新　<a href="${item.ref_url}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none" onclick="event.stopPropagation()">查看最新數據 ↗</a></div>` : ''}
-          </div>
+          <div class="econ-card-title">${item.label}</div>
           <div class="econ-card-update">
             ${item.note}<br>
             <span style="color:var(--text3)">${fmtDataPeriod(lat.d)}</span>
           </div>
         </div>
+        ${item.fred_delay ? `<div style="font-size:10px;color:var(--text3);margin-bottom:6px">FRED延遲更新　<a href="${item.ref_url}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none" onclick="event.stopPropagation()">查看最新數據 ↗</a></div>` : ''}
         <div class="econ-value" style="color:${item.color}">${item.fmt(displayVal)}</div>
         <div class="econ-prev">
           ${prevVal != null ? `前值 ${item.fmt(prevVal)} <span class="${chgCls}">${chgSign} ${Math.abs(chg).toFixed(2)}</span>` : ''}
