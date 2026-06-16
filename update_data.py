@@ -195,22 +195,24 @@ def main():
         'asset_wti':    'CL=F',
         'asset_iron':   'TIO=F',
     }
+    # 不使用 fast_info 的指標（單位不一致或資料不可靠）
+    NO_REALTIME = {'asset_iron', 'asset_hui'}
+
     for key, symbol in ASSET_SYMBOLS.items():
         print(f'Fetching {key} (yfinance {symbol})...')
         try:
             # 先抓歷史資料
             arr = yf_fetch(symbol, y20, today)
             arr = [p for p in arr if p['v'] == p['v'] and p['v'] > 0]
-            # 再用 fast_info 補上最新即時價
-            realtime = yf_fetch_realtime(symbol)
-            if realtime:
-                rt_date = date.today().isoformat()
-                # 如果最後一筆不是今天，加入今天的即時價
-                if not arr or arr[-1]['d'] < rt_date:
-                    arr.append({'d': rt_date, 'v': round(realtime, 4)})
-                else:
-                    # 更新今天的數值為即時價
-                    arr[-1]['v'] = round(realtime, 4)
+            # 只有非排除清單的指標才用 fast_info 補即時價
+            if key not in NO_REALTIME:
+                realtime = yf_fetch_realtime(symbol)
+                if realtime:
+                    rt_date = date.today().isoformat()
+                    if not arr or arr[-1]['d'] < rt_date:
+                        arr.append({'d': rt_date, 'v': round(realtime, 4)})
+                    else:
+                        arr[-1]['v'] = round(realtime, 4)
             data[key] = arr
             print(f'  → {len(data[key])} records, latest: {data[key][-1] if data[key] else "N/A"}')
         except Exception as e:
