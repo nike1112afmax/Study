@@ -13,8 +13,8 @@
     --border: rgba(255,255,255,0.07);
     --border2: rgba(255,255,255,0.13);
     --text: #e8eaf0;
-    --text2: #8b90a0;
-    --text3: #555a6a;
+    --text2: #b0b5c5;
+    --text3: #7a7f90;
     --blue: #4d9eff;
     --green: #3ecf8e;
     --orange: #f7a830;
@@ -30,7 +30,7 @@
     background-color: var(--bg);
     background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234d9eff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     color: var(--text);
-    min-height: 100vh; font-size: 14px; line-height: 1.5;
+    min-height: 100vh; font-size: 15px; line-height: 1.6;
   }
   .topbar {
     display: flex; align-items: center; justify-content: space-between;
@@ -45,14 +45,14 @@
   }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
   .topbar-title { font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
-  .topbar-sub { font-size: 12px; color: var(--text3); }
+  .topbar-sub { font-size: 13px; color: var(--text2); }
   .topbar-right { display: flex; align-items: center; gap: 12px; }
   #lastUpdate { font-size: 11px; color: var(--text3); }
   @keyframes spin { to { transform: rotate(360deg); } }
   .container { max-width: 1200px; margin: 0 auto; padding: 28px 32px; }
   .section-label {
-    font-size: 11px; font-weight: 600; letter-spacing: .1em;
-    text-transform: uppercase; color: var(--text3);
+    font-size: 12px; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--text2);
     margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
   }
   .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
@@ -61,7 +61,7 @@
     border-radius: var(--radius); padding: 20px 24px; margin-bottom: 12px;
   }
   .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .card-title { font-size: 13px; font-weight: 500; color: var(--text2); }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--text2); }
   .range-tabs {
     display: flex; gap: 2px; background: var(--bg3);
     border-radius: var(--radius-sm); padding: 3px;
@@ -73,7 +73,7 @@
   .range-tab.active { background: var(--bg2); color: var(--text); border: 1px solid var(--border2); }
   .range-tab:hover:not(.active) { color: var(--text2); }
   .legend-row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
-  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text2); }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text2); }
   .legend-line { width: 20px; height: 2px; border-radius: 1px; }
   .chart-wrap { position: relative; width: 100%; height: 260px; }
   .chart-wrap-sm { position: relative; width: 100%; height: 200px; }
@@ -87,9 +87,9 @@
     border-radius: var(--radius-sm); padding: 12px 14px; transition: border-color .15s;
   }
   .metric-tile:hover { border-color: var(--border2); }
-  .mt-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+  .mt-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
   .mt-value { font-size: 22px; font-weight: 600; letter-spacing: -.02em; margin-bottom: 3px; }
-  .mt-change { font-size: 11px; }
+  .mt-change { font-size: 12px; }
   .mt-change.up { color: var(--red); }
   .mt-change.dn { color: var(--green); }
   .mt-change.nt { color: var(--text3); }
@@ -111,10 +111,10 @@
     border-radius: var(--radius); padding: 16px 20px; text-align: center; transition: border-color .15s;
   }
   .gauge-tile:hover { border-color: var(--border2); }
-  .gauge-label { font-size: 11px; color: var(--text3); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px; }
+  .gauge-label { font-size: 12px; color: var(--text2); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px; }
   .gauge-value { font-size: 32px; font-weight: 700; letter-spacing: -.03em; margin-bottom: 4px; }
   .gauge-desc { font-size: 11px; font-weight: 500; letter-spacing: .03em; text-transform: uppercase; margin-bottom: 6px; }
-  .gauge-sub { font-size: 11px; color: var(--text3); }
+  .gauge-sub { font-size: 12px; color: var(--text2); }
   .color-red { color: var(--red); }
   .color-orange { color: var(--orange); }
   .color-green { color: var(--green); }
@@ -131,7 +131,7 @@
     background: var(--bg2); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 16px 20px;
   }
-  .sub-card-title { font-size: 12px; color: var(--text2); margin-bottom: 12px; font-weight: 500; }
+  .sub-card-title { font-size: 13px; color: var(--text2); margin-bottom: 12px; font-weight: 500; }
   .sub-chart-wrap { position: relative; width: 100%; height: 140px; }
   .loading-box {
     display: flex; flex-direction: column; align-items: center;
@@ -148,13 +148,13 @@
     border-radius: var(--radius-sm); margin: 8px 0;
   }
   .data-note {
-    font-size: 11px; color: var(--text3); text-align: right;
+    font-size: 12px; color: var(--text2); text-align: right;
     margin-top: 8px; padding: 0 4px;
   }
   /* 經濟指標區塊 */
   .econ-group { margin-bottom: 24px; }
   .econ-group-title {
-    font-size: 12px; font-weight: 600; color: var(--text2);
+    font-size: 14px; font-weight: 600; color: var(--text2);
     margin-bottom: 12px; padding-bottom: 8px;
     border-bottom: 1px solid var(--border);
   }
@@ -173,10 +173,10 @@
     display: flex; justify-content: space-between; align-items: flex-start;
     margin-bottom: 10px;
   }
-  .econ-card-title { font-size: 11px; color: var(--text3); font-weight: 500; }
-  .econ-card-update { font-size: 10px; color: var(--text3); text-align: right; line-height: 1.4; }
+  .econ-card-title { font-size: 13px; color: var(--text2); font-weight: 500; }
+  .econ-card-update { font-size: 12px; color: var(--text2); text-align: right; line-height: 1.4; }
   .econ-value { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 2px; }
-  .econ-prev { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+  .econ-prev { font-size: 12px; color: var(--text2); margin-bottom: 8px; }
   .econ-chart-wrap { position: relative; width: 100%; height: 80px; }
   /* 外部連結卡片 */
   .econ-link-card {
@@ -243,13 +243,13 @@
     background: var(--bg2); border: 1px solid var(--border);
     border-radius: var(--radius-sm); padding: 12px 14px;
   }
-  .asset-label { font-size: 10px; color: var(--text2); letter-spacing:.04em; text-transform:uppercase; margin-bottom: 6px; }
+  .asset-label { font-size: 12px; color: var(--text2); letter-spacing:.04em; text-transform:uppercase; margin-bottom: 6px; }
   .asset-value { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 3px; }
   .asset-change { font-size: 11px; }
   .asset-change.up { color: var(--red); }
   .asset-change.dn { color: var(--green); }
   .asset-change.nt { color: var(--text3); }
-  .asset-date { font-size: 10px; color: var(--text3); margin-top: 4px; }
+  .asset-date { font-size: 11px; color: var(--text2); margin-top: 4px; }
   .asset-loading { font-size: 11px; color: var(--text3); padding: 20px 0; text-align:center; }
 </style>
 
