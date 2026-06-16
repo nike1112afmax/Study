@@ -798,7 +798,8 @@ function renderEcon() {
             <span style="color:var(--text3)">${fmtDataPeriod(lat.d)}</span>
           </div>
         </div>
-        <div class="econ-value" style="color:${item.color};margin-top:${item.fred_delay ? '0' : '8px'}">${item.fred_delay ? `<div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-weight:normal">FRED延遲更新　<a href="${item.ref_url}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none" onclick="event.stopPropagation()">查看最新數據 ↗</a></div>` : ''}${item.fmt(displayVal)}</div>
+        ${item.fred_delay ? `<div style="font-size:10px;color:var(--text3);line-height:1.4;margin-bottom:2px">FRED延遲更新　<a href="${item.ref_url}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none" onclick="event.stopPropagation()">查看最新數據 ↗</a></div>` : ``}
+        <div class="econ-value" style="color:${item.color}">${item.fmt(displayVal)}</div>
         <div class="econ-prev">
           ${prevVal != null ? `前值 ${item.fmt(prevVal)} <span class="${chgCls}">${chgSign} ${Math.abs(chg).toFixed(2)}</span>` : ''}
         </div>
