@@ -643,7 +643,7 @@ const ECON_INDICATORS = {
       { key:'us_cpi',         label:'CPI 消費者物價指數',     yoy:true,  fmt: v=>v.toFixed(2)+'%', color:'#4d9eff', note:'月初公布' },
       { key:'us_core_cpi',    label:'核心 CPI',               yoy:true,  fmt: v=>v.toFixed(2)+'%', color:'#4d9eff', note:'月初公布' },
       { key:'us_ppi',         label:'PPI 生產者物價指數',     yoy:true,  fmt: v=>v.toFixed(2)+'%', color:'#f7a830', note:'月中公布' },
-      { key:'us_michigan',    label:'密西根大學消費者信心',   unit:'',   fmt: v=>v.toFixed(1),     color:'#a78bfa', note:'每月第二個週五' },
+      { key:'us_michigan',    label:'密西根大學消費者信心',   unit:'',   fmt: v=>v.toFixed(1),     color:'#a78bfa', note:'每月第二個週五', fred_delay:true, ref_url:'https://www.macromicro.me/charts/709/us-michigan-consumer-sentiment-twse' },
       { key:'us_pce',         label:'PCE 個人消費支出',       yoy:true,  fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月末公布' },
       { key:'us_core_pce',    label:'核心 PCE',               yoy:true,  fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月末公布' },
 
@@ -659,7 +659,7 @@ const ECON_INDICATORS = {
   eu: {
     title: '🇪🇺 歐元區',
     items: [
-      { key:'eu_cpi', label:'CPI 消費者物價指數', yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月中公布' },
+      { key:'eu_cpi', label:'CPI 消費者物價指數', yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月中公布', fred_delay:true, ref_url:'https://hk.investing.com/economic-calendar/cpi-68' },
     ],
     links: [
       { label:'製造業 PMI（Markit）', note:'月初公布', url:'https://hk.investing.com/economic-calendar/european-manufacturing-purchasing-managers-index-(pmi)-201' },
@@ -800,6 +800,10 @@ function renderEcon() {
           ${prevVal != null ? `前值 ${item.fmt(prevVal)} <span class="${chgCls}">${chgSign} ${Math.abs(chg).toFixed(2)}</span>` : ''}
         </div>
         <div class="econ-chart-wrap"><canvas id="${canvasId}"></canvas></div>
+        ${item.fred_delay ? `<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <span style="font-size:10px;color:var(--text3)">⚠️ FRED 數據延後一個月</span>
+          ${item.ref_url ? `<a href="${item.ref_url}" target="_blank" rel="noopener" class="ext-link" style="font-size:10px" onclick="event.stopPropagation()">查看最新數據 ↗</a>` : ''}
+        </div>` : ''}
       </div>`;
     }
 
