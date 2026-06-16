@@ -793,17 +793,18 @@ function renderEcon() {
       html += `<div class="econ-card">
         <div class="econ-card-header">
           <div class="econ-card-title">${item.label}</div>
-          <div class="econ-card-update">${item.note}<br><span style="color:var(--text3)">${fmtDataPeriod(lat.d)}</span></div>
+          <div class="econ-card-update">
+            ${item.note}<br>
+            <span style="color:var(--text3)">${fmtDataPeriod(lat.d)}</span>
+            ${item.fred_delay ? `<br><span style="font-size:10px;color:var(--text3)">⚠️ 延後一個月</span>` : ''}
+            ${item.fred_delay && item.ref_url ? `<br><a href="${item.ref_url}" target="_blank" rel="noopener" style="color:var(--blue);font-size:10px;text-decoration:none" onclick="event.stopPropagation()">查看最新 ↗</a>` : ''}
+          </div>
         </div>
         <div class="econ-value" style="color:${item.color}">${item.fmt(displayVal)}</div>
         <div class="econ-prev">
           ${prevVal != null ? `前值 ${item.fmt(prevVal)} <span class="${chgCls}">${chgSign} ${Math.abs(chg).toFixed(2)}</span>` : ''}
         </div>
         <div class="econ-chart-wrap"><canvas id="${canvasId}"></canvas></div>
-        ${item.fred_delay ? `<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-          <span style="font-size:10px;color:var(--text3)">⚠️ FRED 數據延後一個月</span>
-          ${item.ref_url ? `<a href="${item.ref_url}" target="_blank" rel="noopener" class="ext-link" style="font-size:10px" onclick="event.stopPropagation()">查看最新數據 ↗</a>` : ''}
-        </div>` : ''}
       </div>`;
     }
 
