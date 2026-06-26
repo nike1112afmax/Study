@@ -24,6 +24,25 @@
     --radius: 12px;
     --radius-sm: 8px;
   }
+  [data-theme="light"] body {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231a6fb5' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  }
+  [data-theme="light"] {
+    --bg: #f0ede8;
+    --bg2: #e8e4de;
+    --bg3: #ffffff;
+    --border: rgba(0,0,0,0.09);
+    --border2: rgba(0,0,0,0.16);
+    --text: #2a2820;
+    --text2: #6b6658;
+    --text3: #a09a90;
+    --blue: #1a6fb5;
+    --green: #0d8f5e;
+    --orange: #c07a10;
+    --red: #c8373a;
+    --purple: #6d42d4;
+    --teal: #0e8a80;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
@@ -214,6 +233,14 @@
   }
   .pdf-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--green); }
   .pdf-btn svg { width: 13px; height: 13px; }
+  .theme-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border2); background: transparent;
+    color: var(--text2); font-size: 12px; cursor: pointer; transition: all .15s;
+  }
+  .theme-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--blue); }
+  .theme-btn svg { width: 14px; height: 14px; }
 
   /* Hover 高光效果 */
   .clickable-tile {
@@ -276,6 +303,15 @@
   </div>
   <div class="topbar-right">
     <span id="lastUpdate"></span>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <span id="themeTxt">淺色</span>
+    </button>
     <button class="pdf-btn" onclick="downloadPDF()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
@@ -402,55 +438,69 @@ function trendBadge(arr) {
   return '<span class="trend-badge trend-fl">— 持平</span>';
 }
 
+function chartTheme() {
+  const light = document.documentElement.getAttribute('data-theme') === 'light';
+  return {
+    tooltipBg:     light ? '#ffffff'              : '#1a1e28',
+    tooltipBorder: light ? 'rgba(0,0,0,0.12)'    : 'rgba(255,255,255,0.1)',
+    tooltipTitle:  light ? '#888070'              : '#8b90a0',
+    tooltipBody:   light ? '#2a2820'              : '#e8eaf0',
+    tickColor:     light ? '#a09a90'              : '#555a6a',
+    gridColor:     light ? 'rgba(0,0,0,0.06)'     : 'rgba(255,255,255,0.04)',
+  };
+}
+
 function mkOpts(tooltipLabel, yTickFn) {
+  const t = chartTheme();
   return {
     responsive: true, maintainAspectRatio: false,
     interaction: { mode: 'index', intersect: false },
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#1a1e28',
-        borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
-        titleColor: '#8b90a0', bodyColor: '#e8eaf0',
+        backgroundColor: t.tooltipBg,
+        borderColor: t.tooltipBorder, borderWidth: 1,
+        titleColor: t.tooltipTitle, bodyColor: t.tooltipBody,
         titleFont: { size: 11 }, bodyFont: { size: 12 }, padding: 10,
         callbacks: { label: tooltipLabel }
       }
     },
     scales: {
       x: {
-        ticks: { maxTicksLimit: 8, font: { size: 10 }, color: '#555a6a', autoSkip: true },
-        grid: { color: 'rgba(255,255,255,0.04)' }, border: { display: false }
+        ticks: { maxTicksLimit: 8, font: { size: 10 }, color: t.tickColor, autoSkip: true },
+        grid: { color: t.gridColor }, border: { display: false }
       },
       y: {
-        ticks: { font: { size: 10 }, color: '#555a6a', callback: yTickFn },
-        grid: { color: 'rgba(255,255,255,0.04)' }, border: { display: false }
+        ticks: { font: { size: 10 }, color: t.tickColor, callback: yTickFn },
+        grid: { color: t.gridColor }, border: { display: false }
       }
     }
   };
 }
 
 function mkMiniOpts(tooltipLabel, yTickFn) {
+  const t = chartTheme();
   return {
     responsive: true, maintainAspectRatio: false,
     interaction: { mode: 'index', intersect: false },
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#1a1e28',
-        borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
-        titleColor: '#8b90a0', bodyColor: '#e8eaf0',
+        backgroundColor: t.tooltipBg,
+        borderColor: t.tooltipBorder, borderWidth: 1,
+        titleColor: t.tooltipTitle, bodyColor: t.tooltipBody,
         titleFont: { size: 10 }, bodyFont: { size: 11 }, padding: 8,
         callbacks: { label: tooltipLabel }
       }
     },
     scales: {
       x: {
-        ticks: { maxTicksLimit: 4, font: { size: 9 }, color: '#555a6a', autoSkip: true },
+        ticks: { maxTicksLimit: 4, font: { size: 9 }, color: t.tickColor, autoSkip: true },
         grid: { display: false }, border: { display: false }
       },
       y: {
-        ticks: { font: { size: 9 }, color: '#555a6a', maxTicksLimit: 3, callback: yTickFn },
-        grid: { color: 'rgba(255,255,255,0.04)' }, border: { display: false }
+        ticks: { font: { size: 9 }, color: t.tickColor, maxTicksLimit: 3, callback: yTickFn },
+        grid: { color: t.gridColor }, border: { display: false }
       }
     }
   };
@@ -839,6 +889,40 @@ function renderEcon() {
   }
 }
 
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.getAttribute('data-theme') === 'light';
+  if (isLight) {
+    html.removeAttribute('data-theme');
+    document.getElementById('themeTxt').textContent = '淺色';
+    document.getElementById('themeIcon').innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    localStorage.setItem('gmTheme', 'dark');
+  } else {
+    html.setAttribute('data-theme', 'light');
+    document.getElementById('themeTxt').textContent = '深色';
+    document.getElementById('themeIcon').innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+    localStorage.setItem('gmTheme', 'light');
+  }
+  // re-render charts so tooltip/grid colors update
+  if (typeof curRange !== 'undefined') {
+    renderYield(curRange);
+    renderEcon();
+  }
+}
+
+(function() {
+  const saved = localStorage.getItem('gmTheme');
+  if (saved === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.addEventListener('DOMContentLoaded', function() {
+      const txt = document.getElementById('themeTxt');
+      const ico = document.getElementById('themeIcon');
+      if (txt) txt.textContent = '深色';
+      if (ico) ico.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+    });
+  }
+})();
 
 function downloadPDF() {
   const title = document.title;
