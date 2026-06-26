@@ -196,7 +196,10 @@
   .econ-fred-notice { font-size:10px; color:var(--text3); line-height:1.2; margin-bottom:2px; }
   .econ-card-title { font-size: 13px; color: var(--text2); }
   .econ-card-update { font-size: 12px; color: var(--text2); text-align: right; line-height: 1.4; }
-  .econ-value { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 2px; }
+  .econ-value { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 2px; color: var(--text); }
+  .econ-value.econ-up { color: var(--red); }
+  .econ-value.econ-dn { color: var(--green); }
+  .econ-value.econ-nt { color: var(--text); }
   .econ-prev { font-size: 12px; color: var(--text2); margin-bottom: 8px; }
   .econ-chart-wrap { position: relative; width: 100%; height: 80px; }
   /* 外部連結卡片 */
@@ -577,7 +580,9 @@ function renderSentiment() {
   const buf = raw.buffett || [];
 
   const vLat = vix.length ? vix[vix.length-1].v : null;
-  const vPrv = vix.length > 1 ? vix[vix.length-2].v : vLat;
+  const vLatD = vix.length ? vix[vix.length-1].d : null;
+  const vPrvEntry = vix.slice(0,-1).reverse().find(p => p.d < vLatD);
+  const vPrv = vPrvEntry ? vPrvEntry.v : vLat;
   const vChg = vLat != null ? vLat - vPrv : 0;
   const vCls = vLat > 30 ? 'color-red' : vLat > 20 ? 'color-orange' : 'color-green';
   const vDesc = vLat > 30 ? '高恐慌' : vLat > 20 ? '中度警戒' : '低波動';
@@ -854,7 +859,7 @@ function renderEcon() {
           </div>
         </div>
         ${item.fred_delay ? `<div class="econ-fred-notice">FRED延遲更新　<a href="${item.ref_url}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none" onclick="event.stopPropagation()">查看最新數據 ↗</a></div>` : ''}
-        <div class="econ-value" style="color:${item.color}">${item.fmt(displayVal)}</div>
+        <div class="econ-value ${chg > 0 ? 'econ-up' : chg < 0 ? 'econ-dn' : 'econ-nt'}">${item.fmt(displayVal)}</div>
         <div class="econ-prev">
           ${prevVal != null ? `前值 ${item.fmt(prevVal)} <span class="${chgCls}">${chgSign} ${Math.abs(chg).toFixed(2)}</span>` : ''}
         </div>
