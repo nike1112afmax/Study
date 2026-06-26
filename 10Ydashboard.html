@@ -581,9 +581,9 @@ function renderSentiment() {
 
   const vLat = vix.length ? vix[vix.length-1].v : null;
   const vLatD = vix.length ? vix[vix.length-1].d : null;
-  const vPrvEntry = vix.slice(0,-1).reverse().find(p => p.d < vLatD);
+  const vPrvEntry = vix.length > 1 ? vix[vix.length-2] : null;
   const vPrv = vPrvEntry ? vPrvEntry.v : vLat;
-  const vChg = vLat != null ? vLat - vPrv : 0;
+  const vChg = vLat != null && vPrvEntry ? vLat - vPrv : 0;
   const vCls = vLat > 30 ? 'color-red' : vLat > 20 ? 'color-orange' : 'color-green';
   const vDesc = vLat > 30 ? '高恐慌' : vLat > 20 ? '中度警戒' : '低波動';
 
@@ -596,7 +596,7 @@ function renderSentiment() {
       <div class="gauge-label">VIX 恐慌指數</div>
       <div class="gauge-value ${vCls}">${vLat != null ? vLat.toFixed(1) : '—'}</div>
       <div class="gauge-desc ${vCls}">${vDesc}</div>
-      <div class="gauge-sub">${vChg >= 0 ? '▲' : '▼'} ${Math.abs(vChg).toFixed(2)} 前日</div>
+      ${vPrvEntry ? `<div class="gauge-sub">${Math.abs(vChg) < 0.01 ? '— 持平' : `${vChg > 0 ? '▲' : '▼'} ${Math.abs(vChg).toFixed(2)} 前日`}</div>` : ''}
       <div class="ext-link" style="justify-content:center;margin-top:6px">數據參考 ↗</div>
     </a>
     <a class="gauge-tile clickable-tile" href="https://www.macromicro.me/collections/34/us-stock-relative/406/us-buffet-index-gspc" target="_blank" rel="noopener">
