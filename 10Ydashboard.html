@@ -269,11 +269,14 @@
   @media(max-width:1000px){ .assets-grid{grid-template-columns:repeat(3,1fr)} }
   @media(max-width:600px){ .assets-grid{grid-template-columns:repeat(2,1fr)} }
   .asset-tile {
-    background: var(--bg2); border: 1px solid var(--border);
+    background: var(--bg3); border: 1px solid var(--border);
     border-radius: var(--radius-sm); padding: 12px 14px;
   }
-  .asset-label { font-size: 13px; color: #c8cdd8; letter-spacing:.03em; text-transform:uppercase; margin-bottom: 6px; }
-  .asset-value { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 3px; }
+  .asset-label { font-size: 13px; color: var(--text2); letter-spacing:.03em; text-transform:uppercase; margin-bottom: 6px; }
+  .asset-value { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 3px; color: var(--text); }
+  .asset-value.up { color: var(--red); }
+  .asset-value.dn { color: var(--green); }
+  .asset-value.nt { color: var(--text); }
   .asset-change { font-size: 11px; }
   .asset-change.up { color: var(--red); }
   .asset-change.dn { color: var(--green); }
@@ -779,7 +782,7 @@ function renderAssets() {
 
     return `<a class="asset-tile clickable-tile" href="${a.url}" target="_blank" rel="noopener">
       <div class="asset-label">${a.label}</div>
-      <div class="asset-value" style="color:${a.color}">${a.fmt(lat.v)}</div>
+      <div class="asset-value ${cc}">${a.fmt(lat.v)}</div>
       <div class="asset-change ${cc}">${ar} ${Math.abs(chgPct).toFixed(2)}%</div>
       <div class="asset-date">${lat.d}</div>
     </a>`;
