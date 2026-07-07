@@ -362,6 +362,142 @@ body {
   .tool-card { padding: 22px 20px 18px; }
   body { font-size: 15px; }
 }
+
+/* ── SEARCH ── */
+.search-wrap {
+  max-width: 920px;
+  margin: -30px auto 0;
+  padding: 0 20px;
+  position: relative;
+  z-index: 5;
+}
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 14px 22px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.14);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.search-box:focus-within {
+  border-color: var(--red);
+  box-shadow: 0 10px 30px rgba(200,16,46,0.18);
+}
+.search-box i.fa-magnifying-glass {
+  color: var(--text-light);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.search-box:focus-within i.fa-magnifying-glass { color: var(--red); }
+#search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: transparent;
+}
+#search-input::placeholder { color: var(--text-light); }
+#search-clear {
+  display: none;
+  border: none;
+  background: var(--bg);
+  color: var(--text-light);
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+#search-clear:hover { background: var(--red-pale); color: var(--red); }
+.search-meta {
+  font-size: 12px;
+  color: var(--text-light);
+  padding: 10px 22px 0;
+}
+
+.search-results {
+  margin-top: 14px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+.search-result-item {
+  display: block;
+  text-decoration: none;
+  color: var(--text-primary);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.search-result-item:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--border-hover);
+}
+.sr-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.sr-page {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--red);
+  background: var(--red-pale);
+  padding: 2px 10px;
+  border-radius: 50px;
+}
+.sr-date {
+  font-size: 11.5px;
+  color: var(--text-light);
+}
+.sr-section {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.sr-snippet {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.sr-snippet mark {
+  background: rgba(200,16,46,0.16);
+  color: var(--red);
+  font-weight: 700;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+.search-empty {
+  display: none;
+  text-align: center;
+  padding: 28px 20px;
+  color: var(--text-light);
+  font-size: 14px;
+  background: var(--card-bg);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  margin-top: 14px;
+}
+.search-loading {
+  text-align: center;
+  padding: 10px 20px;
+  color: var(--text-light);
+  font-size: 12.5px;
+}
 </style>
 </head>
 <body>
@@ -383,7 +519,22 @@ body {
   </div>
 </header>
 
-<div class="container">
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-box">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="search-input" placeholder="搜尋所有教案內容（例如：庫欣、黃金切割率、台塑、聯準會）" autocomplete="off">
+    <button id="search-clear" aria-label="清除"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="search-meta" id="search-meta"></div>
+  <div class="search-results" id="search-results"></div>
+  <div class="search-empty" id="search-empty">
+    <i class="fa-solid fa-magnifying-glass" style="margin-bottom:8px; display:block; font-size:20px; opacity:0.5"></i>
+    找不到符合的內容，換個關鍵字試試看
+  </div>
+</div>
+
+<div class="container" id="main-container">
 
   <!-- ── TOOLS SECTION ── -->
   <div class="section-header">
@@ -622,6 +773,147 @@ body {
 <script>
 const count = document.querySelectorAll('.course-card').length;
 document.getElementById('course-count').textContent = '共 ' + count + ' 堂';
+</script>
+
+<script>
+(function () {
+  const input = document.getElementById('search-input');
+  const clearBtn = document.getElementById('search-clear');
+  const resultsEl = document.getElementById('search-results');
+  const emptyEl = document.getElementById('search-empty');
+  const metaEl = document.getElementById('search-meta');
+  const mainContainer = document.getElementById('main-container');
+
+  let searchIndex = null;
+  let loadPromise = null;
+
+  function loadIndex() {
+    if (loadPromise) return loadPromise;
+    metaEl.textContent = '索引載入中…';
+    loadPromise = fetch('search-index.json')
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(data => {
+        searchIndex = data;
+        metaEl.textContent = '';
+        return data;
+      })
+      .catch(err => {
+        metaEl.textContent = '搜尋索引載入失敗，請稍後再試';
+        console.error('search-index.json load failed:', err);
+      });
+    return loadPromise;
+  }
+
+  // 觸發載入時機：使用者第一次聚焦搜尋框
+  input.addEventListener('focus', loadIndex, { once: true });
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function highlight(text, terms) {
+    let escaped = escapeHtml(text);
+    terms.forEach(t => {
+      if (!t) return;
+      const re = new RegExp('(' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      escaped = escaped.replace(re, '<mark>$1</mark>');
+    });
+    return escaped;
+  }
+
+  function buildSnippet(text, terms) {
+    const lower = text.toLowerCase();
+    let idx = -1;
+    for (const t of terms) {
+      const i = lower.indexOf(t.toLowerCase());
+      if (i !== -1) { idx = i; break; }
+    }
+    const radius = 60;
+    let start = idx === -1 ? 0 : Math.max(0, idx - radius);
+    let snippet = text.slice(start, start + 160);
+    if (start > 0) snippet = '…' + snippet;
+    if (start + 160 < text.length) snippet = snippet + '…';
+    return highlight(snippet, terms);
+  }
+
+  function scoreEntry(entry, terms) {
+    const sectionLower = entry.section.toLowerCase();
+    const textLower = entry.text.toLowerCase();
+    let score = 0;
+    for (const t of terms) {
+      if (!t) continue;
+      if (sectionLower.includes(t)) score += 10;
+      const matches = textLower.split(t.toLowerCase()).length - 1;
+      score += matches * 2;
+      if (matches === 0 && !sectionLower.includes(t)) return -1; // 必須全部命中
+    }
+    return score;
+  }
+
+  function runSearch(query) {
+    const q = query.trim();
+    if (!q) {
+      resultsEl.style.display = 'none';
+      emptyEl.style.display = 'none';
+      mainContainer.style.display = '';
+      clearBtn.style.display = 'none';
+      metaEl.textContent = '';
+      return;
+    }
+    clearBtn.style.display = 'flex';
+    mainContainer.style.display = 'none';
+
+    if (!searchIndex) {
+      loadIndex().then(() => runSearch(q));
+      return;
+    }
+
+    const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+    const scored = searchIndex
+      .map(e => ({ entry: e, score: scoreEntry(e, terms) }))
+      .filter(x => x.score >= 0)
+      .sort((a, b) => b.score - a.score || (a.entry.dateSort < b.entry.dateSort ? 1 : -1))
+      .slice(0, 30);
+
+    if (scored.length === 0) {
+      resultsEl.style.display = 'none';
+      emptyEl.style.display = 'block';
+      metaEl.textContent = '';
+      return;
+    }
+
+    emptyEl.style.display = 'none';
+    metaEl.textContent = `找到 ${scored.length} 筆相關內容`;
+    resultsEl.innerHTML = scored.map(({ entry }) => `
+      <a class="search-result-item" href="${entry.page}${entry.anchor}" target="_blank" rel="noopener">
+        <div class="sr-top">
+          <span class="sr-page">${escapeHtml(entry.pageTitle)}</span>
+          <span class="sr-date">${escapeHtml(entry.date)}</span>
+        </div>
+        <div class="sr-section">${highlight(entry.section, terms)}</div>
+        <div class="sr-snippet">${buildSnippet(entry.text, terms)}</div>
+      </a>
+    `).join('');
+    resultsEl.style.display = 'flex';
+  }
+
+  let debounceTimer;
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => runSearch(input.value), 150);
+  });
+
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    runSearch('');
+    input.focus();
+  });
+})();
 </script>
 
 </body>
