@@ -10,7 +10,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang TC','Micr
 .page{max-width:760px;margin:0 auto}
 h1{font-size:20px;font-weight:500;margin-bottom:6px;color:#1a1a18}
 .subtitle{font-size:13px;color:#888780;margin-bottom:1.5rem}
-.tabs{display:flex;gap:4px;margin-bottom:1.5rem;border-bottom:1px solid #d3d1c7;padding-bottom:0}
+.tabs{display:flex;gap:4px;margin-bottom:1.5rem;border-bottom:1px solid #d3d1c7;padding-bottom:0;flex-wrap:wrap}
 .tab{padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:#888780;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color 0.15s}
 .tab:hover{color:#1a1a18}
 .tab.active{color:#1a1a18;border-bottom:2px solid #1a1a18}
@@ -56,6 +56,14 @@ h1{font-size:20px;font-weight:500;margin-bottom:6px;color:#1a1a18}
 .wave-out-table tr:hover td{background:#fafaf8}
 .wave-out-table tr.invalid td{color:#b4b2a9}
 .wave-out-table tr.manual-row td{background:rgba(55,138,221,0.04);font-weight:500}
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:1rem}
+.slider-row label{font-size:11px;color:#888780;font-weight:500;letter-spacing:0.02em;text-transform:uppercase;min-width:70px}
+.slider-row input[type=range]{flex:1}
+.slider-row .kval{font-size:14px;font-weight:500;min-width:44px;text-align:right;font-variant-numeric:tabular-nums}
+.big-result{background:#f5f4f0;border-radius:10px;padding:16px 18px;margin-top:1rem}
+.big-result .label{font-size:11px;color:#888780;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:4px}
+.big-result .value{font-size:26px;font-weight:500;color:#1a1a18;font-variant-numeric:tabular-nums;margin-bottom:14px}
+.big-result .value:last-child{margin-bottom:0}
 @media(max-width:560px){
   .combo-grid{grid-template-columns:repeat(2,1fr)}
   .grid4{grid-template-columns:1fr 1fr}
@@ -67,15 +75,16 @@ h1{font-size:20px;font-weight:500;margin-bottom:6px;color:#1a1a18}
 <body>
 <div class="page">
   <h1>支撐壓力計算工具</h1>
-  <p class="subtitle">黃金切割率支撐與壓力 · 型態對稱法 · 上升波測算（波浪理論）</p>
- 
+  <p class="subtitle">黃金切割率支撐與壓力 · 型態對稱法 · 上升波測算（波浪理論） · 00715L目標價測算</p>
+
   <div class="tabs">
     <button class="tab active" onclick="switchTab('down')">下跌支撐</button>
     <button class="tab" onclick="switchTab('up')">上漲壓力</button>
     <button class="tab" onclick="switchTab('sym')">型態對稱法</button>
     <button class="tab" onclick="switchTab('wave')">上升波測算</button>
+    <button class="tab" onclick="switchTab('oil')">00715L測算</button>
   </div>
- 
+
   <!-- 下跌支撐 -->
   <div id="tab-down" class="section active">
     <p class="stitle">輸入高低點</p>
@@ -89,7 +98,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:6px;color:#1a1a18}
       <tbody id="down-body"><tr><td colspan="2" style="color:#b4b2a9;padding:18px;text-align:center">請輸入高低點數值</td></tr></tbody>
     </table></div>
   </div>
- 
+
   <!-- 上漲壓力 -->
   <div id="tab-up" class="section">
     <p class="stitle">輸入低高點</p>
@@ -103,7 +112,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:6px;color:#1a1a18}
       <tbody id="up-body"><tr><td colspan="2" style="color:#b4b2a9;padding:18px;text-align:center">請輸入低高點數值</td></tr></tbody>
     </table></div>
   </div>
- 
+
   <!-- 型態對稱法 -->
   <div id="tab-sym" class="section">
     <div class="grid2" style="margin-bottom:1rem">
@@ -127,7 +136,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:6px;color:#1a1a18}
       <tbody id="sym-dn"><tr><td colspan="2" style="color:#b4b2a9;padding:14px;text-align:center;font-size:12px">請輸入數值</td></tr></tbody></table></div>
     </div>
   </div>
- 
+
   <!-- 上升波測算 -->
   <div id="tab-wave" class="section">
     <div class="info">
@@ -136,7 +145,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:6px;color:#1a1a18}
       · 第4浪低點 = W₃高點 − (W₃高點 − W₂低點) × 回檔比率　（或填入已知值）<br>
       · 第5浪高點 = W₄低點 + 幅度 × <b>第5浪倍率</b>（由組合決定）
     </div>
- 
+
     <p class="stitle">已知數值（必填）</p>
     <div class="grid4">
       <div class="field"><label>第1浪起點 W₁S</label><input type="number" id="w1s" placeholder="例：3490" oninput="calcWave()"></div>
@@ -144,19 +153,19 @@ h1{font-size:20px;font-weight:500;margin-bottom:6px;color:#1a1a18}
       <div class="field"><label>第2浪低點 W₂L</label><input type="number" id="w2l" placeholder="例：4103" oninput="calcWave()"></div>
       <div class="field"><label>第3浪高點 W₃H（選填）</label><input type="number" id="w3h-in" placeholder="不填則由倍率推算" oninput="calcWave()"></div>
     </div>
- 
+
     <div class="divider"></div>
- 
+
     <p class="stitle">選擇上升比例組合（第1浪 : 第3浪 : 第5浪倍率）</p>
     <div class="combo-grid" id="combo-grid"></div>
- 
+
     <div class="divider"></div>
- 
+
     <p class="stitle">第4浪低點（選填：已知時直接填入，否則由各回檔比率推算）</p>
     <div class="grid3">
       <div class="field"><label>已知第4浪低點 W₄L</label><input type="number" id="w4l-in" placeholder="填入後覆蓋回檔推算" class="override" oninput="calcWave()"></div>
     </div>
- 
+
     <div id="wave-results" style="display:none">
       <div class="metric-row">
         <div class="mc"><div class="mc-label">第1浪幅度</div><div class="mc-val" id="m-amp1">—</div><div class="mc-sub">W₁H − W₁S</div></div>
@@ -174,8 +183,37 @@ h1{font-size:20px;font-weight:500;margin-bottom:6px;color:#1a1a18}
       </table></div>
     </div>
   </div>
+
+  <!-- 00715L測算 -->
+  <div id="tab-oil" class="section">
+    <div class="info">
+      Step 1 算缺口：Δ%Oil = (布蘭特MA60 − 布蘭特現價) ÷ 布蘭特現價<br>
+      Step 2 代入公式：00715L目標價 = 00715L現價 × [1 + k × Δ%Oil]<br>
+      槓桿倍數 k 實務取約 1.90（理論值 2.0 為不計耗損時的槓桿ETF倍數）
+    </div>
+
+    <p class="stitle">輸入數值</p>
+    <div class="grid3">
+      <div class="field"><label>布蘭特現價（USD）</label><input type="number" id="o-brent" placeholder="例：85.5" value="85.5" oninput="calcOil()"></div>
+      <div class="field"><label>布蘭特MA60（USD）</label><input type="number" id="o-ma60" placeholder="例：91.97" value="91.97" oninput="calcOil()"></div>
+      <div class="field"><label>00715L現價（元）</label><input type="number" id="o-etf" placeholder="例：43.96" value="43.96" oninput="calcOil()"></div>
+    </div>
+
+    <div class="slider-row">
+      <label>槓桿 k</label>
+      <input type="range" id="o-k" min="1" max="2" step="0.01" value="1.90" oninput="calcOil()">
+      <span class="kval" id="o-k-val">1.90</span>
+    </div>
+
+    <div class="big-result">
+      <div class="label">油價缺口 Δ%</div>
+      <div class="value" id="o-delta">—</div>
+      <div class="label">00715L目標價</div>
+      <div class="value" id="o-target">—</div>
+    </div>
+  </div>
 </div>
- 
+
 <script>
 const RATIOS=[
   {r:0.191,label:'19.1%'},{r:0.382,label:'38.2%'},{r:0.500,label:'50.0%'},
@@ -192,17 +230,17 @@ const COMBOS=[
   {label:'1 : 1 : 0.618',w3:1,    w5:0.618, sub:'第5浪黃金縮短'},
 ];
 let selCombo=0;
- 
+
 function fmt(v,d=2){return(isNaN(v)||v===null)?'—':Number(v).toFixed(d)}
- 
+
 function switchTab(t){
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
-  const m={down:0,up:1,sym:2,wave:3};
+  const m={down:0,up:1,sym:2,wave:3,oil:4};
   document.querySelectorAll('.tab')[m[t]].classList.add('active');
   document.getElementById('tab-'+t).classList.add('active');
 }
- 
+
 function calcDown(){
   const h=parseFloat(document.getElementById('d-high').value);
   const l=parseFloat(document.getElementById('d-low').value);
@@ -211,10 +249,9 @@ function calcDown(){
     tb.innerHTML='<tr><td colspan="2" style="color:#b4b2a9;padding:18px;text-align:center">請確認高點 > 低點</td></tr>';return;
   }
   const amp=h-l;
-  // 下跌支撐：高點 - 幅度 × 比率
   tb.innerHTML=RATIOS.map(({r,label})=>`<tr><td><span class="badge">${label}</span></td><td class="val">${fmt(h-amp*r)}</td></tr>`).join('');
 }
- 
+
 function calcUp(){
   const l=parseFloat(document.getElementById('u-low').value);
   const h=parseFloat(document.getElementById('u-high').value);
@@ -223,10 +260,9 @@ function calcUp(){
     tb.innerHTML='<tr><td colspan="2" style="color:#b4b2a9;padding:18px;text-align:center">請確認高點 > 低點</td></tr>';return;
   }
   const amp=h-l;
-  // 上漲壓力：低點 + 幅度 × 比率（對應 Excel：低點 + (高-低) × 倍率）
   tb.innerHTML=RATIOS.map(({r,label})=>`<tr><td><span class="badge">${label}</span></td><td class="val">${fmt(l+amp*r)}</td></tr>`).join('');
 }
- 
+
 function calcSym(){
   const bot=parseFloat(document.getElementById('su-bot').value);
   const un=parseFloat(document.getElementById('su-neck').value);
@@ -248,7 +284,7 @@ function calcSym(){
     tbd.innerHTML='<tr><td colspan="2" style="color:#b4b2a9;padding:14px;text-align:center;font-size:12px">請輸入數值</td></tr>';
   }
 }
- 
+
 function buildCombos(){
   document.getElementById('combo-grid').innerHTML=COMBOS.map((c,i)=>`
     <div class="combo-card${i===selCombo?' active':''}" onclick="selCombo=${i};buildCombos();calcWave()">
@@ -256,7 +292,7 @@ function buildCombos(){
       <div class="sub">W3×${c.w3} / W5×${c.w5}<br>${c.sub}</div>
     </div>`).join('');
 }
- 
+
 function calcWave(){
   const w1s=parseFloat(document.getElementById('w1s').value);
   const w1h=parseFloat(document.getElementById('w1h').value);
@@ -265,21 +301,21 @@ function calcWave(){
   const w4l_in=parseFloat(document.getElementById('w4l-in').value);
   const resDiv=document.getElementById('wave-results');
   if(isNaN(w1s)||isNaN(w1h)||isNaN(w2l)||w1h<=w1s){resDiv.style.display='none';return;}
- 
+
   const amp1=w1h-w1s;
   const cb=COMBOS[selCombo];
   const w3h_calc=w2l+amp1*cb.w3;
   const w3h=isNaN(w3h_in)?w3h_calc:w3h_in;
   const amp3=w3h-w2l;
- 
+
   document.getElementById('m-amp1').textContent=fmt(amp1);
   document.getElementById('m-w3h').textContent=fmt(w3h);
   document.getElementById('m-w3h-sub').textContent=isNaN(w3h_in)?`W₂L + 幅度×${cb.w3}（推算）`:'手動填入';
   document.getElementById('th-w5').textContent=`第5浪目標 (×${cb.w5})`;
- 
+
   const hasManual=!isNaN(w4l_in);
   const tbody=document.getElementById('wave-body');
- 
+
   if(hasManual){
     const w5=w4l_in+amp1*cb.w5;
     document.getElementById('m-w5sel').textContent=fmt(w5);
@@ -310,9 +346,26 @@ function calcWave(){
   }
   resDiv.style.display='block';
 }
- 
+
+function calcOil(){
+  const brent=parseFloat(document.getElementById('o-brent').value);
+  const ma60=parseFloat(document.getElementById('o-ma60').value);
+  const etf=parseFloat(document.getElementById('o-etf').value);
+  const k=parseFloat(document.getElementById('o-k').value);
+  document.getElementById('o-k-val').textContent=fmt(k,2);
+  const deltaEl=document.getElementById('o-delta');
+  const targetEl=document.getElementById('o-target');
+  if(isNaN(brent)||isNaN(ma60)||isNaN(etf)||brent===0){
+    deltaEl.textContent='—';targetEl.textContent='—';return;
+  }
+  const delta=(ma60-brent)/brent;
+  const target=etf*(1+k*delta);
+  deltaEl.textContent=(delta*100).toFixed(2)+'%';
+  targetEl.textContent=fmt(target)+' 元';
+}
+
 buildCombos();
+calcOil();
 </script>
 </body>
 </html>
- 
