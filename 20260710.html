@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMA 課程教案 | 20260710</title>
+<style>
+  :root {
+    --red:        #C8102E;
+    --red-light:  #E8192E;
+    --sidebar-bg: #1E1E1E;
+    --sidebar-hover: #2C2C2C;
+    --sidebar-active: #2E2E2E;
+    --main-bg:    #F4F4F4;
+    --card-bg:    #FFFFFF;
+    --text-primary:   #1A1A1A;
+    --text-secondary: #555555;
+    --text-light:     #888888;
+    --border:     #E8E8E8;
+    --border-card: #DEDEDE;
+    --tag-buy-bg:    #E8F5E9; --tag-buy-text:   #2E7D32;
+    --tag-watch-bg:  #FFF8E1; --tag-watch-text: #F57F17;
+    --tag-risk-bg:   #FFEBEE; --tag-risk-text:  #C62828;
+    --tag-info-bg:   #E3F2FD; --tag-info-text:  #1565C0;
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
+    --shadow:    0 2px 10px rgba(0,0,0,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'Segoe UI', 'Noto Sans TC', '微軟正黑體', sans-serif;
+    background: var(--main-bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  /* ────── TOP BAR ────── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: var(--sidebar-bg);
+    height: 52px;
+    display: flex; align-items: center;
+    padding: 0 20px;
+    gap: 16px;
+  }
+  .topbar-brand {
+    display: flex; align-items: center; gap: 8px;
+    color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 0.02em;
+  }
+  .topbar-brand .vs-red { color: var(--red); }
+  .topbar-divider { width: 1px; height: 22px; background: #444; }
+  .topbar-title { color: #ccc; font-size: 13px; }
+  .topbar-spacer { flex: 1; }
+  .topbar-links { display: flex; gap: 8px; }
+  .topbar-links a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 5px 12px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .topbar-links a:hover { border-color: var(--red); color: var(--red); }
+  .topbar-mobile-toggle {
+    display: none;
+    color: #ccc; background: none; border: 1px solid #555; border-radius: 4px;
+    font-size: 13px; padding: 5px 10px; cursor: pointer;
+  }
+
+  /* ────── LAYOUT ────── */
+  .app { display: flex; padding-top: 52px; min-height: 100vh; }
+
+  /* ────── SIDEBAR ────── */
+  .sidebar {
+    width: 220px; flex-shrink: 0;
+    background: var(--sidebar-bg);
+    position: fixed; top: 52px; left: 0;
+    height: calc(100vh - 52px);
+    overflow-y: auto;
+    padding: 16px 0 24px;
+    z-index: 150;
+  }
+  .sidebar-section-label {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #666; padding: 12px 20px 4px; margin-top: 8px;
+  }
+  .sidebar-section-label:first-child { margin-top: 0; }
+  .sidebar a {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 20px;
+    color: #B0B0B0;
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all 0.12s;
+    line-height: 1.4;
+  }
+  .sidebar a:hover { background: var(--sidebar-hover); color: #E0E0E0; }
+  .sidebar a.active { border-left-color: var(--red); color: #fff; background: var(--sidebar-active); }
+  .sidebar a.special { color: #FF8A80; }
+  .sidebar a.special.active,
+  .sidebar a.special:hover { color: #FF5252; background: #2A1818; border-left-color: #FF5252; }
+  .sidebar a .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #555; flex-shrink: 0;
+  }
+  .sidebar a.active .dot { background: var(--red); }
+
+  /* ────── SIDEBAR ACCORDION ────── */
+  .sidebar-group { margin-bottom: 2px; }
+  .sidebar-toggle {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 20px;
+    color: #D0D0D0;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.12s;
+    line-height: 1.4;
+    background: none;
+    border-top: none; border-right: none; border-bottom: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+  }
+  .sidebar-toggle:hover { background: var(--sidebar-hover); color: #fff; }
+  .sidebar-toggle.open { color: #fff; }
+  .sidebar-toggle .chev {
+    margin-left: auto;
+    font-size: 9px;
+    color: #777;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .sidebar-toggle.open .chev { transform: rotate(90deg); color: var(--red); }
+  .sidebar-toggle.special { color: #FF8A80; }
+  .sidebar-toggle.special:hover,
+  .sidebar-toggle.special.open { color: #FF5252; background: #2A1818; }
+  .sidebar-toggle.special.open .chev { color: #FF5252; }
+
+  .sidebar-sub {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.28s ease;
+  }
+  .sidebar-sub.open { max-height: 600px; }
+  .sidebar-sub a {
+    padding: 6px 20px 6px 38px;
+    font-size: 12px;
+    color: #8A8A8A;
+  }
+  .sidebar-sub a:hover { color: #D0D0D0; }
+  .sidebar-sub a.active { color: #fff; border-left-color: var(--red); background: var(--sidebar-active); }
+  .sidebar-sub a .dot { width: 4px; height: 4px; background: #555; }
+  .sidebar-sub a.active .dot { background: var(--red); }
+  .sidebar-sub.special-sub a { color: #C77B76; }
+  .sidebar-sub.special-sub a:hover { color: #FFAFA8; }
+  .sidebar-sub.special-sub a.active { color: #fff; border-left-color: #FF5252; background: #2A1818; }
+  .sidebar-sub.special-sub a.active .dot { background: #FF5252; }
+
+  /* ────── MAIN ────── */
+  main {
+    margin-left: 220px;
+    flex: 1;
+    padding: 32px 36px 64px;
+    max-width: 1040px;
+  }
+
+  /* ────── PAGE HERO ────── */
+  .page-hero { margin-bottom: 28px; }
+  .page-eyebrow {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 6px; font-weight: 600;
+  }
+  .page-title {
+    font-size: 24px; font-weight: 700; color: var(--text-primary);
+    line-height: 1.35; margin-bottom: 8px;
+  }
+  .page-subtitle { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .hero-tag {
+    font-size: 11px; padding: 2px 10px;
+    border: 1px solid var(--border-card);
+    border-radius: 20px; color: var(--text-secondary);
+    background: var(--card-bg);
+  }
+
+  /* ────── SECTION HEADER ────── */
+  .section { margin-bottom: 36px; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 18px;
+  }
+  .section-eyebrow {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 3px; font-weight: 600;
+  }
+  .section h2 { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+
+  /* ────── CARDS ────── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-card);
+    border-radius: 8px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 14px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .icon { font-size: 16px; }
+  .card p { font-size: 13px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 8px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card-red-border { border-left: 3px solid var(--red); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } }
+
+  /* ────── KV LIST ────── */
+  .kv { list-style: none; }
+  .kv li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 7px 0; border-bottom: 1px solid #F0F0F0;
+    font-size: 13px;
+  }
+  .kv li:last-child { border-bottom: none; }
+  .kv-k { flex-shrink: 0; width: 140px; color: var(--text-light); padding-top: 1px; font-size: 12px; }
+  .kv-v { color: var(--text-secondary); line-height: 1.6; }
+  .kv-v strong { color: var(--text-primary); }
+  .kv-v .red { color: var(--red); font-weight: 700; }
+
+  /* ────── CALLOUT ────── */
+  .callout {
+    border-left: 3px solid var(--red);
+    background: #FFF5F5;
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.75;
+  }
+  .callout strong { color: var(--text-primary); }
+  .callout.blue  { border-left-color: #1565C0; background: #F0F5FF; }
+  .callout.green { border-left-color: #2E7D32; background: #F0FAF0; }
+  .callout.amber { border-left-color: #F57F17; background: #FFFBF0; }
+  .callout.gray  { border-left-color: #888;    background: #F8F8F8; }
+
+  /* ────── NOTE BOX ────── */
+  .note {
+    background: #FFFDE7; border: 1px solid #FFE082;
+    border-radius: 6px; padding: 12px 16px;
+    font-size: 13px; color: #5D4037; line-height: 1.75;
+    margin-bottom: 12px;
+  }
+  .note strong { color: #3E2723; }
+
+  /* ────── VERIFIED BOX (special: post-course validation) ────── */
+  .verified {
+    background: #F0FAF0; border: 1px solid #A5D6A7;
+    border-left: 4px solid #2E7D32;
+    border-radius: 0 6px 6px 0; padding: 12px 16px;
+    font-size: 13px; color: #33422F; line-height: 1.75;
+    margin-bottom: 12px;
+  }
+  .verified strong { color: #1B5E20; }
+  .verified .vtag {
+    display: inline-block; background: #2E7D32; color: #fff;
+    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+    letter-spacing: 0.04em; margin-right: 6px; vertical-align: middle;
+  }
+
+  /* ────── TAGS ────── */
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .tag-buy   { background: var(--tag-buy-bg);   color: var(--tag-buy-text); }
+  .tag-watch { background: var(--tag-watch-bg); color: var(--tag-watch-text); }
+  .tag-risk  { background: var(--tag-risk-bg);  color: var(--tag-risk-text); }
+  .tag-info  { background: var(--tag-info-bg);  color: var(--tag-info-text); }
+
+  /* ────── STEP LIST ────── */
+  .steps { list-style: none; }
+  .steps li {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13px; color: var(--text-secondary);
+    padding: 6px 0; line-height: 1.65;
+  }
+  .step-n {
+    flex-shrink: 0; width: 20px; height: 20px;
+    border-radius: 50%; background: var(--red);
+    color: #fff; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .steps li strong { color: var(--text-primary); }
+
+  /* ────── TABLE ────── */
+  .tbl {
+    width: 100%; border-collapse: collapse;
+    font-size: 12.5px; margin-bottom: 14px;
+    background: var(--card-bg);
+    border-radius: 6px; overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .tbl thead th {
+    background: #2A2A2A; color: #E0E0E0;
+    padding: 9px 12px; text-align: left;
+    font-weight: 600; font-size: 11.5px; letter-spacing: 0.04em;
+  }
+  .tbl td {
+    padding: 9px 12px; border-bottom: 1px solid var(--border);
+    color: var(--text-secondary); line-height: 1.6;
+  }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl tr:hover td { background: #FAFAFA; }
+  .tbl td strong { color: var(--text-primary); }
+
+  /* ────── TIMELINE ────── */
+  .tl { list-style: none; }
+  .tl li {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 9px 0; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .tl li:last-child { border-bottom: none; }
+  .tl-date { flex-shrink: 0; width: 72px; color: var(--red); font-weight: 700; font-size: 12px; line-height: 1.5; }
+  .tl-dot  { flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--border-card); margin-top: 5px; }
+  .tl-dot.red   { background: var(--red); }
+  .tl-dot.blue  { background: #1565C0; }
+  .tl-dot.green { background: #2E7D32; }
+  .tl-text { color: var(--text-secondary); line-height: 1.7; }
+  .tl-text strong { color: var(--text-primary); }
+
+  /* ────── QUOTE ────── */
+  .quote {
+    background: #F8F8F8; border-radius: 6px;
+    padding: 14px 18px 14px 20px;
+    margin-bottom: 10px;
+    font-size: 13px; color: var(--text-secondary);
+    line-height: 1.85; position: relative;
+    border-left: 3px solid #DDD;
+  }
+  .quote-attr { font-size: 11px; color: var(--text-light); margin-top: 6px; }
+
+  /* ────── DIVIDER ────── */
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+  /* ════════════════════════
+     SPECIAL TRADING SESSION
+  ═══════════════════════════ */
+  .ts-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--border-card);
+    border-top: 3px solid var(--red);
+    border-radius: 8px;
+    padding: 26px 28px;
+    margin-bottom: 36px;
+    box-shadow: var(--shadow);
+  }
+  .ts-eyebrow {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--red); font-weight: 700; margin-bottom: 6px;
+  }
+  .ts-title { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+  .ts-sub { font-size: 12px; color: var(--text-light); margin-bottom: 22px; }
+  .ts-divider { height: 1px; background: var(--border); margin: 18px 0; }
+  .ts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 680px) { .ts-grid { grid-template-columns: 1fr; } }
+  .ts-block {
+    border: 1px solid var(--border-card);
+    border-radius: 6px; padding: 16px 18px;
+    background: #FAFAFA;
+  }
+  .ts-block-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-secondary);
+    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .ts-block-title .dot-red { width: 6px; height: 6px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+  .ts-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 6px 0; border-bottom: 1px solid var(--border);
+    font-size: 12.5px; gap: 8px;
+  }
+  .ts-row:last-child { border-bottom: none; }
+  .ts-label { color: var(--text-light); flex-shrink: 0; max-width: 140px; line-height: 1.5; }
+  .ts-val { color: var(--text-primary); font-weight: 600; text-align: right; line-height: 1.5; }
+  .ts-val.red { color: var(--red); }
+  .ts-tl { list-style: none; }
+  .ts-tl li {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 7px 0; border-bottom: 1px solid var(--border);
+    font-size: 12px; line-height: 1.65;
+  }
+  .ts-tl li:last-child { border-bottom: none; }
+  .ts-td { flex-shrink: 0; width: 58px; color: var(--red); font-weight: 700; }
+  .ts-tt { color: var(--text-secondary); }
+  .ts-tt strong { color: var(--text-primary); }
+
+  /* Scenario cards */
+  .sc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 14px 0; }
+  @media (max-width: 680px) { .sc-grid { grid-template-columns: 1fr; } }
+  .sc-card { border-radius: 6px; padding: 14px 16px; font-size: 12.5px; line-height: 1.7; }
+  .sc-card.bull  { background: #E8F5E9; border: 1px solid #A5D6A7; }
+  .sc-card.side  { background: #FFF8E1; border: 1px solid #FFE082; }
+  .sc-card.bear  { background: #FFEBEE; border: 1px solid #FFCDD2; }
+  .sc-title { font-weight: 700; margin-bottom: 6px; font-size: 12px; letter-spacing: 0.04em; }
+  .sc-card.bull  .sc-title { color: #1B5E20; }
+  .sc-card.side  .sc-title { color: #E65100; }
+  .sc-card.bear  .sc-title { color: #B71C1C; }
+  .sc-card p { color: #555; }
+
+  /* Action boxes */
+  .act-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  @media (max-width: 680px) { .act-grid { grid-template-columns: 1fr; } }
+  .act-box { border-radius: 6px; padding: 14px 16px; font-size: 12.5px; line-height: 1.7; }
+  .act-box.go     { background: #E8F5E9; border: 1px solid #C8E6C9; }
+  .act-box.wait   { background: #FFF8E1; border: 1px solid #FFE082; }
+  .act-box.risk   { background: #FFEBEE; border: 1px solid #FFCDD2; }
+  .act-title { font-weight: 700; font-size: 12px; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .act-box.go   .act-title { color: #1B5E20; }
+  .act-box.wait .act-title { color: #E65100; }
+  .act-box.risk .act-title { color: #B71C1C; }
+  .act-box p { color: #555; }
+
+  /* ────── CHARTS ────── */
+  .chart-card {
+    background: var(--card-bg); border: 1px solid var(--border-card);
+    border-radius: 6px; padding: 14px 16px 10px; margin-bottom: 14px;
+  }
+  .chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; gap: 6px; }
+  .chart-name { font-size: 12.5px; font-weight: 700; color: var(--text-primary); }
+  .chart-now { font-size: 12px; color: var(--red); font-weight: 700; }
+  .chart-svg { width: 100%; height: auto; display: block; }
+  .chart-caption { font-size: 11px; color: var(--text-light); margin-top: 4px; line-height: 1.6; }
+  .chart-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; font-size: 10.5px; color: var(--text-light); }
+  .chart-legend span.sw { display: inline-block; width: 10px; height: 2px; margin-right: 4px; vertical-align: middle; }
+
+  /* ────── MISC ────── */
+  .module-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #F0F0F0; border: 1px solid var(--border-card);
+    border-radius: 4px; padding: 4px 10px;
+    font-size: 11px; color: var(--text-secondary);
+    font-weight: 600; letter-spacing: 0.05em;
+    margin-right: 6px; margin-bottom: 6px;
+  }
+  .module-chip .chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+  .principle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  @media (max-width: 600px) { .principle-grid { grid-template-columns: 1fr; } }
+  .principle-item {
+    background: var(--card-bg); border: 1px solid var(--border-card);
+    border-radius: 6px; padding: 12px 14px; font-size: 13px;
+  }
+  .p-num { font-size: 10px; color: var(--red); font-weight: 700; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .p-text { color: var(--text-secondary); line-height: 1.7; }
+  .p-text strong { color: var(--text-primary); }
+
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); transition: transform 0.2s ease; }
+    .sidebar.open { transform: translateX(0); }
+    main { margin-left: 0; padding: 24px 18px 56px; }
+    .topbar-mobile-toggle { display: inline-block; }
+    .topbar-links a { padding: 5px 8px; font-size: 11px; }
+    .topbar { padding: 0 10px; gap: 8px; }
+    .topbar-divider, .topbar-title { display: none; }
+    .topbar-brand span:last-child { display: none; }
+  }
+  @media (max-width: 480px) {
+    .topbar-links a { padding: 4px 6px; font-size: 10px; }
+    .page-title { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <button class="topbar-mobile-toggle" id="sidebarToggle">☰</button>
+  <div class="topbar-brand">
+    <span class="vs-red">WMA</span>
+    <span>財富管理顧問課程</span>
+  </div>
+  <div class="topbar-divider"></div>
+  <span class="topbar-title">教案整理 · 20260710</span>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-links">
+    <a href="https://nike1112afmax.github.io/Study/index1.html" target="_blank">回首頁 ↗</a>
+    <a href="https://drive.google.com/drive/folders/1EHV9WRDSIr-BfL98yWeOZykKwvchqse5?usp=sharing" target="_blank">資料下載 ↗</a>
+  </div>
+</header>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-section-label">課程架構</div>
+
+  <div class="sidebar-group" data-group="g-session1">
+    <button class="sidebar-toggle" data-target="sub-session1"><span class="dot"></span>第一堂：市場風險與原油框架<span class="chev">▶</span></button>
+    <div class="sidebar-sub" id="sub-session1">
+      <a href="#session1"><span class="dot"></span>本堂總覽</a>
+      <a href="#card-risk5"><span class="dot"></span>五大風險指標同步示警</a>
+      <a href="#card-oil-framework"><span class="dot"></span>原油三長三短投資框架</a>
+      <a href="#card-buy-signal"><span class="dot"></span>7/7 小暑買進訊號</a>
+      <a href="#card-eia-update"><span class="dot"></span>EIA 原油庫存快報</a>
+      <a href="#card-target-reverse"><span class="dot"></span>目標價升降＝反向訊號</a>
+      <a href="#card-five-principles"><span class="dot"></span>投資心法：關鍵五條</a>
+    </div>
+  </div>
+
+  <div class="sidebar-group" data-group="g-session2">
+    <button class="sidebar-toggle" data-target="sub-session2"><span class="dot"></span>第二堂：技術分析與標的規劃<span class="chev">▶</span></button>
+    <div class="sidebar-sub" id="sub-session2">
+      <a href="#session2"><span class="dot"></span>本堂總覽</a>
+      <a href="#card-five-steps"><span class="dot"></span>技術分析五步驟</a>
+      <a href="#card-support-resist"><span class="dot"></span>支撐壓力五種方法</a>
+      <a href="#card-fpc-review"><span class="dot"></span>台塑：回顧與規劃</a>
+      <a href="#card-oil-review"><span class="dot"></span>布蘭特原油：回顧與規劃</a>
+      <a href="#card-gold-hsi"><span class="dot"></span>黃金／香港恆生：均線減碼</a>
+      <a href="#card-yield-usd"><span class="dot"></span>殖利率與美元：流動性緊縮</a>
+    </div>
+  </div>
+
+  <div class="sidebar-group" data-group="g-session3">
+    <button class="sidebar-toggle" data-target="sub-session3"><span class="dot"></span>第三堂：貴金屬展望報告<span class="chev">▶</span></button>
+    <div class="sidebar-sub" id="sub-session3">
+      <a href="#session3"><span class="dot"></span>本堂總覽</a>
+      <a href="#card-gold-framework"><span class="dot"></span>黃金分析框架</a>
+      <a href="#card-silver-goldbug"><span class="dot"></span>白銀與金蟲策略</a>
+      <a href="#card-conclusion"><span class="dot"></span>結論分析</a>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">操作規劃</div>
+  <div class="sidebar-group" data-group="g-trade">
+    <button class="sidebar-toggle special" data-target="sub-trade"><span class="dot"></span>⚡ 台塑 × 布蘭特原油<span class="chev">▶</span></button>
+    <div class="sidebar-sub special-sub" id="sub-trade">
+      <a href="#trade-session"><span class="dot"></span>決策單總覽</a>
+      <a href="#ts-brent"><span class="dot"></span>布蘭特原油技術現況</a>
+      <a href="#ts-fpc"><span class="dot"></span>台塑技術現況</a>
+      <a href="#ts-fx"><span class="dot"></span>美元／US10Y 技術現況</a>
+      <a href="#ts-timeline"><span class="dot"></span>重大時間轉折事件</a>
+      <a href="#ts-scenario"><span class="dot"></span>油價三情境分析</a>
+      <a href="#ts-decision"><span class="dot"></span>整合操作決策表</a>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">參考資料</div>
+  <a href="#ref-taodong"><span class="dot"></span>陶冬觀點摘要</a>
+  <a href="#ref-weekly"><span class="dot"></span>上週回顧與本週展望</a>
+  <a href="#calendar"><span class="dot"></span>七月財經行事曆</a>
+  <a href="#principles"><span class="dot"></span>建平老師語錄</a>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- OVERVIEW -->
+  <div id="overview" class="page-hero">
+    <div class="page-eyebrow">啟富達國際 · WMA 財富管理顧問課程 · 2026 年 7 月第一次</div>
+    <h1 class="page-title">五大風險指標齊鳴，原油三長三短已見反轉<br>台塑、布蘭特原油獨立操作規劃</h1>
+    <p class="page-subtitle">本課程聚焦市場風險指標（美銀熊市、高盛牛熊、興登堡凶兆、鐵達尼症候群）齊發警訊，原油三長三短投資框架與 7/7 小暑買進訊號的實戰驗證，台塑與布蘭特原油的技術規劃與獲利了結紀律，以及殖利率、美元指數對黃金／香港恆生的連動邏輯。漲跌有原因，進退有依據。</p>
+    <div class="hero-tags">
+      <span class="hero-tag">布蘭特原油</span>
+      <span class="hero-tag">台塑 1301</span>
+      <span class="hero-tag">三長三短框架</span>
+      <span class="hero-tag">7/7 小暑買進訊號</span>
+      <span class="hero-tag">美銀熊市 70%</span>
+      <span class="hero-tag">高盛牛熊 75%</span>
+      <span class="hero-tag">殖利率與美元向上</span>
+    </div>
+  </div>
+
+  <!-- ══════════════ SESSION 1 ══════════════ -->
+  <section class="section" id="session1">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">第一堂</div>
+        <h2>市場風險與原油投資框架</h2>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>核心主旨：</strong>市場情緒（狗）與現實基本面（主人）經常背離。五大風險指標同步發出警訊，代表金融市場的估值風險越來越高；而原油則憑藉三長三短的基本面框架，在 7/7 小暑節氣出現帶量反轉的買進訊號——這正是「回到現實，反人性操作」的具體示範。
+    </div>
+
+    <!-- 五大風險指標 -->
+    <div class="card card-red-border" id="card-risk5">
+      <div class="card-title"><span class="icon">🚨</span>五大市場風險指標同步示警（2026 年 6 月起密集觸發）</div>
+      <ul class="kv">
+        <li><span class="kv-k">① 美銀熊市指標</span><span class="kv-v">十大指標已觸及 <strong>7 項</strong>（<span class="red">70%</span>），5 項情緒指標＋2 項估值指標＋3 項宏觀流動性指標；標普 500 有 17 項估值指標高於歷史均值，科技股現況類似 2000 年網路泡沫前一個月</span></li>
+        <li><span class="kv-k">② 高盛牛熊指標</span><span class="kv-v">綜合席勒本益比、失業率、殖利率曲線、ISM 製造業、核心通脹，目前來到 <strong>75%</strong>（2000 年科網泡沫時亦為 75%，2008 年金融海嘯時尚未達到）</span></li>
+        <li><span class="kv-k">③ 興登堡凶兆</span><span class="kv-v">2026 年 6 月起密集觸發，近一個月觸發 <strong>7 次</strong>，A 股同類訊號準確率高達 92%</span></li>
+        <li><span class="kv-k">④ 鐵達尼症候群</span><span class="kv-v">同期密集觸發，用 52 週新高／新低股票數量判斷大盤內部結構是否脆弱</span></li>
+        <li><span class="kv-k">⑤ 道瓊與那斯達克背離</span><span class="kv-v">出現歷史罕見同時背離，三個月內入熊機率評估達 <strong>60–67%</strong>，過去多次發生在市場重大拐點附近</span></li>
+      </ul>
+      <div class="callout gray" style="margin-top:10px;">
+        <strong>建平老師：</strong>「這五個指標涵蓋了估值、情緒、宏觀流動性、技術分析與大盤結構，代表金融市場的風險越來越高。六月起風，七月來雨，八月風雨交加。」
+      </div>
+    </div>
+
+    <!-- 原油三長三短 -->
+    <div class="card" id="card-oil-framework">
+      <div class="card-title"><span class="icon">🛢️</span>原油三長三短投資框架</div>
+      <div class="grid2">
+        <div>
+          <p><strong>三長（長期基本面支撐）：</strong></p>
+          <ul class="kv">
+            <li><span class="kv-k">經濟</span><span class="kv-v">美國經濟沒有衰退，仍有用油需求；無地緣政治風險時油價均值約 80 美元，有地緣政治風險時均值約 <strong>140 美元</strong></span></li>
+            <li><span class="kv-k">供需</span><span class="kv-v">美伊戰爭引發實體供應缺口，2018 年美國成為全球最大產油國，2026 年 3 月成為全球最大原油出口國</span></li>
+            <li><span class="kv-k">美元</span><span class="kv-v">油價與美元呈現結構性正相關（近 5 年由負轉正）</span></li>
+          </ul>
+        </div>
+        <div>
+          <p><strong>三短（短期驅動因子）：</strong></p>
+          <ul class="kv">
+            <li><span class="kv-k">庫存</span><span class="kv-v">全球原油庫存創 20 年新低，美國 SPR 戰備儲油創 <strong>43 年新低</strong>，庫欣庫存已低於 2,000 萬桶下限</span></li>
+            <li><span class="kv-k">重大事件／季節</span><span class="kv-v">厄爾尼諾效應、夏季旅遊旺季支撐短期用油需求</span></li>
+            <li><span class="kv-k">CFTC 持倉</span><span class="kv-v">市場主力（大鱷）持續在低檔承接油價空單回補</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:10px;">
+        <strong>結論：</strong>三長三短同時指向油價「有支撐」——不要單靠地緣新聞情緒判斷方向，要回到庫存、供需這些真實的基本面（主人），而非新聞標題製造的短期情緒（狗）。
+      </div>
+    </div>
+
+    <!-- 7/7 小暑買進訊號 -->
+    <div class="card" id="card-buy-signal">
+      <div class="card-title"><span class="icon">📈</span>7/7 小暑買進訊號（課後已獲實戰驗證）</div>
+      <p><strong>節氣轉折：</strong>7/7 小暑當日，布蘭特原油出現下降楔形突破＋帶量反轉，符合底部買進訊號：股價整理打底一段時間、帶量突破型態（5 日均量突破 20 日均量）、DIF／MACD 黃金交叉且柱狀體翻正、KD 低檔黃金交叉；同時 ADX 指標自高位滑落，代表前波段下跌趨勢已經結束。</p>
+      <div class="verified">
+        <span class="vtag">課後驗證</span><strong>7/9–7/16 追蹤：</strong>7/9 美伊停火協議破裂，雙方互相攻擊，布蘭特單日 <strong>+5.43%</strong> 收 78.19 美元，創 8 週最大單週漲幅；7/11 川普宣布停火協議失效並撤銷伊朗公開市場售油許可，油價收 75.23 美元；7/13 美軍週末對伊朗發動本週第 4 輪打擊，布蘭特週一大漲近 4% 至 79 美元；7/14 美軍對荷莫茲海峽附近與伊朗沿岸發動長達 7 小時打擊，布蘭特盤中一度 <strong>+2.24%</strong> 至 85.17 美元；7/15 EIA 公布至 7/10 當週原油庫存（詳見下方快報），儘管數據面偏空，地緣風險溢價仍蓋過利空，布蘭特收 <strong>84.95 美元</strong>、WTI 收 79.60 美元；7/16（今日）伊朗革命衛隊揚言封鎖「所有對美國及其盟友有利的出口走廊」並反擊美國在巴林、科威特、約旦的軍事目標，市場緊盯荷莫茲海峽是否實質中斷通行。三長三短的原油投資框架與節氣時間轉折，再次在實戰中得到印證。
+      </div>
+    </div>
+
+    <!-- EIA 原油庫存快報 -->
+    <div class="card card-red-border" id="card-eia-update">
+      <div class="card-title"><span class="icon">📦</span>EIA 原油庫存快報（7/15 公布，至 7/10 當週）</div>
+      <ul class="kv">
+        <li><span class="kv-k">商業原油庫存</span><span class="kv-v">－170 萬桶（市場預期－260 萬桶，<strong>降幅不如預期</strong>），總量 4.097 億桶，較 5 年均值低約 6%</span></li>
+        <li><span class="kv-k">汽油庫存</span><span class="kv-v">－166.4 萬桶，較 5 年均值低約 6–8%</span></li>
+        <li><span class="kv-k">餾餾油庫存</span><span class="kv-v"><strong>＋460 萬桶</strong>（遠高於市場預期的＋10 萬桶），較 5 年均值仍低約 11%</span></li>
+        <li><span class="kv-k">庫欣（Cushing）</span><span class="kv-v">小幅增加約 23.8 萬桶，仍處相對低檔</span></li>
+        <li><span class="kv-k">SPR 戰略儲備</span><span class="kv-v">再減 299 萬桶，總量降至 <strong>3.165 億桶</strong>，續創 <strong>43 年新低</strong>，距滿倉容量仍有約 4.15 億桶差距</span></li>
+        <li><span class="kv-k">煉油廠與產量</span><span class="kv-v">開工率 96.2%（+0.4 個百分點），原油日產量創新高達 1,386 萬桶／日</span></li>
+        <li><span class="kv-k">市場反應</span><span class="kv-v">數據公布後油價變動有限，布蘭特收 84.95 美元（+0.26%）、WTI 收 79.60 美元（+0.33%），主要由地緣政治風險溢價支撐，而非庫存數據本身</span></li>
+      </ul>
+      <div class="callout amber" style="margin-top:10px;">
+        <strong>利多／利空解讀：</strong>單看這份報告本身，商業原油降幅不如預期、餾餾油大幅累積，屬於<strong>數據面中性偏空</strong>的組合；但 SPR 續創 43 年新低、庫欣維持低檔，代表「安全緩衝墊」持續變薄，中長期供給脆弱性不減。本次油價之所以未隨數據轉弱，是因為<strong>地緣政治（三長之一）暫時蓋過短期庫存數據（三短之一）</strong>——這正是「三長三短」框架的實際運作：短期數據可能偏多或偏空互見，但只要三長的結構性因素（供需缺口、地緣風險、美元正相關）沒有改變，回檔就不等於轉空。
+      </div>
+      <div class="callout gray" style="margin-top:10px;">
+        <strong>後續應注意：</strong>
+        <br>① 荷莫茲海峽是否<strong>實質中斷通行</strong>——目前僅為伊朗片面聲明，尚待航運數據（Kpler 等機構的油輪通行量）驗證；
+        <br>② 伊朗對美國在巴林、科威特、約旦目標的反擊是否<strong>持續升級</strong>，牽動下一輪風險溢價；
+        <br>③ SPR 是否持續探底——美國能否在低庫存下維持補庫節奏，將影響中期供給緩衝空間；
+        <br>④ 下週三（美東 7/22，台北 7/23）<strong>下一次 EIA 報告</strong>，觀察商業庫存與庫欣是否延續去化；
+        <br>⑤ 7/21–22 沃什國會聽證會與 7/28–29 FOMC——美元與流動性走向將透過「油價與美元正相關」的邏輯鏈，回頭影響油價本身；
+        <br>⑥ 技術面持續留意布蘭特能否站穩並收在季線（MA60，約 92.5 美元）之上，這將是三長三短框架能否延伸至更高目標區（98／108）的關鍵確認。
+      </div>
+    </div>
+
+    <!-- 目標價反向訊號 -->
+    <div class="card" id="card-target-reverse">
+      <div class="card-title"><span class="icon">🎯</span>機構上調／下調目標價＝反向訊號</div>
+      <p>機構（無論外資投行或本土券商）發布上調或下調目標價時，通常會出現股市（或商品）的相對高點或低點。<strong>股市利多是壞消息，利空才是好消息，反人性就要反著做。</strong></p>
+      <div class="callout amber" style="margin-top:10px;">
+        <strong>建平老師核心問句：</strong>當市場一面倒看空、機構紛紛下修目標價時，你應該怎麼做？→ 回到庫存、供需等真實面（主人）去判斷，而不是隨著市場情緒（狗）起舞。
+      </div>
+    </div>
+
+    <!-- 投資心法五條 -->
+    <div class="card" id="card-five-principles">
+      <div class="card-title"><span class="icon">💡</span>投資心法：關鍵五條</div>
+      <ul class="steps">
+        <li><span class="step-n">1</span><span>不要在暴漲的時候買入，要在下跌後整理到位時買入，把這變成一種習慣</span></li>
+        <li><span class="step-n">2</span><span>不要滿倉持有一支股票，<strong>持股三隻比較好</strong>，而且最好是不同行業的配置</span></li>
+        <li><span class="step-n">3</span><span>不追高就贏了 50% 的人；做向上趨勢就贏了 70% 的人；用基本面選股就贏了 90% 的人；<strong>結合月線圖入場，就贏了 95% 的人</strong></span></li>
+        <li><span class="step-n">4</span><span>不要在熱門股上做長線；不要在冷門股上做短線，徹底掌握這個規則可避開 90% 以上的坑</span></li>
+        <li><span class="step-n">5</span><span>股市就是人性，性格決定命運；漲時看利潤停利，跌時看指數確認，不要只看報酬率</span></li>
+      </ul>
+      <div class="callout gray" style="margin-top:10px;font-size:12px;">
+        天下沒有白吃的午餐——不要錢的最貴。有知識才有膽識；你的認知高度，決定你的財富深度。
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════ SESSION 2 ══════════════ -->
+  <section class="section" id="session2">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">第二堂</div>
+        <h2>技術分析：工具步驟與標的回顧規劃</h2>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>第一原則：</strong>技術分析觀察順序為波浪 → 型態 → 均線 → 指標 → 成交量。波浪代表位置，用<strong>週線圖</strong>畫；指標是落後確認，重視月 KD 值在 20 低檔的標的（風險低、利潤高）；<strong>重大事件可以扭轉均線</strong>——這正是布蘭特原油本次操作規劃最關鍵的提醒。
+    </div>
+
+    <div class="card" id="card-five-steps">
+      <div class="card-title">技術分析五步驟</div>
+      <table class="tbl" style="margin-top:10px;">
+        <thead><tr><th>#</th><th>工具</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>1 波浪</td><td>用週線圖畫，包含時間與空間的運算；上漲五波、下降三波，浪中有浪</td></tr>
+          <tr><td>2 型態</td><td>頸線、趨勢線；今日型態＝明日行情＝後天新聞</td></tr>
+          <tr><td>3 均線</td><td>會買是徒弟，會賣是師傅，會轉換的叫師公；破季線 3 天要站回，3 天站不回則 MA20 與 MA60 死亡交叉，通常要跌 3 個月——<strong>但重大事件可以扭轉這個局勢</strong></td></tr>
+          <tr><td>4 指標</td><td>重視月 KD 值在 20 低檔的位置，股價在低檔、風險低、利潤高</td></tr>
+          <tr><td>5 成交量</td><td>大量區往往是支撐與壓力所在；新高量會有新高價，量價不會同時到頂</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" id="card-support-resist">
+      <div class="card-title">判斷支撐與壓力的五種方法</div>
+      <div class="principle-grid" style="margin-top:10px;">
+        <div class="principle-item"><div class="p-num">方法 01</div><div class="p-text"><strong>型態</strong>：頸線</div></div>
+        <div class="principle-item"><div class="p-num">方法 02</div><div class="p-text"><strong>均線</strong></div></div>
+        <div class="principle-item"><div class="p-num">方法 03</div><div class="p-text"><strong>黃金切割率</strong>／百分比試算法／型態對稱法</div></div>
+        <div class="principle-item"><div class="p-num">方法 04</div><div class="p-text"><strong>前波高低點</strong></div></div>
+        <div class="principle-item" style="grid-column:1/-1;"><div class="p-num">方法 05</div><div class="p-text"><strong>大量區</strong>：成交量大的地方往往是重要支撐／壓力所在</div></div>
+      </div>
+    </div>
+
+    <!-- 台塑回顧與規劃 -->
+    <div class="card" id="card-fpc-review">
+      <div class="card-title"><span class="icon">📊</span>台塑（1301）：回顧與規劃</div>
+      <div class="chart-card">
+        <div class="chart-head"><span class="chart-name">台塑月線走勢（2025.01 低點 31.25 → 2026.07 現況）</span><span class="chart-now">現價 62.1</span></div>
+        <svg class="chart-svg" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg">
+          <line x1="45" y1="185" x2="545" y2="185" stroke="#DEDEDE" stroke-width="1"/>
+          <line x1="45" y1="15" x2="45" y2="185" stroke="#DEDEDE" stroke-width="1"/>
+          <!-- reference lines -->
+          <line x1="45" y1="65.7" x2="545" y2="65.7" stroke="#C8102E" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="548" y="69" font-size="9.5" fill="#C8102E">頸線65</text>
+          <line x1="45" y1="35.9" x2="545" y2="35.9" stroke="#1565C0" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="548" y="39" font-size="9.5" fill="#1565C0">頸線75</text>
+          <line x1="45" y1="49.5" x2="545" y2="49.5" stroke="#888" stroke-width="1" stroke-dasharray="2,2"/>
+          <text x="548" y="53" font-size="9.5" fill="#888">MA60 70.44</text>
+          <!-- price line -->
+          <polyline points="45.0,166.4 95.0,155.6 145.0,146.2 195.0,134.3 245.0,117.7 295.0,110.4 345.0,98.5 395.0,89.6 445.0,83.6 495.0,77.6 545.0,74.4" fill="none" stroke="#C8102E" stroke-width="2"/>
+          <circle cx="45" cy="166.4" r="3" fill="#C8102E"/>
+          <circle cx="545" cy="74.4" r="3.5" fill="#C8102E"/>
+          <text x="20" y="170" font-size="9.5" fill="#555">31.25</text>
+          <text x="500" y="68" font-size="9.5" fill="#C8102E" font-weight="700">62.1</text>
+          <text x="55" y="27" font-size="9.5" fill="#555">2025.01</text>
+          <text x="490" y="27" font-size="9.5" fill="#555">2026.07</text>
+        </svg>
+        <div class="chart-caption">示意圖，依課程講義數據重繪，非即時報價。月線圖，2025.01 低點 31.25 元起漲，2026.07.03 收盤 62.1 元、盤中高點 64 元。</div>
+      </div>
+      <ul class="kv">
+        <li><span class="kv-k">週線波浪</span><span class="kv-v">波浪 5，中多格局：站上 10 週均線、週 KD 值黃金交叉、週 DIF 與 MACD 黃金交叉</span></li>
+        <li><span class="kv-k">月線大量區</span><span class="kv-v">頸線 65／75，5 年線（MA60）約在 <strong>70.44</strong> 附近，黃金切割率（31→121）算出 65／76／86.6 三個壓力位</span></li>
+        <li><span class="kv-k">漲幅回顧</span><span class="kv-v">2025.01 低點 31.25 元，本次高點來到 64 元，<strong>漲幅約 94%</strong>（64－33＝31，31／33≈94%），財富接近翻倍</span></li>
+        <li><span class="kv-k">成交量</span><span class="kv-v">近期出現主力換手放量（18.8～18.9 萬張），相對先前的量縮整理，代表新一輪關注度提升</span></li>
+      </ul>
+      <div class="callout" style="margin-top:10px;">
+        <strong>規劃：</strong>65～70 元分批獲利了結，但不要全部出清；請注意節氣的變化對轉折時間的影響。獲利了結是紀律，不代表看空後市。
+      </div>
+    </div>
+
+    <!-- 布蘭特原油回顧與規劃 -->
+    <div class="card" id="card-oil-review">
+      <div class="card-title"><span class="icon">🛢️</span>布蘭特原油：回顧與規劃</div>
+      <div class="chart-card">
+        <div class="chart-head"><span class="chart-name">布蘭特原油走勢（2026.01 基期 → 2026.07.15 收盤）</span><span class="chart-now">現價 84.95（7/15 收盤）</span></div>
+        <svg class="chart-svg" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg">
+          <line x1="45" y1="185" x2="545" y2="185" stroke="#DEDEDE" stroke-width="1"/>
+          <line x1="45" y1="15" x2="45" y2="185" stroke="#DEDEDE" stroke-width="1"/>
+          <line x1="45" y1="89.9" x2="545" y2="89.9" stroke="#1565C0" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="548" y="93" font-size="9.5" fill="#1565C0">季線92.5</text>
+          <line x1="45" y1="176.4" x2="545" y2="176.4" stroke="#888" stroke-width="1" stroke-dasharray="2,2"/>
+          <text x="548" y="180" font-size="9.5" fill="#888">基期58.4</text>
+          <polyline points="45.0,165.5 76.2,161.9 107.5,152.0 138.8,91.1 170.0,32.0 201.2,73.4 232.5,101.3 263.8,121.6 295.0,136.8 326.2,145.7 357.5,146.6 388.8,144.4 420.0,140.5 451.2,126.2 482.5,133.7 513.8,122.8 545.0,109.0" fill="none" stroke="#C8102E" stroke-width="2"/>
+          <circle cx="170.0" cy="32.0" r="3" fill="#1565C0"/>
+          <text x="150" y="24" font-size="9.5" fill="#1565C0">3月高點115~119</text>
+          <circle cx="357.5" cy="146.6" r="3" fill="#2E7D32"/>
+          <text x="320" y="160" font-size="9.5" fill="#2E7D32">6月低點70.14(c波)</text>
+          <circle cx="420.0" cy="140.5" r="3" fill="#F57F17"/>
+          <text x="380" y="132" font-size="9.5" fill="#F57F17">7/7買訊72.52</text>
+          <circle cx="513.8" cy="122.8" r="3" fill="#555"/>
+          <text x="475" y="115" font-size="9" fill="#555">7/9破局78.19</text>
+          <circle cx="545.0" cy="109.0" r="3.5" fill="#C8102E"/>
+          <text x="495" y="102" font-size="9.5" fill="#C8102E" font-weight="700">7/15收84.95</text>
+        </svg>
+        <div class="chart-caption">示意圖，依課程講義與 7/9–7/15 追蹤新聞重繪，非即時報價。7/15 EIA 公布商業原油庫存降幅不如預期、餾餾油大增，數據面偏空，但地緣風險溢價（美軍空襲荷莫茲海峽周邊）支撐油價收平盤附近；7/16 伊朗揚言封鎖出口走廊，後續走勢待觀察。</div>
+      </div>
+      <ul class="kv">
+        <li><span class="kv-k">技術型態</span><span class="kv-v">箱型整理 abc(3-3-5) ＋ 下降楔形末端 C 波，節氣轉折對應小滿到小暑約 34 天</span></li>
+        <li><span class="kv-k">ADX 指標</span><span class="kv-v">自高位滑落，代表前波段修正結束（底部領先訊號之一）</span></li>
+        <li><span class="kv-k">均線壓力</span><span class="kv-v">最大反壓在季線（MA60）約 <strong>92.5</strong> 附近；次要頸線壓力 98.05／108.21（黃金切割率 0.5／0.618）</span></li>
+        <li><span class="kv-k">波浪位置</span><span class="kv-v">週線波浪 4，前波高低點頸線約 92／88／78 一帶</span></li>
+      </ul>
+      <div class="callout" style="margin-top:10px;">
+        <strong>規劃：</strong>依傳統均線邏輯，破季線反彈到季線應該減碼；<strong>但重大事件可以扭轉這個局勢</strong>，可能反彈超過年線。目前美伊軍事衝突持續發酵，正是「重大事件扭轉均線」的實例——操作上應動態隨供需與地緣情勢調整，而非機械式套用均線規則。
+      </div>
+    </div>
+
+    <!-- 黃金/HSI 均線減碼 -->
+    <div class="card" id="card-gold-hsi">
+      <div class="card-title"><span class="icon">🥇</span>黃金／香港恆生指數：均線減碼邏輯</div>
+      <p><strong>邏輯鏈：</strong>美國十年期公債殖利率與美元指數，和黃金（金蟲指數）、香港恆生指數呈現負相關。若殖利率與美元中長期趨勢持續向上，黃金與港股都將承壓。</p>
+      <div class="grid2" style="margin-top:8px;">
+        <div class="callout blue" style="margin-bottom:0;">
+          <strong>黃金／金蟲指數：</strong>已跌破季線，且季線與月線死亡交叉，月 KD 值持續在死叉向下。<strong>反彈到季線做減碼</strong>；單筆投資目前沒有機會，定期定額可以繼續操作。
+        </div>
+        <div class="callout amber" style="margin-bottom:0;">
+          <strong>香港恆生指數：</strong>目前處於波浪 4，由於美元與 US10Y 都還要向上，有可能形成失敗的第 5 波。<strong>反彈到年線做減碼</strong>；單筆投資沒有機會，定期定額可以繼續操作。
+        </div>
+      </div>
+    </div>
+
+    <!-- 殖利率與美元 -->
+    <div class="card" id="card-yield-usd">
+      <div class="card-title"><span class="icon">📉</span>殖利率與美元指數：流動性緊縮</div>
+      <ul class="kv">
+        <li><span class="kv-k">US10Y 週線</span><span class="kv-v">收斂三角形型態（多重修正波），等腰三角形測算：5.02－3.25＝1.77，4.6＋1.77＝<strong>6.37</strong> 為長期理論滿足點</span></li>
+        <li><span class="kv-k">US10Y 日線</span><span class="kv-v">已出現買進訊號：股價突破型態並站上 20 日均線、KD 低檔黃金交叉、DIF／MACD 黃金交叉且柱狀體翻正，將再度向上</span></li>
+        <li><span class="kv-k">美元指數週線</span><span class="kv-v">突破頸線（100）與 260 週均線（5 年線），55 週打底完成，週 KD 已在高檔區</span></li>
+        <li><span class="kv-k">美元指數日線</span><span class="kv-v">突破頸線後臨前波高低點回撤整理，最新來到 101.8 附近</span></li>
+      </ul>
+      <div class="callout gray" style="margin-top:10px;">
+        <strong>結論：</strong>US10Y 與美元指數中長期趨勢仍是向上，代表流動性緊縮，請關注 7/30（台北時間）FOMC 會議結果。
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════ SESSION 3 ══════════════ -->
+  <section class="section" id="session3">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">第三堂</div>
+        <h2>研究部專題：貴金屬展望——跌勢未止，但無需過度悲觀</h2>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>結論先行：</strong>黃金已進入第 6 輪技術性熊市（此輪跌幅逾 20%），利空因素較 2025 年 12 月展望時更多，但庫存底部結構、央行購金與長線資金逢低布局的力道，也讓後續跌勢不需要過度悲觀。
+    </div>
+
+    <div class="card card-red-border" id="card-gold-framework">
+      <div class="card-title">黃金分析框架：利空因素增加，但無需過度悲觀</div>
+      <ul class="kv">
+        <li><span class="kv-k">一、景氣與加息預期</span><span class="kv-v">美國景氣擴張略降速，就業保持韌性（6 月新增非農僅 5.7 萬，遠低於預期，但近三個月均值仍有 11.1 萬）；官員鷹派立場仍主導，但通脹分歧持續加大</span></li>
+        <li><span class="kv-k">二、金融屬性</span><span class="kv-v">美元流動性持續壓制黃金；2026 年初以來黃金與美國十年期<strong>實際利率</strong>重新回歸負相關（R² 由極低回升至 0.768）</span></li>
+        <li><span class="kv-k">三、避險屬性</span><span class="kv-v">避險催化劑不足：機構評估衰退機率僅約 12%，地緣政治風險熱度指數同步回落；分散化配置需求仍在，去美元化速度放緩但趨勢未逆轉</span></li>
+        <li><span class="kv-k">四、交易行為</span><span class="kv-v">全球央行購金托底（近年年化約 1,073 噸，為 2011–2021 年均值兩倍以上），長線資金逢低承接意願仍在</span></li>
+      </ul>
+    </div>
+
+    <div class="card" id="card-silver-goldbug">
+      <div class="card-title">白銀與金蟲（GDX）：跌勢未止，尚未觸發買入訊號</div>
+      <p><strong>白銀：</strong>全球供需缺口持續改善（缺口由 -117.7 億盎司收斂至 -40.2 億盎司，預估下一年度約 -46.2 億盎司），逼倉行情已於 3 月中告一段落；金銀比合理區間約 75–80，目前約 66.7，仍有修正／回升空間。</p>
+      <p><strong>金蟲（GDX）：</strong>公司自 2025 年 12 月發布浮動停損策略以來成功守住利潤（去年 12 月已提示賣出訊號，隨後金蟲指數重挫逾 32%），<strong>目前尚未觸發買入訊號</strong>，建議耐心等待。</p>
+    </div>
+
+    <div class="note" id="card-conclusion">
+      <strong>📌 結論分析：</strong>黃金若跌破 3,900 關鍵支撐，配置價值將顯著提升，測算兩個重要觀察價位在 <strong>3,800</strong> 附近與 <strong>3,400</strong> 附近；白銀對應區間約 47–55 美元；金蟲策略自去年 12 月建議浮動停損以來尚未發出買入訊號。整體而言，貴金屬跌勢尚未結束，但也無需過度悲觀。
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════ TRADING SESSION ══════════════ -->
+  <div id="trade-session" class="ts-wrap">
+    <div class="ts-eyebrow">⚡ Independent Trading Session · 操作規劃決策單</div>
+    <h2 class="ts-title">布蘭特原油 × 台塑 1301 整合操作規劃</h2>
+    <p class="ts-sub">整合技術面＋基本面＋時間節點＋重大事件 · 課程日期 2026/07/10（資料更新至 2026/07/16）</p>
+
+    <div class="ts-divider"></div>
+
+    <div class="ts-grid">
+      <div class="ts-block" id="ts-brent">
+        <div class="ts-block-title"><span class="dot-red"></span>布蘭特原油：技術面現況</div>
+        <div class="ts-row"><span class="ts-label">課程週收盤參考</span><span class="ts-val red">72–79 美元／桶</span></div>
+        <div class="ts-row"><span class="ts-label">7/15 收盤（EIA 公布日）</span><span class="ts-val red">布蘭特 84.95／WTI 79.60 美元</span></div>
+        <div class="ts-row"><span class="ts-label">EIA 庫存（至7/10當週）</span><span class="ts-val">商業原油 -170 萬桶（不如預期）；SPR 創43年新低</span></div>
+        <div class="ts-row"><span class="ts-label">3 月衝突高點</span><span class="ts-val">115.30／119.50 美元</span></div>
+        <div class="ts-row"><span class="ts-label">6 月低點（c 波）</span><span class="ts-val">70.14 美元</span></div>
+        <div class="ts-row"><span class="ts-label">黃金切割率壓力</span><span class="ts-val">87.39／92.72／98.05 美元</span></div>
+        <div class="ts-row"><span class="ts-label">最大反壓</span><span class="ts-val">季線（MA60）約 92.5 美元</span></div>
+        <div class="ts-row"><span class="ts-label">技術型態</span><span class="ts-val">箱型整理 abc(3-3-5)＋下降楔形末端 C 波</span></div>
+        <div class="ts-row"><span class="ts-label">ADX 位置</span><span class="ts-val red">高位滑落，前波修正結束訊號</span></div>
+        <div class="ts-row"><span class="ts-label">波浪位置</span><span class="ts-val">週線波浪 4，7/7 已見底部反轉</span></div>
+      </div>
+      <div class="ts-block" id="ts-fpc">
+        <div class="ts-block-title"><span class="dot-red"></span>台塑 1301：技術面現況</div>
+        <div class="ts-row"><span class="ts-label">課程週股價區間</span><span class="ts-val red">60–64 元</span></div>
+        <div class="ts-row"><span class="ts-label">2026/07/03 收盤</span><span class="ts-val red">62.1 元</span></div>
+        <div class="ts-row"><span class="ts-label">2025/01 前波低點</span><span class="ts-val">31.25 元</span></div>
+        <div class="ts-row"><span class="ts-label">累計漲幅</span><span class="ts-val">約 94%（31.25→64）</span></div>
+        <div class="ts-row"><span class="ts-label">月線大量區／頸線</span><span class="ts-val">65／75 元</span></div>
+        <div class="ts-row"><span class="ts-label">5 年線（MA60）</span><span class="ts-val">約 70.44 元</span></div>
+        <div class="ts-row"><span class="ts-label">週線型態</span><span class="ts-val">波浪 5，中多格局（站上 10 週均線）</span></div>
+        <div class="ts-row"><span class="ts-label">成交量訊號</span><span class="ts-val red">主力換手放量 18.8–18.9 萬張</span></div>
+        <div class="ts-row"><span class="ts-label">月 KD 位置</span><span class="ts-val">已由低檔攀升至相對高檔區</span></div>
+      </div>
+    </div>
+
+    <div class="ts-divider"></div>
+
+    <div class="ts-grid">
+      <div class="ts-block" id="ts-fx">
+        <div class="ts-block-title"><span class="dot-red"></span>美元指數：技術面現況</div>
+        <div class="chart-card" style="margin-bottom:8px;background:#fff;">
+          <div class="chart-head"><span class="chart-name">美元指數週線（2025.06–2026.07）</span><span class="chart-now">現價 ≈ 101.8</span></div>
+          <svg class="chart-svg" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg">
+            <line x1="45" y1="185" x2="545" y2="185" stroke="#DEDEDE" stroke-width="1"/>
+            <line x1="45" y1="15" x2="45" y2="185" stroke="#DEDEDE" stroke-width="1"/>
+            <line x1="45" y1="71.7" x2="545" y2="71.7" stroke="#C8102E" stroke-width="1" stroke-dasharray="4,3"/>
+            <text x="480" y="68" font-size="9.5" fill="#C8102E">頸線 100</text>
+            <polyline points="45.0,111.0 100.6,140.0 156.1,143.1 211.7,155.7 267.2,116.6 322.8,66.8 378.3,59.6 433.9,64.3 489.4,55.0 545.0,37.7" fill="none" stroke="#1565C0" stroke-width="2"/>
+            <circle cx="211.7" cy="155.7" r="3" fill="#1565C0"/>
+            <text x="175" y="170" font-size="9.5" fill="#555">55週打底 95.55</text>
+            <circle cx="545.0" cy="37.7" r="3.5" fill="#1565C0"/>
+            <text x="480" y="30" font-size="9.5" fill="#1565C0" font-weight="700">101.8</text>
+          </svg>
+          <div class="chart-caption">示意圖，依課程講義重繪。55 週打底後突破頸線（100）與 260 週均線，週 KD 已達高檔區。</div>
+        </div>
+        <div class="ts-row"><span class="ts-label">週線型態</span><span class="ts-val">突破頸線與 260 週均線（5 年線）</span></div>
+        <div class="ts-row"><span class="ts-label">日線型態</span><span class="ts-val">突破頸線，臨前波高低點回撤整理</span></div>
+        <div class="ts-row"><span class="ts-label">中軸點</span><span class="ts-val">約 100.39</span></div>
+      </div>
+      <div class="ts-block" id="ts-fx2">
+        <div class="ts-block-title"><span class="dot-red"></span>美國十年期公債殖利率：技術面現況</div>
+        <div class="chart-card" style="margin-bottom:8px;background:#fff;">
+          <div class="chart-head"><span class="chart-name">US10Y 週線（收斂三角形，2023.10–2026.07）</span><span class="chart-now">現價 ≈ 4.49%</span></div>
+          <svg class="chart-svg" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg">
+            <line x1="45" y1="185" x2="545" y2="185" stroke="#DEDEDE" stroke-width="1"/>
+            <line x1="45" y1="15" x2="45" y2="185" stroke="#DEDEDE" stroke-width="1"/>
+            <!-- converging trendlines -->
+            <line x1="100.6" y1="37.7" x2="545" y2="80.6" stroke="#888" stroke-width="1" stroke-dasharray="4,3"/>
+            <line x1="195.0" y1="152.6" x2="545" y2="80.6" stroke="#888" stroke-width="1" stroke-dasharray="4,3"/>
+            <polyline points="45.0,92.7 95.0,37.7 145.0,113.0 195.0,152.6 245.0,60.3 295.0,138.0 345.0,69.2 395.0,126.7 445.0,64.4 495.0,121.9 545.0,80.6" fill="none" stroke="#C8102E" stroke-width="2"/>
+            <circle cx="95.0" cy="37.7" r="3" fill="#555"/>
+            <text x="60" y="30" font-size="9.5" fill="#555">2023.10高點5.02</text>
+            <circle cx="545.0" cy="80.6" r="3.5" fill="#C8102E"/>
+            <text x="480" y="73" font-size="9.5" fill="#C8102E" font-weight="700">4.49%</text>
+          </svg>
+          <div class="chart-caption">示意圖，依課程講義重繪。等腰三角形量出：5.02－3.25＝1.77，4.6＋1.77＝6.37 為長期理論滿足點。</div>
+        </div>
+        <div class="ts-row"><span class="ts-label">日線買進訊號</span><span class="ts-val red">站上 20MA／KD 低檔金叉／DIF-MACD 金叉翻正</span></div>
+        <div class="ts-row"><span class="ts-label">關鍵觀察</span><span class="ts-val">7/30（台北時間）FOMC 決議</span></div>
+      </div>
+    </div>
+
+    <div class="ts-divider"></div>
+
+    <div class="ts-block" id="ts-correlation" style="margin-bottom:16px;">
+      <div class="ts-block-title"><span class="dot-red"></span>台塑 × 油價：正相關邏輯</div>
+      <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.75;">台塑股價與油價走勢方向並不互斥——油價走升反映能源與原物料成本上行週期啟動，台塑作為石化上游龍頭同步受惠於報價與價差回升；兩者操作規劃應合併觀察，而非視為互斥的蹺蹺板。<br>
+      ‣ 油價若持續受地緣衝突支撐（7/9 起已驗證上行）→ 觀察台塑是否同步走堅<br>
+      ‣ 台塑 65～70 分批獲利了結區間有效，跌破月線大量區 65 元需重新檢視多頭結構<br>
+      ‣ 美元／US10Y 若持續向上，流動性緊縮終將牽動全球風險性資產，包括台塑所在的台股大盤</p>
+    </div>
+
+    <div class="ts-block" id="ts-timeline" style="margin-bottom:16px;">
+      <div class="ts-block-title"><span class="dot-red"></span>重大時間轉折與事件（7/7–7/30）</div>
+      <ul class="ts-tl">
+        <li><span class="ts-td">7/7</span><span class="ts-tt"><strong>小暑節氣</strong>，布蘭特原油帶量反轉出現底部買進訊號（ADX 高位滑落）；美聯儲會議紀要公布；OPEC 月度原油報告</span></li>
+        <li><span class="ts-td">7/8</span><span class="ts-tt">川普宣布美伊<strong>停火協議</strong>短暫生效，油價一度回落至戰前水平附近</span></li>
+        <li><span class="ts-td">7/9</span><span class="ts-tt"><strong>停火破裂</strong>，美伊互相攻擊，布蘭特單日 +5.43% 收 78.19 美元，創 8 週最大單週漲幅；IEA 月度能源展望</span></li>
+        <li><span class="ts-td">7/10</span><span class="ts-tt"><strong>本次課程日</strong>；美銀行股 Q2 財報啟動前哨</span></li>
+        <li><span class="ts-td">7/11</span><span class="ts-tt">川普宣布<strong>停火協議失效</strong>，撤銷伊朗公開市場售油許可；布蘭特收 75.23 美元</span></li>
+        <li><span class="ts-td">7/13</span><span class="ts-tt">美軍週末對伊朗發動<strong>本週第 4 輪打擊</strong>，布蘭特週一大漲近 4% 至 79 美元；科技股全面走弱</span></li>
+        <li><span class="ts-td">7/14</span><span class="ts-tt">美國<strong>6 月 CPI 環比 6 年來首見下降</strong>，降息預期回升，美債殖利率全面下滑；美軍對荷莫茲海峽周邊與伊朗沿岸發動長達 7 小時打擊，布蘭特盤中一度 +2.24% 至 85.17 美元；五大投行 Q2 財報齊發（JPM／C／BAC／GS／WFC）</span></li>
+        <li><span class="ts-td">7/15</span><span class="ts-tt"><strong>EIA 公布至 7/10 當週原油庫存</strong>：商業原油 -170 萬桶（降幅不如預期）、餾餾油 +460 萬桶（遠超預期），數據面偏空；但 SPR 續創 43 年新低，地緣風險溢價支撐，布蘭特收 84.95 美元、WTI 收 79.60 美元；中國 Q2 GDP 公布</span></li>
+        <li><span class="ts-td">7/16</span><span class="ts-tt"><strong>今日</strong>：伊朗革命衛隊揚言封鎖「所有對美國及其盟友有利的出口走廊」，並反擊美國在巴林、科威特、約旦的軍事目標；市場關注沃什下週國會聽證會撞上 6 月 CPI 的後續效應</span></li>
+        <li><span class="ts-td">7/17</span><span class="ts-tt">韓國因制憲節休市一日</span></li>
+        <li><span class="ts-td">7/23</span><span class="ts-tt">歐洲央行利率決議；英特爾財報</span></li>
+        <li><span class="ts-td">7/28–29</span><span class="ts-tt"><strong>聯準會 FOMC 利率決議</strong>（市場計入 12 月加息機率，10 月機率上升，CPI 降溫後鷹派程度略緩）</span></li>
+        <li><span class="ts-td">7/30</span><span class="ts-tt">（台北時間）<strong>FOMC 決議公布</strong>；美國 Q2 GDP＋PCE；META／Alphabet 財報</span></li>
+      </ul>
+    </div>
+
+    <div class="ts-block" id="ts-scenario" style="margin-bottom:16px;">
+      <div class="ts-block-title"><span class="dot-red"></span>布蘭特原油三情境分析（已進入多頭驗證階段）</div>
+      <div class="sc-grid" style="margin-top:10px;">
+        <div class="sc-card bull">
+          <div class="sc-title">▲ 多頭情境（現況主軸）</div>
+          <p>美伊軍事衝突持續、霍爾木茲海峽通行受阻延續，川普撤銷伊朗售油許可並威脅擴大打擊。目標區 88–92，若供應缺口持續擴大，不排除挑戰前高 115–120。</p>
+        </div>
+        <div class="sc-card side">
+          <div class="sc-title">▷ 震盪情境</div>
+          <p>外交斡旋復談（阿曼調解持續進行），美伊維持「以打促談」格局，區間震盪 75–92 美元，等方向明朗再加碼。</p>
+        </div>
+        <div class="sc-card bear">
+          <div class="sc-title">▼ 空頭情境</div>
+          <p>美伊正式重啟並落實停火、霍爾木茲海峽通行保證兌現。高盛／大摩此前下修目標：2026Q4 約 80 美元、2027 年約 75 美元。但庫存底部結構限制深跌空間。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ts-block" id="ts-decision" style="margin-bottom:16px;">
+      <div class="ts-block-title"><span class="dot-red"></span>整合操作決策表</div>
+      <table class="tbl" style="margin-top:10px;">
+        <thead><tr><th>標的</th><th>關注條件</th><th>進場／續抱訊號</th><th>停利／停損參考</th><th>方向</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>布蘭特原油</strong></td>
+            <td>7/7 節氣買進訊號已觸發；美伊軍事衝突延續程度；7/30 FOMC 結果</td>
+            <td>已帶量突破下降楔形並站上 MA20；ADX 高位滑落確認；重大事件持續扭轉均線</td>
+            <td>初步壓力 92.5（季線）／98；若重大事件降溫，回測 78–75 一帶為觀察支撐</td>
+            <td><span class="tag tag-buy">續抱／分批</span></td>
+          </tr>
+          <tr>
+            <td><strong>台塑 1301</strong></td>
+            <td>65–70 元分批獲利了結區間；油價／台股大盤連動；月線大量區 65 是否守穩</td>
+            <td>週線波浪 5 中多格局延續；月 KD 高檔區，留意獲利了結節奏</td>
+            <td>停利：65～70 分批不要全出；停損觀察：跌破月線大量區 65 元需重新檢視</td>
+            <td><span class="tag tag-watch">分批獲利了結</span></td>
+          </tr>
+          <tr>
+            <td><strong>美元／US10Y</strong></td>
+            <td>頸線 100（美元）／收斂三角形上緣（US10Y）</td>
+            <td>美元站穩頸線之上、US10Y 日線買進訊號成形 → 流動性續緊，黃金／HSI 承壓</td>
+            <td>反向訊號：若雙雙轉弱，黃金／HSI 減碼邏輯需重新評估</td>
+            <td><span class="tag tag-watch">監控</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="act-grid">
+      <div class="act-box go">
+        <div class="act-title">✅ 已驗證有效</div>
+        <p>原油三長三短框架＋7/7 節氣買進訊號，於課後 7/9–7/16 的地緣衝突升級中獲得實戰驗證，油價自 72 附近上攻至 85 美元上下；7/15 EIA 庫存數據面雖偏空，但地緣風險溢價持續蓋過，驗證「重大事件可扭轉均線」的提醒。</p>
+      </div>
+      <div class="act-box wait">
+        <div class="act-title">⏳ 重大事件前觀望</div>
+        <p>7/28–29 FOMC 利率決議結果未明；沃什鷹派表態與 6 月 CPI 降溫之間的角力，牽動美元／US10Y 走勢，進而影響黃金與 HSI 減碼節奏。</p>
+      </div>
+      <div class="act-box risk">
+        <div class="act-title">⚠️ 尾部風險注意</div>
+        <p>若美伊真正落實停火、霍爾木茲海峽通行保證兌現，油價恐急跌破壞目前多頭情境；台塑若跌破 65 元月線大量區，需重新檢視結構。</p>
+      </div>
+    </div>
+
+    <div class="ts-divider"></div>
+    <div class="ts-block">
+      <div class="ts-block-title"><span class="dot-red"></span>地緣政治油價歷史對照（建平老師框架）</div>
+      <div class="ts-row"><span class="ts-label">有地緣政治因素時</span><span class="ts-val red">布蘭特均價約 140 美元</span></div>
+      <div class="ts-row"><span class="ts-label">無地緣政治因素時</span><span class="ts-val">布蘭特均價約 80 美元</span></div>
+      <div class="ts-row"><span class="ts-label">當前狀況</span><span class="ts-val">美伊軍事衝突持續發酵，油價已由 72 附近彈升至 85 美元上方，正朝向有地緣政治溢價的區間移動</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 陶冬觀點摘要 ══════════════ -->
+  <section class="section" id="ref-taodong">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">參考資料</div>
+        <h2>陶冬觀點摘要：對當前經濟局勢的分析</h2>
+      </div>
+    </div>
+    <div class="note">
+      <strong>⚠️ 說明：</strong>使用者提供的陶冬微博原文連結因平台限制無法自動存取（微博對自動化工具設有存取限制）。以下摘要取自陶冬同期於《第一財經》／鳳凰網發表的專欄文章〈美聯儲不必加息了〉（2026/07/06 刊出），與微博內容屬同一時期、同一觀點脈絡，僅供交叉參考，實際內容請以原始微博連結為準。
+    </div>
+    <div class="card card-red-border">
+      <div class="card-title">美聯儲不必加息了（2026/07/06）</div>
+      <ul class="kv">
+        <li><span class="kv-k">通脹反彈</span><span class="kv-v">美國 5 月 PCE 通脹達 4.1%，核心通脹升至 3.4%，物價水平出現一輪反彈，一度增添新任主席沃什的升息壓力</span></li>
+        <li><span class="kv-k">就業降溫</span><span class="kv-v">6 月僅新增非農就業 5.7 萬人，遠低於市場預期，失業率降至 4.2%（反映勞動參與率下降）；經修正後近三個月平均新增就業仍有 11.1 萬，觸底回暖但放緩</span></li>
+        <li><span class="kv-k">沃什立場</span><span class="kv-v">在歐洲央行年會上強調將政策重心放在物價穩定，持續鷹派姿態；但陶冬認為事態尚未失控，沃什有空間等待至 10 月再依最新數據決定</span></li>
+        <li><span class="kv-k">陶冬判斷</span><span class="kv-v">伊朗戰事當時明顯緩和（後於 7/9 再度升溫），油價回落到戰前水平之下，勞工市場尚稱平穩；判斷美國經濟「不算過冷也不算過熱」，<strong>維持年內不加息也不降息</strong>的看法</span></li>
+        <li><span class="kv-k">AI 資本支出</span><span class="kv-v">Meta 執行長談及出租過剩算力，引發市場對 AI 基建供需失衡的疑慮；陶冬認為短期不構成行業性供需失衡，但資本無序擴張終將帶來產能過剩的疑慮仍在</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════ 上週回顧與本週展望 ══════════════ -->
+  <section class="section" id="ref-weekly">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">參考資料</div>
+        <h2>上週回顧與本週展望（金十數據）</h2>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">上週回顧（7/7 當週）</div>
+        <p>受美國非農就業疲弱影響，美元兌多數主要貨幣走軟，週五收 100.87（三週來首見周跌）。現貨金銀分別收 4174.66／62.38 美元，各上漲 2.29%／6.1%，黃金五週來首見週線收漲。原油雖已回落至衝突前水準，但中東能源衝擊對更廣泛經濟層面的影響可能尚未完全釋放。美股因獨立日假期休市，美光、閃迪、英特爾假期前重挫。</p>
+      </div>
+      <div class="card">
+        <div class="card-title">本週展望（7/14–7/18 當週）</div>
+        <p>本週美伊緊張局勢急劇升級，雙方互襲導致此前維持約三週的脆弱停火協議破裂，霍爾木茲海峽航運再次陷入近乎停滯的僵局。布蘭特原油周內一度觸及 80 美元／桶，全周累計漲幅達 5.5%，創 8 週最大單週漲幅。美股幾乎無視地緣政治不確定性，「AI 交易」熱潮重整旗鼓，標普 500 指數逼近歷史新高。</p>
+      </div>
+    </div>
+
+    <div class="card card-red-border">
+      <div class="card-title">本週最大變數：沃什國會聽證會撞上 6 月 CPI</div>
+      <p>沃什將於週二、週三分別出席眾議院、參議院半年度貨幣政策聽證會，聽證會開場前 90 分鐘 6 月 CPI 數據即公布，沃什幾乎無法迴避通脹相關提問。市場預期 6 月整體 CPI 回落至 3.9%，核心 CPI 維持 2.9%；美國貨幣市場已完全計入 12 月加息 25 個基點，且 10 月提前加息機率仍高。若 CPI 顯著降溫，將為沃什弱化鷹派立場留出空間，也可能鞏固黃金底部；反之若沃什仍不排除 7 月加息可能，美元將延續近期升勢。</p>
+      <p>此外，五大投行摩根大通、花旗、美國銀行、高盛、富國銀行將於 7/14 集中公布 Q2 財報，市場預估標普 500 企業 Q2 獲利將年增約 23.7%，續為股市多頭格局提供支撐。</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════ CALENDAR ══════════════ -->
+  <section class="section" id="calendar">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">財經行事曆</div>
+        <h2>七月重要事件總覽</h2>
+      </div>
+    </div>
+    <div class="card">
+      <ul class="tl">
+        <li><span class="tl-date">7/7 二</span><span class="tl-dot red"></span><span class="tl-text"><strong>小暑節氣</strong>／布蘭特原油帶量反轉買進訊號；美聯儲 6 月會議紀要；OPEC 月度原油報告</span></li>
+        <li><span class="tl-date">7/8 三</span><span class="tl-dot"></span><span class="tl-text">川普宣布美伊<strong>停火協議</strong>短暫生效</span></li>
+        <li><span class="tl-date">7/9 四</span><span class="tl-dot red"></span><span class="tl-text"><strong>停火破裂</strong>，美伊互襲，布蘭特單日 +5.43%；IEA 月度能源展望</span></li>
+        <li><span class="tl-date">7/10 五</span><span class="tl-dot blue"></span><span class="tl-text"><strong>本次課程日</strong></span></li>
+        <li><span class="tl-date">7/11 六</span><span class="tl-dot"></span><span class="tl-text">川普宣布停火協議失效，撤銷伊朗售油許可</span></li>
+        <li><span class="tl-date">7/13 一</span><span class="tl-dot"></span><span class="tl-text">美軍本週第 4 輪打擊伊朗，布蘭特大漲近 4%</span></li>
+        <li><span class="tl-date">7/14 二</span><span class="tl-dot red"></span><span class="tl-text">美國<strong>6 月 CPI</strong> 環比 6 年來首見下降；<strong>五大投行 Q2 財報</strong>（JPM／C／BAC／GS／WFC，另貝萊德、摩根士丹利週三公布）</span></li>
+        <li><span class="tl-date">7/15 三</span><span class="tl-dot red"></span><span class="tl-text"><strong>EIA 原油庫存公布</strong>（至7/10當週：商業原油 -170萬桶不如預期、餾餾油+460萬桶、SPR創43年新低）；地緣溢價支撐，布蘭特收84.95／WTI收79.60美元；中國 Q2 GDP／6 月社會消費品零售總額／規模以上工業增加值公布</span></li>
+        <li><span class="tl-date">7/16 四</span><span class="tl-dot blue"></span><span class="tl-text"><strong>今日</strong>：伊朗揚言封鎖出口走廊並反擊美國在巴林／科威特／約旦目標，市場緊盯荷莫茲海峽通行狀況</span></li>
+        <li><span class="tl-date">7/17 五</span><span class="tl-dot"></span><span class="tl-text">韓國因制憲節休市</span></li>
+        <li><span class="tl-date">7/21–22</span><span class="tl-dot"></span><span class="tl-text">沃什眾／參議院半年度貨幣政策聽證會（依當週金十日曆推估）</span></li>
+        <li><span class="tl-date">7/23 四</span><span class="tl-dot blue"></span><span class="tl-text"><strong>歐洲央行利率決議</strong>；英特爾財報</span></li>
+        <li><span class="tl-date">7/28–29</span><span class="tl-dot red"></span><span class="tl-text"><strong>聯準會 FOMC 利率決議</strong>（美東時間 7/29 公布，台北時間 7/30）</span></li>
+        <li><span class="tl-date">7/30</span><span class="tl-dot red"></span><span class="tl-text">（台北時間）<strong>FOMC 決議公布</strong>；美國 Q2 GDP＋PCE；META／Alphabet 財報</span></li>
+        <li><span class="tl-date">7/31</span><span class="tl-dot"></span><span class="tl-text">蘋果財報；中國 Q2 GDP 相關數據延伸解讀；英國央行相關動態</span></li>
+      </ul>
+    </div>
+    <div class="callout gray" style="font-size:12px;">
+      <strong>提醒：</strong>7/21–22 沃什聽證會日期為依金十數據當週日曆推估的參考時間，實際場次時間請以官方公告為準；美股／美債市場對聽證會與 6 月 CPI 的解讀，將是後續兩週美元、US10Y、黃金走勢的最大變數，也直接牽動本次課程「殖利率與美元流動性緊縮」的規劃邏輯。
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════ PRINCIPLES ══════════════ -->
+  <section class="section" id="principles">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">建平老師語錄</div>
+        <h2>課程核心金句整理</h2>
+      </div>
+    </div>
+    <div class="quote">選投資標的物要選<strong>月 KD 低檔 20 左右</strong>的；估值低，風險有限但利潤無限。<div class="quote-attr">— 語錄 1</div></div>
+    <div class="quote"><strong>贏家看趨勢，輸家看漲跌。</strong>股市就是人性，性格決定命運。<div class="quote-attr">— 語錄 2</div></div>
+    <div class="quote">六月起風，七月來雨，<strong>八月風雨交加</strong>。<div class="quote-attr">— 語錄 3</div></div>
+    <div class="quote">利多消息在做頭，利空消息在打底；股市利多是壞消息，利空是好消息，<strong>反人性就要反著做</strong>。<div class="quote-attr">— 語錄 4</div></div>
+    <div class="quote">有知識才有膽識。<strong>你的認知高度，決定你的財富深度。</strong><div class="quote-attr">— 語錄 5</div></div>
+    <div class="quote">工作是一時的，<strong>理財投資是一世的</strong>；長期的投資策略＋長期的風險管理＝長期的投資收益。<div class="quote-attr">— 語錄 6</div></div>
+    <div class="quote">破季線幾天要站回？三天。三天站不回，均線死亡交叉，通常要跌三個月——<strong>但重大事件可以扭轉這個局勢</strong>。<div class="quote-attr">— 語錄 7</div></div>
+    <div class="quote">上漲的時候停利看利潤，下跌的時候看指數決定加碼還是賣出，不要只看自己的報酬率。<div class="quote-attr">— 語錄 8</div></div>
+
+    <div class="divider"></div>
+    <p style="font-size:11px;color:var(--text-light);text-align:center;">啟富達國際 WMA 財富管理顧問課程 · 教案整理 · 20260710 · 本文件僅供學習參考用途</p>
+  </section>
+
+</main>
+</div>
+
+<script>
+  // ── Mobile sidebar toggle ──
+  const sidebarToggleBtn = document.getElementById('sidebarToggle');
+  const sidebarEl = document.getElementById('sidebar');
+  if (sidebarToggleBtn) {
+    sidebarToggleBtn.addEventListener('click', () => sidebarEl.classList.toggle('open'));
+  }
+
+  // ── Accordion toggle logic ──
+  const toggles = document.querySelectorAll('.sidebar-toggle');
+  function closeAllGroups(except) {
+    toggles.forEach(t => {
+      if (t !== except) {
+        t.classList.remove('open');
+        const sub = document.getElementById(t.dataset.target);
+        if (sub) sub.classList.remove('open');
+      }
+    });
+  }
+  function openGroup(toggle) {
+    toggle.classList.add('open');
+    const sub = document.getElementById(toggle.dataset.target);
+    if (sub) sub.classList.add('open');
+  }
+  toggles.forEach(t => {
+    t.addEventListener('click', () => {
+      const isOpen = t.classList.contains('open');
+      closeAllGroups(null);
+      if (!isOpen) openGroup(t);
+    });
+  });
+
+  // ── Scroll spy: highlight active link + auto expand/collapse parent group ──
+  const allLinks = document.querySelectorAll('.sidebar-sub a, .sidebar > a');
+  const targets = [
+    'session1','card-risk5','card-oil-framework','card-buy-signal','card-eia-update','card-target-reverse','card-five-principles',
+    'session2','card-five-steps','card-support-resist','card-fpc-review','card-oil-review','card-gold-hsi','card-yield-usd',
+    'session3','card-gold-framework','card-silver-goldbug','card-conclusion',
+    'trade-session','ts-brent','ts-fpc','ts-fx','ts-timeline','ts-scenario','ts-decision',
+    'ref-taodong','ref-weekly','calendar','principles'
+  ];
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        allLinks.forEach(l => l.classList.remove('active'));
+        const a = document.querySelector(`a[href="#${e.target.id}"]`);
+        if (a) {
+          a.classList.add('active');
+          const parentSub = a.closest('.sidebar-sub');
+          if (parentSub) {
+            const toggle = document.querySelector(`.sidebar-toggle[data-target="${parentSub.id}"]`);
+            if (toggle && !toggle.classList.contains('open')) {
+              closeAllGroups(toggle);
+              openGroup(toggle);
+            }
+          }
+        }
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px' });
+
+  targets.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+
+  // ── Default: expand first group on load ──
+  const firstToggle = document.querySelector('.sidebar-toggle');
+  if (firstToggle) openGroup(firstToggle);
+</script>
+</body>
+</html>
