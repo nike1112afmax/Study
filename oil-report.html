@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>荷姆茲海峽危機｜時間軸・事實核對表・原油投資計畫</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --red:        #C8102E;
+  --red-pale:   #FDEBEE;
+  --bg:         #F4F4F4;
+  --card-bg:    #FFFFFF;
+  --text-primary:   #1A1A1A;
+  --text-secondary: #555555;
+  --text-light:     #888888;
+  --border:     #E2E2E2;
+  --border-hover: #C8102E;
+  --shadow-card: 0 1px 4px rgba(0,0,0,0.07);
+  --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --green: #1a7f4e;
+  --green-pale: #e8f6ee;
+  --amber: #b5750a;
+  --amber-pale: #fdf3e2;
+}
+
+* , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, 'Segoe UI', 'Noto Sans TC', '微軟正黑體', sans-serif;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, rgba(0,0,0,0.035) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: 0 0 90px;
+  line-height: 1.75;
+  font-size: 16px;
+}
+
+/* HEADER */
+.site-header {
+  position: relative;
+  text-align: center;
+  padding: 56px 24px 40px;
+  background: #1E1E1E;
+  color: #fff;
+}
+.header-icon {
+  width: 64px; height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 16px;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(200,16,46,0.35);
+}
+.header-icon i { line-height: 1; }
+.header-mon {
+  font-size: 14px;
+  letter-spacing: 0.28em;
+  color: #AAAAAA;
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+.header-title {
+  font-size: clamp(24px, 4.2vw, 34px);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.01em;
+  margin-bottom: 12px;
+  line-height: 1.45;
+}
+.header-subtitle {
+  font-size: 14.5px;
+  color: #BBBBBB;
+  letter-spacing: 0.01em;
+  line-height: 1.9;
+}
+.header-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 7px 18px;
+  border: 1px solid var(--red);
+  border-radius: 50px;
+  font-size: 12.5px;
+  color: #fff;
+  background: rgba(200,16,46,0.15);
+  letter-spacing: 0.03em;
+  font-weight: 600;
+}
+
+/* LAYOUT */
+.container { max-width: 940px; margin: 0 auto; padding: 0 20px; }
+
+/* TOC */
+.toc {
+  margin-top: -28px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  padding: 20px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  position: relative;
+  z-index: 5;
+}
+.toc a {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.toc a:hover { color: var(--red); }
+.toc a i { color: var(--red); font-size: 12px; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 52px 0 20px;
+}
+.section-header::before {
+  content: '';
+  width: 5px; height: 26px;
+  background: var(--red);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+.section-sub {
+  font-size: 13.5px;
+  color: var(--text-light);
+  margin: -12px 0 22px 19px;
+  line-height: 1.8;
+}
+
+/* CARD */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 22px 24px;
+  margin-bottom: 20px;
+}
+.card h3 {
+  font-size: 15.5px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card p { margin-bottom: 10px; font-size: 14.5px; color: var(--text-secondary); }
+.card p:last-child { margin-bottom: 0; }
+.card ul, .card ol { margin: 10px 0 10px 22px; }
+.card li { font-size: 14.5px; color: var(--text-secondary); margin-bottom: 8px; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); margin-bottom: 18px; }
+table { width: 100%; border-collapse: collapse; background: var(--card-bg); font-size: 13.5px; }
+th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+.timeline-table th, .timeline-table td { white-space: nowrap; }
+.timeline-table td:last-child, .timeline-table th:last-child { white-space: normal; }
+th {
+  background: #FAFAFA;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #FCFCFC; }
+td:first-child { font-weight: 600; white-space: nowrap; }
+
+/* TAGS */
+.tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 50px;
+  margin-right: 4px;
+}
+.tag-hit { background: var(--green-pale); color: var(--green); }
+.tag-soon { background: var(--amber-pale); color: var(--amber); }
+.tag-red { background: var(--red-pale); color: var(--red); }
+
+/* CALLOUT */
+.callout {
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin: 18px 0;
+  font-size: 14.5px;
+  line-height: 1.85;
+}
+.callout-warn { background: var(--amber-pale); border: 1px solid rgba(181,117,10,0.25); color: #5c4108; }
+.callout-info { background: var(--red-pale); border: 1px solid rgba(200,16,46,0.2); color: #7a0e21; }
+.callout strong { font-weight: 700; }
+
+/* SCENARIO CARDS */
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.scenario-card {
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+}
+.scenario-card.b { border-color: rgba(200,16,46,0.35); box-shadow: 0 4px 16px rgba(200,16,46,0.08); }
+.scenario-label { font-size: 12px; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 8px; }
+.scenario-a .scenario-label { color: var(--green); }
+.scenario-b .scenario-label { color: var(--red); }
+.scenario-c .scenario-label { color: var(--amber); }
+.scenario-price { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.scenario-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+
+/* WATCH LIST */
+.watch-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.watch-item:last-child { border-bottom: none; }
+.watch-icon {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  background: var(--red-pale);
+  color: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+.watch-text { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+.watch-text strong { color: var(--text-primary); }
+
+/* FOOTER */
+.site-footer {
+  text-align: center;
+  padding: 44px 24px 12px;
+  font-size: 12.5px;
+  color: var(--text-light);
+  letter-spacing: 0.02em;
+  line-height: 2;
+  border-top: 1px solid var(--border);
+  margin-top: 56px;
+}
+
+@media (max-width: 600px) {
+  .card { padding: 18px; }
+  table { font-size: 12.5px; }
+  th, td { padding: 10px; }
+  .toc { margin-top: -20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-icon"><i class="fa-solid fa-oil-well"></i></div>
+  <div class="header-mon">啟富達國際 ── CFD ｜ 專題更新</div>
+  <h1 class="header-title">荷姆茲海峽危機<br>時間軸・事實核對表・原油投資計畫</h1>
+  <p class="header-subtitle">
+    整合最新查證資料與課程框架（三長三短因子・原油庫存三重警報・費波那契時間週期）<br>
+    最新更新：2026/7/16
+  </p>
+  <div class="header-seal">
+    <i class="fa-solid fa-lock" style="font-size:11px"></i>
+    僅供學員自用・不得散佈
+  </div>
+</header>
+
+<div class="container">
+
+  <nav class="toc">
+    <a href="#changelog"><i class="fa-solid fa-clock-rotate-left"></i>更新紀錄</a>
+    <a href="#timeline"><i class="fa-solid fa-timeline"></i>一・時間軸×費波那契×節氣</a>
+    <a href="#factcheck"><i class="fa-solid fa-magnifying-glass"></i>二・事實核對表</a>
+    <a href="#plan"><i class="fa-solid fa-chess"></i>三・原油投資計畫</a>
+  </nav>
+
+  <div class="section-header" id="changelog" style="margin-top:40px;">
+    <span class="section-title">更新紀錄</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th style="width:100px">日期</th><th>更新內容</th></tr></thead>
+      <tbody>
+        <tr><td>7/9</td><td>初版：時間軸、費波那契交易日週期、事實核對表、投資計畫（含課程技術分析）</td></tr>
+        <tr><td>7/9</td><td>改用2/27為第1天重算費波那契交易日；加入24節氣與端午/中秋節</td></tr>
+        <tr><td><strong>7/10</strong></td><td><strong>加入7/8-7/9最新發展：Trump於北約峰會威脅轟炸+恢復海軍封鎖但隨即滅火、放話可能佔領Kharg島、荷姆茲海峽實際通行船隻數字（13→5艘/天，比先前51-52艘高水位更差）、Brent回落至$76.39、NATO派遣掃雷艦</strong></td></tr>
+        <tr><td><strong>7/12</strong></td><td><strong>格式調整：修正「週」欄位被強制換行的問題；隱藏純粹命中費波那契天數但無任何事件或節氣的列，只保留有實際內容的日期</strong></td></tr>
+        <tr><td><strong>7/12</strong></td><td><strong>補上三長三短因子完整評估（經濟景氣/供給與需求/美元指數；庫存/季節因素/CFTC持倉），並加入當天最新突發：伊朗宣布無限期關閉荷姆茲海峽，美伊爆發新一輪空襲與飛彈互射</strong></td></tr>
+        <tr><td><strong>7/16</strong></td><td><strong>更新7/13-16最新發展：胡塞武裝加入戰局威脅曼德海峽、美國一度課徵過境稅後撤回、8大航商繞道好望角、海峽通行崩到10-14艘/天、7/15 EIA庫存數據、Brent漲到$85.3-85.9。三長三短因子與投資計畫已更新為「劇本C已確認」，技術面真假突破判斷也一併更新</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="section-sub">這份報告會不定時更新，新增內容會在上面的更新紀錄註記，方便追蹤每次改了什麼。</p>
+
+      <!-- ONE: TIMELINE x FIBONACCI x SOLAR TERMS -->
+  <div class="section-header" id="timeline">
+    <span class="section-title">一、時間軸 × 費波那契交易日週期 × 節氣（合併總表）</span>
+  </div>
+  <p class="section-sub">
+    計算方式：以 <strong>2/27（週五，油價開始上漲的第一天）為第1個交易日</strong>。只計算原油期貨（NYMEX WTI／ICE Brent）有結算價的交易日——排除週六日，也排除全年僅3天真正無結算價的假日（4/3 Good Friday、12/25聖誕節）。費波那契數列取 1,2,3,5,8,13,21,34,55,89,144，每個費波那契交易日前後各1天也一起列出。<br><br>
+    節氣部分：24節氣裡2/27之後、2026年底之前的全部20個節氣都補上了（驚蟄到冬至），另外加上端午節、中秋節——這兩個是農曆節日，不是節氣，但一起放進表裡，用【節氣】跟【節日】分開標註。
+  </p>
+
+  <div class="table-wrap">
+    <table class="timeline-table">
+      <thead><tr><th style="width:100px">日期</th><th style="width:76px">週</th><th style="width:80px">交易日#</th><th style="width:90px">費波那契</th><th>事件／節氣</th></tr></thead>
+      <tbody>
+        <tr><td>2/27（五）</td><td>第1週</td><td>第1天</td><td><strong>第1天</strong></td><td>起點：油價開始上漲（市場提前反應戰爭風險）</td></tr>
+        <tr><td>2/28（六）</td><td>第1週</td><td>休市</td><td>—</td><td>美以聯合空襲伊朗，哈米尼身亡，戰爭爆發</td></tr>
+        <tr><td>3/1（日）</td><td>第1週</td><td>休市</td><td>—</td><td>伊朗確認哈米尼死亡</td></tr>
+        <tr><td><strong>3/5（四）</strong></td><td>第2週</td><td>第5天</td><td><strong>第5天</strong></td><td><span class="tag tag-soon">節氣</span>驚蟄——恰好落在費波那契第5天</td></tr>
+        <tr><td>3/8（日）</td><td>第2週</td><td>休市</td><td>—</td><td>Brent四年來首次站上$100</td></tr>
+        <tr><td>3/9（一）</td><td>第3週</td><td>第7天</td><td>第8天−1</td><td>穆傑塔巴・哈米尼被推舉為新任最高領袖</td></tr>
+        <tr><td><strong>3/11（三）</strong></td><td>第3週</td><td>第9天</td><td>第8天+1</td><td><span class="tag tag-hit">命中</span>IEA同意釋出4億桶戰略儲備</td></tr>
+        <tr><td><strong>3/18（三）</strong></td><td>第4週</td><td>第14天</td><td>第13天+1</td><td><span class="tag tag-hit">命中</span>FOMC利率決議（3/17-18會議）</td></tr>
+        <tr><td>3/19（四）</td><td>第4週</td><td>第15天</td><td>（窗口外）</td><td>Dubai原油現貨飆上$166歷史新高（比第13天窗口晚2天）</td></tr>
+        <tr><td><strong>3/20（五）</strong></td><td>第4週</td><td>第16天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>春分</td></tr>
+        <tr><td>4/3（五）</td><td>第6週</td><td>休市</td><td>—</td><td>Good Friday，原油期貨無結算價</td></tr>
+        <tr><td><strong>4/5（日）</strong></td><td>第6週</td><td>休市</td><td>—</td><td><span class="tag tag-soon">節氣</span>清明</td></tr>
+        <tr><td>4/8（三）</td><td>第7週</td><td>第28天</td><td>（窗口外）</td><td>美伊短暫停火，談判重啟</td></tr>
+        <tr><td><strong>4/20（一）</strong></td><td>第9週</td><td>第36天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>穀雨</td></tr>
+        <tr><td>4/29（三）</td><td>第10週</td><td>第43天</td><td>（窗口外）</td><td>FOMC利率決議（4/28-29會議）</td></tr>
+        <tr><td>4/30（四）</td><td>第10週</td><td>第44天</td><td>（窗口外）</td><td>Brent盤中觸及$126.41，本輪衝突最高點</td></tr>
+        <tr><td><strong>5/5（二）</strong></td><td>第11週</td><td>第47天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>立夏</td></tr>
+        <tr><td><strong>5/21（四）</strong></td><td>第13週</td><td>第59天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>小滿</td></tr>
+        <tr><td><strong>6/5（五）</strong></td><td>第15週</td><td>第70天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>芒種</td></tr>
+        <tr><td>6/7（日）</td><td>第15週</td><td>休市</td><td>—</td><td>第41屆OPEC+部長會議，同意第4次增產</td></tr>
+        <tr><td>6/17（三）</td><td>第17週</td><td>第78天</td><td>（窗口外）</td><td>美伊簽署MoU，同日也是FOMC利率決議（6/16-17會議）——雙重事件日</td></tr>
+        <tr><td>6/18（四）</td><td>第17週</td><td>第79天</td><td>（窗口外）</td><td>MoU生效首日，25艘商船通過</td></tr>
+        <tr><td><strong>6/19（五）</strong></td><td>第17週</td><td>第80天</td><td>（窗口外）</td><td>油輪通過數高點，約20艘；同日也是<span class="tag tag-soon">節日</span>端午節</td></tr>
+        <tr><td>6/20（六）</td><td>第17週</td><td>休市</td><td>—</td><td>IRGC再度宣布關閉海峽</td></tr>
+        <tr><td><strong>6/21（日）</strong></td><td>第17週</td><td>休市</td><td>—</td><td><span class="tag tag-soon">節氣</span>夏至</td></tr>
+        <tr><td>6/24（三）</td><td>第18週</td><td>第83天</td><td>（窗口外）</td><td>IMF PortWatch通行艘數升至51-52艘/天（起）</td></tr>
+        <tr><td>6/25（四）</td><td>第18週</td><td>第84天</td><td>（窗口外）</td><td>（續前日高水位）</td></tr>
+        <tr><td>6/26（五）</td><td>第18週</td><td>第85天</td><td>（窗口外）</td><td>EIA資料：SPR 325.7M桶、Cushing 19.7M桶、總庫存743.3M桶創40年新低</td></tr>
+        <tr><td>7/1（三）</td><td>第19週</td><td>第88天</td><td>第89天−1</td><td>Brent回落至接近戰前水準（$70-73）</td></tr>
+        <tr><td>7/6（一）</td><td>第20週</td><td>第91天</td><td>（窗口外）</td><td>卡達LNG船、沙烏地油輪遭襲擊（比第89天窗口晚3天）</td></tr>
+        <tr><td><strong>7/7（二）</strong></td><td>第20週</td><td>第92天</td><td>（窗口外）</td><td>第3船遭襲、OFAC撤銷伊朗石油豁免、JMIC升至Severe；同日也是<span class="tag tag-soon">節氣</span>小暑</td></tr>
+        <tr><td>7/8（三）</td><td>第20週</td><td>第93天</td><td>（窗口外）</td><td>CENTCOM空襲、Brent衝上$77-78、EIA商業原油意外增產300萬桶；Trump在北約安卡拉峰會先威脅轟炸伊朗+恢復海軍封鎖（油價當下跳漲逾4%），隨後又改口說「不認為會全面開戰」、預測油價會因「原油過剩」而下跌，同時放話美軍可能佔領伊朗最大原油出口樞紐Kharg島</td></tr>
+        <tr><td>7/9（四）</td><td>第20週</td><td>第94天</td><td>（窗口外）</td><td>老哈米尼在馬什哈德下葬，美伊持續互相攻擊（戰爭第132天）；荷姆茲海峽實際通行船隻驟降——7/8僅13艘油輪通過（前一週均值33艘/天），7/8晚到7/9僅5艘通過，比先前MoU高水位51-52艘更差；NATO宣布派遣掃雷艦協助清除伊朗可能布放的新地雷；Brent從$78.02回落至$76.39（波段獲利了結，尚未反轉）</td></tr>
+        <tr><td>7/10（五）</td><td>第20週</td><td>第95天</td><td>（窗口外）</td><td>持續觀察中，尚無重大新進展</td></tr>
+        <tr><td><strong>7/12（日）</strong></td><td>第20週</td><td>休市</td><td>—</td><td><strong>伊朗IRGC海軍宣布無限期關閉荷姆茲海峽（擊中賽普勒斯籍貨櫃船MV GFS Galaxy）；美軍發動第三輪空襲，伊朗飛彈/無人機反擊約旦、科威特、卡達美軍基地；阿曼同步斡旋伊朗/美/卡達/巴基斯坦談判</strong>（JMIC指出海峽南側靠阿曼一側航道實際上仍可通行）</td></tr>
+        <tr><td><strong>7/13（一）</strong></td><td>第21週</td><td>第96天</td><td>（窗口外）</td><td><strong>伊朗擴大攻擊至6個海灣國家（卡達、阿曼、阿聯Fujairah繞道終點站）；葉門胡塞武裝宣布加入戰局，揚言威脅曼德海峽（Bab el-Mandeb）——第二個關鍵海運咽喉出現風險</strong></td></tr>
+        <tr><td><strong>7/14（二）</strong></td><td>第21週</td><td>第97天</td><td>（窗口外）</td><td><strong>美國正式重啟對伊朗海軍封鎖，並宣布對通行船隻課徵20%過境稅；此舉震驚波灣盟友，48小時內外交搶救，最終川普撤回徵稅計畫；全球8大貨櫃航商已暫停荷姆茲航線、改道好望角（每趟多耗時約2週）</strong></td></tr>
+        <tr><td><strong>7/15（三）</strong></td><td>第21週</td><td>第98天</td><td>（窗口外）</td><td><strong>EIA公布當週庫存（截至7/10）：商業原油降170萬桶至4.097億桶（低於5年均值6%）、SPR降298萬桶、Cushing增43萬桶、汽油降153萬桶（低於5年均值8%）、餾分油增456萬桶；煉油廠加工量17.1M桶/日（產能利用率96.2%）；Brent收在$85.84，單週漲幅逼近13%</strong></td></tr>
+        <tr><td><strong>7/16（四，今）</strong></td><td>第21週</td><td>第99天</td><td>（窗口外）</td><td><strong>荷姆茲海峽單日通行僅10-14艘（基準約88艘/天的11-16%），戰爭險保費升至平常的8倍，6家P&amp;I保賠協會撤出承保；Brent維持在$85.3-85.4附近，24小時內幾乎持平——顯示市場已經price in這波關閉，短線波動趨緩</strong></td></tr>
+        <tr><td>7/17（五）</td><td>第21週</td><td>第100天</td><td>（窗口外）</td><td>美國制裁清倉期截止</td></tr>
+        <tr><td><strong>7/23（四）</strong></td><td>第22週</td><td>第104天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>大暑</td></tr>
+        <tr><td>7/28（二）</td><td>第23週</td><td>第107天</td><td>（窗口外）</td><td>FOMC會議開始（7/28-29）</td></tr>
+        <tr><td>7/29（三）</td><td>第23週</td><td>第108天</td><td>（窗口外）</td><td>FOMC利率決議</td></tr>
+        <tr><td><strong>8/7（五）</strong></td><td>第24週</td><td>第115天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>立秋</td></tr>
+        <tr><td><strong>8/23（日）</strong></td><td>第26週</td><td>休市</td><td>—</td><td><span class="tag tag-soon">節氣</span>處暑</td></tr>
+        <tr><td><strong>9/7（一）</strong></td><td>第29週</td><td>第136天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>白露</td></tr>
+        <tr><td>9/15（二）</td><td>第30週</td><td>第142天</td><td>（窗口外）</td><td>FOMC會議開始（9/15-16）</td></tr>
+        <tr><td><strong>9/16（三）</strong></td><td>第30週</td><td>第143天</td><td>第144天−1</td><td><span class="tag tag-hit">命中</span>FOMC利率決議——落在第144天窗口內</td></tr>
+        <tr><td><strong>9/23（三）</strong></td><td>第31週</td><td>第148天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>秋分</td></tr>
+        <tr><td><strong>9/25（五）</strong></td><td>第31週</td><td>第150天</td><td>（窗口外）</td><td><span class="tag tag-soon">節日</span>中秋節</td></tr>
+        <tr><td><strong>10/8（四）</strong></td><td>第33週</td><td>第159天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>寒露</td></tr>
+        <tr><td><strong>10/23（五）</strong></td><td>第35週</td><td>第170天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>霜降</td></tr>
+        <tr><td>10/27（二）</td><td>第36週</td><td>第172天</td><td>（窗口外）</td><td>FOMC會議開始（10/27-28）</td></tr>
+        <tr><td>10/28（三）</td><td>第36週</td><td>第173天</td><td>（窗口外）</td><td>FOMC利率決議</td></tr>
+        <tr><td><strong>11/7（六）</strong></td><td>第37週</td><td>休市</td><td>—</td><td><span class="tag tag-soon">節氣</span>立冬</td></tr>
+        <tr><td><strong>11/22（日）</strong></td><td>第39週</td><td>休市</td><td>—</td><td><span class="tag tag-soon">節氣</span>小雪</td></tr>
+        <tr><td><strong>12/7（一）</strong></td><td>第42週</td><td>第201天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>大雪</td></tr>
+        <tr><td>12/8（二）</td><td>第42週</td><td>第202天</td><td>（窗口外）</td><td>FOMC會議開始（12/8-9）</td></tr>
+        <tr><td>12/9（三）</td><td>第42週</td><td>第203天</td><td>（窗口外）</td><td>FOMC利率決議</td></tr>
+        <tr><td><strong>12/22（二）</strong></td><td>第44週</td><td>第212天</td><td>（窗口外）</td><td><span class="tag tag-soon">節氣</span>冬至</td></tr>
+        <tr><td>12/31（四）</td><td>第45週</td><td>第218天</td><td>—</td><td>2026年最後一個交易日</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>總計：</strong>從2/27到2026年底，共218個交易日、45週、20個節氣＋2個農曆節日。表格只列出有實際事件或節氣的日期；純粹「命中費波那契天數但當天沒發生任何事」的列已經隱藏（例如第21、34、55天整個窗口都沒有對應事件或節氣，因此整個窗口從表格中消失，但費波那契的計算本身仍照常進行，不影響天數與週數統計）。
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-star" style="color:var(--red)"></i>重點摘要：關鍵轉折窗口一次看</h3>
+    <p>不看整張表的話，這幾個時間點是真正值得記住的：</p>
+    <ul>
+      <li><strong>第1天（2/27）</strong>：起點，油價開始上漲，隔天（2/28）戰爭爆發</li>
+      <li><strong>第5天（3/5）</strong>：剛好是節氣「驚蟄」，時間週期跟節氣重合，純屬巧合但值得記一下</li>
+      <li><strong>第8天窗口（3/10-3/11）</strong>：✅ 3/11命中IEA釋放4億桶戰略儲備的決定</li>
+      <li><strong>第13天窗口（3/17-3/18）</strong>：✅ 3/18命中FOMC利率決議；3/19（窗口外2天）是Dubai $166歷史新高，僅供參考</li>
+      <li><strong>第21天窗口（3/26-3/27）</strong>：沒有對應的事件或節氣</li>
+      <li><strong>第34天窗口（4/15-4/17）</strong>：沒有對應事件；比較近的節氣是4/20穀雨（窗口外3天）</li>
+      <li><strong>第55天窗口（5/14-5/18）</strong>：沒有對應事件；比較近的節氣是5/21小滿（窗口外3天）</li>
+      <li><strong>第89天窗口（7/1-7/3）</strong>：7/1是Brent回落到接近戰前低點的位置；7/6-7/7（窗口外3-4天）是這次危機真正的引爆點——船隻遭襲擊、OFAC撤銷豁免，其中7/7剛好也是節氣「小暑」</li>
+      <li><strong>第144天窗口（9/16-9/18）</strong>：✅ 9/16命中FOMC利率決議；9/17（費波那契本尊）目前沒有已知對應事件，純時間週期標記</li>
+    </ul>
+    <p><strong>一句話總結：</strong>這條時間軸目前總共命中3次「已排定的金融事件」（IEA決議、兩次FOMC決議），節氣本身沒有直接命中任何關鍵價格轉折，跟事件的重合更多是巧合（如驚蟄、小暑），不用過度解讀節氣本身的預測力——但事件命中窗口這件事，倒是值得繼續往後追蹤驗證。</p>
+  </div>
+
+  <!-- TWO: FACT CHECK -->
+  <div class="section-header" id="factcheck">
+    <span class="section-title">二、事實核對表（Fact-check）</span>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-ship" style="color:var(--red)"></i>1️⃣ 「MoU後海峽運量回升」的具體數字——你要的答案</h3>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>戰前基準</td><td>IMF PortWatch定義「正常」＝7日均值 ≥ 60艘/天（Lloyd's List估算實際基準為每天90-110艘）</td></tr>
+          <tr><td>戰時最低點</td><td>個位數/天，6/7單日曾僅<strong>2艘</strong></td></tr>
+          <tr><td>MoU生效首日（6/18）</td><td><strong>25艘</strong>（AXS Marine，含所有商船，約為基準的1/5）</td></tr>
+          <tr><td>MoU後最佳單日（6/19，僅油輪）</td><td><strong>約20艘油輪</strong></td></tr>
+          <tr><td>MoU後最高水位（6/24-25）</td><td><strong>51-52艘/天</strong>（IMF PortWatch含所有船種）</td></tr>
+          <tr><td>7/7後</td><td>追蹤機構標記「RECOVERING」，未提供絕對數字，但明顯低於6月高水位</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>結論：</strong>所謂「MoU後海峽比較多船通過」，最高也只回到戰前基準的一半左右，從未真正恢復正常運作。這代表這輪危機不是「已經解決又重新爆發」，而是「本來就沒真正解決，現在又惡化」。</p>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-chart-pie" style="color:var(--red)"></i>2️⃣ 「二次完全封鎖」機率——市場實際定價 vs 前份報告的「75%」</h3>
+    <p>查證結果：<strong>Polymarket / Kalshi目前沒有一個直接對應「美伊雙方導致海峽完全封鎖」這個問題的市場</strong>，前份ChatGPT報告引用的「75%機率」找不到對應依據，應視為沒有實證支持的數字，不建議採用。</p>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>Kalshi：海峽運量2026年底前恢復正常</td><td><strong>43%</strong>（即57%機率年底前都無法恢復）</td></tr>
+          <tr><td>Polymarket：同上</td><td><strong>59%</strong>（41%機率無法恢復）</td></tr>
+          <tr><td>Kalshi：2026年美國衰退機率</td><td>約26%（已從3月底的37%回落）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>市場並沒有押注「會不會出現一次戲劇性的完全封鎖事件」，而是持續押注「這個半封鎖、時緊時鬆的狀態會拖多久」。更現實的劇本是<strong>現有的限制與突襲繼續交替發生，運力長期卡在基準的20-50%之間</strong>。真正的完全封鎖目前不是市場定價的主要情境，但也不是零——分析師觀點認為，這種「反覆的低強度衝突」可能就是新常態。</p>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-money-bill-trend-up" style="color:var(--red)"></i>3️⃣ 對油價的衝擊——機構預測範圍</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>機構</th><th>情境假設</th><th>Brent預測</th></tr></thead>
+        <tbody>
+          <tr><td>Goldman Sachs</td><td>正常化順利（MoU履約）</td><td>Q4 2026 均值 $80</td></tr>
+          <tr><td>Goldman Sachs</td><td>持續嚴重中斷至2027年</td><td>2026年底可能<strong>衝上$130</strong>，2027均值$105</td></tr>
+          <tr><td>Citi</td><td>中度中斷（再拖一個月）</td><td>Q2 $110 → Q3 $90 → Q4 $80</td></tr>
+          <tr><td>Citi</td><td>最壞情境（延續8-9週）</td><td>維持$130左右到Q3，年底回落至$100</td></tr>
+          <tr><td>Citi</td><td>樂觀情境（已被7/7事件打斷）</td><td>年底$60-65 <span class="tag tag-red">已過時</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>目前處境介於「中度」與「升級」之間</strong>：若接下來兩週（尤其7/17制裁截止日前後）沒有降溫，Brent測試$90-100是機構模型裡合理的下一站；若進一步出現雷區封鎖或雙方海軍直接衝突，才會進入$120-130這個Q1/Q2已驗證過的區間。</p>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-gauge-high" style="color:var(--red)"></i>4️⃣ 最新 EIA / SPR / Cushing 庫存狀況</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>指標</th><th>課程（6/26當時）</th><th>最新（7/3當週，7/8公布）</th></tr></thead>
+        <tbody>
+          <tr><td>美國商業原油（不含SPR）</td><td>全球原油庫存創20年新低</td><td><strong>意外增加300萬桶</strong>，來到4.114億桶（分析師原預期減少240萬桶），仍比五年均值低6%</td></tr>
+          <tr><td>汽油庫存</td><td>—</td><td>-190萬桶 至 2.121億桶</td></tr>
+          <tr><td>餾分油（柴油/燃油）</td><td>—</td><td><strong>大減500萬桶</strong> 至 1.036億桶，跌到五年均值下12%</td></tr>
+          <tr><td>Cushing庫存</td><td>約1,950萬桶，逼近警戒線2,000萬桶</td><td>續減5.2萬桶，仍在警戒線附近整理</td></tr>
+          <tr><td>煉油廠動態</td><td>—</td><td>加工量每日減少17.2萬桶，利用率降0.8個百分點至95.8%</td></tr>
+          <tr><td>美國SPR</td><td>降至1983年來最低（3.49億桶）</td><td>約325.7萬桶，續創現代最低紀錄</td></tr>
+          <tr><td>含SPR總庫存</td><td>—</td><td><strong>743.3萬桶（1984年10月以來最低）</strong></td></tr>
+          <tr><td>中國戰略儲備</td><td>（課程未提及）</td><td>約<strong>13億桶</strong>，本輪油價相對克制的關鍵原因</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-warn">
+      <strong>⚠️ 重要解讀：價格與庫存出現背離</strong><br><br>
+      7/7-8這波Brent從$70附近跳升到$77-78（+5%單日），是在<strong>地緣風險溢價</strong>驅動下發生的——攻擊事件、撤銷豁免、CENTCOM空襲都是消息面。但同一週公布的實體庫存數據卻顯示：商業原油意外轉為增加、餾分油與汽油訊號不一致、煉油廠加工量與利用率雙雙下滑。<br><br>
+      <strong>這代表目前的漲勢主要是「風險溢價」在推，還沒有被「實體吃緊」的庫存數據充分驗證。</strong>這跟3-4月那輪不一樣——當時是庫存數據與價格同步狂飆。這次至少在7/3當週，兩者出現背離，意味著：
+      <ol>
+        <li>若接下來幾週庫存轉為連續、加大幅度下滑，才能確認地緣風險已真正傳導到實體供給面</li>
+        <li>若庫存持續build或持平，這波反彈更可能是消息面驅動的短線波動，真假突破3.4原則會更傾向「假突破」</li>
+        <li>下週三EIA報告的商業原油變化方向，是判斷這波風險溢價能否延續的關鍵領先訊號</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-gauge-high" style="color:var(--red)"></i>5️⃣ 最新一期EIA數據（7/15公布，截至7/10當週）——背離已經開始收斂</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>指標</th><th>7/3當週（上一期）</th><th>7/10當週（最新）</th></tr></thead>
+        <tbody>
+          <tr><td>美國商業原油（不含SPR）</td><td>意外增加300萬桶，至4.114億桶</td><td><strong>轉為減少170萬桶，降到4.097億桶</strong>，低於五年均值6%</td></tr>
+          <tr><td>SPR</td><td>約325.7萬桶</td><td><strong>續減298萬桶</strong>（本週降幅擴大）</td></tr>
+          <tr><td>Cushing</td><td>續減5.2萬桶</td><td>轉為增加43萬桶</td></tr>
+          <tr><td>汽油庫存</td><td>-190萬桶至2.121億桶</td><td>-153萬桶，低於五年均值8%</td></tr>
+          <tr><td>餾分油庫存</td><td>大減500萬桶</td><td><strong>反轉大增456萬桶</strong></td></tr>
+          <tr><td>煉油廠</td><td>加工量降17.2萬桶/日，利用率95.8%</td><td>加工量升至17.1M桶/日（+9.9萬桶/日），利用率回升至96.2%</td></tr>
+          <tr><td>Brent週均價</td><td>~$74-78</td><td><strong>收在$85.84，單週漲幅逼近13%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>這一期數據代表的意義：</strong>上一期（7/3當週）的「風險溢價漲、庫存卻意外增加」這個背離，這一期已經開始收斂——商業原油轉為下滑、煉油廠加工量與利用率同步回升，代表實體面終於開始跟上價格面的緊張程度。真正把Brent從$76推到$85.84的關鍵，不是這份庫存報告本身（報告涵蓋的是7/10之前的狀況），而是<strong>7/12伊朗宣布無限期關閉荷姆茲海峽</strong>這件事——目前的+13%漲幅，本質上仍是地緣政治驅動，庫存數據只是提供了「地緣風險終於開始有一點基本面佐證」的旁證，還不到「完全由基本面驗證」的程度。</p>
+  </div>
+
+    <!-- THREE: INVESTMENT PLAN -->
+  <div class="section-header" id="plan">
+    <span class="section-title">三、原油投資計畫（整合課程技術分析）</span>
+  </div>
+  <p class="section-sub">以下技術數據直接沿用課程6/26講義（20260626.html）裡對布蘭特原油、台塑1301的技術面分析，跟前面查證的最新事實（庫存、地緣風險、時間週期）整合在一起看。這不是投資建議，是把課程框架＋最新公開資訊放在一起的情境參考，請自行依風險承受度決定進出場。</p>
+
+  <div class="callout callout-warn">
+    <strong>🚨 突發更新：荷姆茲海峽危機從「剛關閉」演變為「確認持續且擴大」（7/12→7/16）</strong><br><br>
+    7/12當天寫的判斷是「這是分水嶺，未來24-72小時要密切關注」——現在72小時過去了，答案已經出來：<strong>情勢是往劇本C的方向惡化，不是緩解</strong>。完整發展：
+    <ul style="margin:10px 0 0 20px">
+      <li><strong>7/12</strong>：伊朗宣布無限期關閉海峽，美伊互相攻擊（JMIC當時指出海峽南側靠阿曼一側航道仍可通行）</li>
+      <li><strong>7/13</strong>：伊朗攻擊擴大到6個海灣國家（卡達、阿曼、阿聯Fujairah繞道終點站）；<strong>葉門胡塞武裝宣布加入戰局，揚言威脅曼德海峽（Bab el-Mandeb）</strong>——全球第二個關鍵能源運輸咽喉也出現風險，衝突範圍明顯外溢</li>
+      <li><strong>7/14</strong>：美國重啟海軍封鎖，並一度宣布對通行船隻課徵20%過境稅，此舉震驚波灣盟友，經過48小時外交搶救後川普撤回徵稅計畫；全球8大貨櫃航商已暫停荷姆茲航線、改道南非好望角</li>
+      <li><strong>7/15-16</strong>：荷姆茲海峽單日通行僅剩10-14艘（基準約88艘/天的11-16%，是6月MoU後51-52艘高水位的不到三分之一），戰爭險保費飆到平常的8倍，6家P&amp;I保賠協會撤出承保</li>
+      <li><strong>Brent從7/10的$76飆升到7/15-16的$85.3-85.9</strong>，單週漲幅逼近13%，且過去24小時價格波動已經收斂（幾乎持平），顯示市場已經把這波關閉price in，不是持續失控式暴衝</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-scale-unbalanced" style="color:var(--red)"></i>三長三短因子重新評估（2026/7/16更新）</h3>
+    <p>三長三短框架用來拆解油價的長期基本面（三長）跟短期驅動力（三短），跟後面的技術面分析（黃金切割率、波浪、真假突破）是互補關係——三長三短告訴你「為什麼」，技術面告訴你「在哪裡」。</p>
+
+    <p style="font-weight:700;color:var(--navy);margin-top:16px">📈 三長（長期因子）</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:110px">因子</th><th>現況評估</th><th style="width:140px">方向</th></tr></thead>
+        <tbody>
+          <tr><td>經濟景氣</td><td class="wrap-ok">全球製造業仍疲軟，IMF/EIA持續下修需求；但中東衝突已從「風險溢價」演變成確認的實體運力中斷（海峽通行僅剩基準11-16%），加上曼德海峽新增風險，供給端衝擊的範圍正在擴大</td><td>🔴 已確認由空轉多</td></tr>
+          <tr><td>供給與需求</td><td class="wrap-ok">非OPEC+持續增產的長期邏輯沒變，但荷姆茲海峽通行量崩到10-14艘/天（僅基準11-16%），加上曼德海峽的胡塞威脅，<strong>兩個關鍵咽喉同時承壓是開戰以來首見</strong>——這個因子已經從「可能反轉」變成「確認反轉」</td><td>🔴 已翻多，非暫時性</td></tr>
+          <tr><td>美元指數</td><td class="wrap-ok">DXY持續在100.9-101.3附近，接近13個月高點，沃什上任後的鷹派立場維持不變。美元與油價繼續同步走強（正相關），兩者都在為同一個總體環境（地緣風險+滯脹預期）定價</td><td>🔴 同步驗證通膨/風險敘事</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-weight:700;color:var(--navy);margin-top:16px">📉 三短（短期因子）</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:110px">因子</th><th>現況評估</th><th style="width:140px">方向</th></tr></thead>
+        <tbody>
+          <tr><td>庫存</td><td class="wrap-ok">最新一期（7/10當週）數據顯示商業原油轉為減少170萬桶、煉油廠加工量與利用率回升——上週的「價格與庫存背離」已經開始收斂，實體面終於跟上價格面</td><td>🟢 轉為確認多頭</td></tr>
+          <tr><td>季節因素</td><td class="wrap-ok">夏季用油旺季仍在進行，煉油廠利用率回升至96.2%，季節性需求力道比上週更扎實</td><td>🟢 偏多且力道回升</td></tr>
+          <tr><td>CFTC持倉</td><td class="wrap-ok">最新公開的COT數據仍是截至6/30當週（淨多頭11.05萬口，較前週下滑），尚未涵蓋這波7/12後的escalation——<strong>這是目前分析的一個資訊落差</strong>，下週公布的COT數據會是判斷期貨市場是否開始追價的關鍵，建議下次更新時優先查證</td><td>⚪ 資料落後，待更新</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-info" style="margin-top:14px">
+      <strong>三長三短綜合解讀（更新版）</strong><br><br>
+      <strong>三長因子已經從「可能反轉」變成「確認反轉」：</strong>7/12的判斷是「如果關閉持續超過一週會翻多」——現在還沒滿一週，但通行量崩到基準11-16%、加上曼德海峽新增風險，已經足以讓供給與需求這個因子確認翻多，不用再等滿一週的條件。經濟景氣因子也因為衝擊範圍擴大到兩個咽喉而同步轉多。<br><br>
+      <strong>三短因子這次也跟上了：</strong>上一版三短因子還停留在「中性偏多、方向未確認」，最新一期EIA數據（商業原油轉減、煉油廠利用率回升）已經把這個不確定性往多頭方向收斂，唯一的資訊落差在CFTC——最新持倉數據還沒反映7/12後的escalation，這是下次更新要優先補上的部分。<br><br>
+      <strong>跟劇本A/B/C的對照：現在已經是劇本C（全面升級），不再是「可能」：</strong>曼德海峽新增風險、8大航商繞道好望角、保費8倍，這些都是劇本C定義裡「全面升級」的具體特徵，已經發生，不是假設。但同時要注意：Brent過去24小時波動收斂（$85.3附近持平），代表市場短線已經完成主要的price-in，<strong>下一個變數不是"會不會升級"，而是"這個新常態要維持多久、有沒有進一步失控的空間"</strong>——曼德海峽是否真的被封鎖、8大航商繞道會不會演變成長期常態，是接下來最值得盯的兩件事。
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h3><i class="fa-solid fa-chart-line" style="color:var(--red)"></i>布蘭特原油技術面現況（課程6/26基準）</h3>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td>課程週收盤參考</td><td>$73–79</td></tr>
+          <tr><td>衝突高點（3月下旬，週收盤口徑）</td><td>$119.5</td></tr>
+          <tr><td>頸線（前波高低點）</td><td>$92／$88／$74</td></tr>
+          <tr><td>黃金切割 0.618 支撐</td><td>$79.12–81.94</td></tr>
+          <tr><td>技術型態</td><td>箱型整理 abc(3-3-5) ＋ 下降楔形末端C波</td></tr>
+          <tr><td>WR / CCI 位置（6/26當時）</td><td>WR:97.60／CCI:-139，極度超賣</td></tr>
+          <tr><td>均線位置</td><td>跌破20週/260週均線，但臨大量區強支撐</td></tr>
+          <tr><td>大量區支撐（2025.01.24–2026.03.02累積區）</td><td>約$75–85</td></tr>
+          <tr><td>波浪位置</td><td>波浪4，末端三角形接近表態</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>跟現況對照（7/16更新）：</strong>Brent已經從課程當時的$73-79區間，隨著7/12荷姆茲海峽關閉一路推升到$85.3-85.9，<strong>正式突破課程畫的頸線$74，並逼近下一條頸線$88</strong>——這是本輪反彈第一次真正挑戰課程技術面設定的中期壓力關卡，跟7/9當時「還在支撐區整理」的判斷已經不同，建議重新用黃金切割率工具搭配最新高低點（$85.9 vs 近期低點$70附近）重新算一次關卡位置。</p>
+    <div class="callout callout-warn"><strong>口徑差異提醒：</strong>課程的$119.5高點是用週收盤價計算，跟前面查證到的盤中最高價$126.41（4/30）不是同一個數字——週收盤跟盤中高點本來就會差一截。自己重算黃金切割率時，記得先確認用的是收盤還是盤中口徑，兩種算出來的支撐關卡會有落差。</div>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-ruler-combined" style="color:var(--red)"></i>支撐壓力五種方法，套在布蘭特原油上</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:130px">方法</th><th>課程判讀</th></tr></thead>
+        <tbody>
+          <tr><td>01 型態</td><td>上升三角、菱型、旗型（楔型）、矩型——目前布蘭特是箱型整理+下降楔形</td></tr>
+          <tr><td>02 均線</td><td>20週線為中長期多空分界；260週線為年線支撐；目前跌破但臨大量區</td></tr>
+          <tr><td>03 黃金切割率</td><td>高點$119.5→低點$58.72，算出支撐：$96.28／$89.11／$81.94</td></tr>
+          <tr><td>04 前波高低點（頸線）</td><td>布蘭特頸線 $92／$88／$74</td></tr>
+          <tr><td>05 大量區</td><td>布蘭特大量區（2025.01.24–2026.03.02，3/3大量區）約$75–85</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-wave-square" style="color:var(--red)"></i>波浪位置與楔形波（末端三角形）</h3>
+    <p>課程判讀布蘭特目前處於<strong>波浪4</strong>，型態是「箱型整理abc(3-3-5)＋下降楔形末端C波」。楔形波的特徵：</p>
+    <ul>
+      <li>次一層級細微波已呈現3-3-3-3-3，只發生在第5波與C波</li>
+      <li>市場記憶法：「上升楔形走下降波、下降楔形走上升波」，通常伴隨之後快速反轉</li>
+      <li>判斷依據：①1、4小浪發生重疊　②結構為3-3-3-3-3，暗示攻擊力道減弱　③整體波型收斂在三角形當中</li>
+    </ul>
+    <div class="callout callout-info">建平老師原話：「各位已經在末端了，最後就表態，油要不要重壓加倉自己決定。」</div>
+    <p><strong>跟這幾天的走勢對照：</strong>7/7-8這波反彈，如果真的是楔形末端的表態，方向應該會加速確認，不會只是溫和反彈；目前還看不出來是「快速反轉」還是單純消息面跳空，這也是為什麼下一段真假突破3.4原則的檢驗很重要。</p>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-magnifying-glass-chart" style="color:var(--red)"></i>真假突破3.4原則：套用在7/7-8這波+5%反彈</h3>
+    <p>課程的3.4原則：</p>
+    <ol>
+      <li>以<strong>收盤價</strong>突破才算真突破</li>
+      <li>股價突破<strong>3%</strong>，才算真突破</li>
+      <li>突破後應伴隨大量（超過5日均量30%）</li>
+      <li>突破後多觀察<strong>3天、5天、8天</strong>（3–5–8週）</li>
+    </ol>
+    <p>用這個原則檢驗這波反彈（7/16更新）：Brent從$70附近一路推升到$85.3-85.9，已經<strong>收盤站穩在$74頸線之上超過3%</strong>，且7/12後的漲勢明確伴隨實體事件（海峽關閉、通行量崩到基準11-16%），不再只是消息面跳空——這次的量能與事件驗證比7/7-8那波扎實很多，<strong>用3.4原則檢驗，這波偏向「真突破」的機率已經提高</strong>，下一個要觀察的關卡是$88這條頸線是否也能站穩。</p>
+    <div class="callout callout-warn">照3-5-8的觀察節奏，<strong>7/12是這波真正加速的起點，7/15-16大約是第3-4個交易日，7/19-21左右會來到第8天觀察窗</strong>——建議屆時重新檢視Brent能否維持在$85以上，作為確認真突破的最後一道驗證。</div>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-chess-board" style="color:var(--red)"></i>布蘭特原油三情境分析（課程原表，對照本報告劇本A/B/C）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>課程情境</th><th>觸發條件</th><th>目標價</th><th>對照劇本</th></tr></thead>
+        <tbody>
+          <tr><td>▲ 多頭（基面修復）</td><td>7/1 EIA庫欣&lt;2,000萬桶；美伊協議再破裂；霍爾木茲封閉延長</td><td>初目標$88-92，800萬桶/日缺口持續時上看$130-135</td><td>≈ 劇本C</td></tr>
+          <tr><td>▷ 震盪（課程認為當前主要情境）</td><td>摩根大通給70%機率：持續接近但遲遲未簽；供應緩慢恢復</td><td>區間$74-85</td><td>≈ 劇本B</td></tr>
+          <tr><td>▼ 空頭（協議落地）</td><td>美伊正式簽署、霍爾木茲完全重開</td><td>高盛下行目標：2026Q4見$70以下，2027年見$60</td><td>≈ 劇本A</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>目前狀態核對（7/16更新）：</strong>課程多頭情境的觸發條件之一「7/1 EIA庫欣&lt;2,000萬桶」，最新一期（7/10當週）數據顯示Cushing反而轉為增加43萬桶，這個特定觸發條件本身沒有被滿足；<strong>但多頭情境更關鍵的另外兩個條件——「美伊協議再破裂」與「霍爾木茲封閉延長」——已經被7/12-16的實際發展完全滿足</strong>，且目標價區間$88-92已經非常接近目前$85.3-85.9的實際價位，只差臨門一腳。這代表課程原本設定的多頭情境，即使Cushing這個單一指標沒配合，整體情境判斷依然成立——多重觸發條件不需要同時滿足，這正是為什麼即使庫存指標喜憂參半，價格還是走出了多頭情境的原因。摩根大通原本給震盪情境70%機率的判斷，隨著情勢升級，權重應該要往多頭情境挪動。</p>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-table-list" style="color:var(--red)"></i>整合操作決策表（課程原表）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>標的</th><th>關注條件</th><th>進場訊號</th><th>停利/停損參考</th><th>方向</th></tr></thead>
+        <tbody>
+          <tr><td>布蘭特原油</td><td>7/1 EIA庫欣&lt;2,000萬桶；WR/CCI極超賣；美伊再破裂</td><td>週線收盤站回$80以上；成交量放大；WR從超賣反轉</td><td>停利：初步$88，次目標$92；停損：跌破大量區$74收盤</td><td>等待買</td></tr>
+          <tr><td>台塑1301</td><td>6/30除息後填息速度；油價同步反彈；量縮後量增突破確認</td><td>日線收盤站穩51-52以上；MACD翻多；主力量確認</td><td>停利：區間上緣55，突破後看波段操作；停損：日線收盤跌破50元</td><td>觀察買</td></tr>
+          <tr><td>美元/台幣</td><td>頸線31.7附近</td><td>台幣若升破31.7（外資回流）→台股多頭支撐增強</td><td>台幣若跌破31.7持續貶值→外資撤離，減碼台股</td><td>監控</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>台塑對照：</strong>課程判斷台塑跟布蘭特原油高度正相關（13個月週期高度吻合），不是「油跌台塑漲」的負相關。油價這波反彈理論上台塑會同步受益；6/30除息後的填息速度，是確認50-55新區間是否有效的關鍵觀察點。</p>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-eye" style="color:var(--red)"></i>需要盯的關鍵日期／指標（整合課程行事曆＋前面查證的事件）</h3>
+    <div class="watch-item">
+      <div class="watch-icon"><i class="fa-solid fa-calendar-day"></i></div>
+      <div class="watch-text"><strong>7/17（美國制裁清倉期截止）</strong>——最大的單一風險窗口，也剛好落在真假突破3.4原則的第8天觀察窗附近，雙重意義</div>
+    </div>
+    <div class="watch-item">
+      <div class="watch-icon"><i class="fa-solid fa-file-invoice"></i></div>
+      <div class="watch-text"><strong>每週三EIA庫存報告</strong>（7/8當週數據已公布：商業原油意外增加300萬桶；下一次為7/15公布7/10當週數據）——特別留意Cushing是否跌破課程設定的2,000萬桶關鍵警戒線</div>
+    </div>
+    <div class="watch-item">
+      <div class="watch-icon"><i class="fa-solid fa-ship"></i></div>
+      <div class="watch-text"><strong>荷姆茲海峽實際通行船隻數</strong>——⚠️已經觸發：7/8僅13艘油輪通過（前一週均值33艘/天），7/8晚到7/9更只剩5艘，遠差於6/24-25創下的51-52艘/天高水位，這是劇本C領先訊號已經亮燈的證據，不是「如果」，是「已經發生」</div>
+    </div>
+    <div class="watch-item">
+      <div class="watch-icon"><i class="fa-solid fa-industry"></i></div>
+      <div class="watch-text"><strong>Kharg Island（伊朗最大原油出口樞紐）</strong>——Trump放話美軍可能佔領，若真的發生會是直接衝擊伊朗原油出口能力的實質行動，比單純海峽襲擾更嚴重，值得列為新的尾部風險</div>
+    </div>
+    <div class="watch-item">
+      <div class="watch-icon"><i class="fa-solid fa-comment-dots"></i></div>
+      <div class="watch-text"><strong>Trump發言的不一致性本身就是風險因子</strong>——同一場記者會裡先威脅轟炸+封鎖、又說不會全面開戰、還預測油價會跌，這種矛盾訊號會放大市場波動，操作上應該對消息面跳空更謹慎，而不是更放心</div>
+    </div>
+    <div class="watch-item">
+      <div class="watch-icon"><i class="fa-solid fa-user-secret"></i></div>
+      <div class="watch-text"><strong>Mojtaba Khamenei健康狀況／IRGC內部消息</strong>——目前沒有被市場充分定價，一旦有新進展可能是意外跳空來源</div>
+    </div>
+    <div class="watch-item">
+      <div class="watch-icon"><i class="fa-solid fa-clock"></i></div>
+      <div class="watch-text"><strong>9/16（FOMC利率決議，落在交易日第144天窗口）</strong>——時間週期＋已排定金融事件重合的未來日期</div>
+    </div>
+    <div class="watch-item">
+      <div class="watch-icon"><i class="fa-solid fa-list-check"></i></div>
+      <div class="watch-text"><strong>課程行事曆額外提到的事件</strong>：6/27美軍再度空襲伊朗、伊朗擊沉油輪Kiku（200萬桶）；7/2美國非農（提前至7/3假期前）；7/7-8 OPEC月度報告（連兩次下調需求）；7/9 IEA月度能源展望；7/23歐洲央行利率決議；7/30美國Q2 GDP+PCE——跟地緣事件疊加時要特別留意流動性變化</div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <div><strong>荷姆茲海峽危機｜時間軸・事實核對表・原油投資計畫</strong></div>
+  <div>本文件基於 2026/7/16 可查證之公開資訊整理，市場與情勢每日變動，請於操作前自行覆核最新數據</div>
+  <div style="margin-top:8px; font-size:11.5px; opacity:0.8">僅供學員個人學習使用，不得複製或散佈</div>
+</footer>
+
+</body>
+</html>
