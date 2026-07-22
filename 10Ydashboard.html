@@ -3,722 +3,984 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>支撐壓力計算工具</title>
+<title>GlobalMacro Dashboard - 全球總經儀表板</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-:root{
-  --bg:#0d0f14;--bg2:#13161d;--bg3:#1a1e28;--bg4:#21263300;
-  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--border3:rgba(255,255,255,0.22);
-  --text:#e8eaf0;--text2:#b0b5c5;--text3:#7a7f90;
-  --blue:#4d9eff;--green:#3ecf8e;--orange:#f7a830;--red:#f06060;
-  --purple:#a78bfa;--teal:#2dd4bf;
-  --radius:12px;--radius-sm:8px;
-}
-[data-theme="light"]{
-  --bg:#f0ede8;--bg2:#e8e4de;--bg3:#ffffff;
-  --border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.16);--border3:rgba(0,0,0,0.26);
-  --text:#2a2820;--text2:#6b6658;--text3:#a09a90;
-  --blue:#1a6fb5;--green:#0d8f5e;--orange:#c07a10;--red:#c8373a;
-  --purple:#6d42d4;--teal:#0e8a80;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;
-  background:var(--bg);color:var(--text);min-height:100vh;font-size:16px;line-height:1.6;
-}
+  :root {
+    --bg: #0d0f14;
+    --bg2: #13161d;
+    --bg3: #1a1e28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0;
+    --text2: #b0b5c5;
+    --text3: #7a7f90;
+    --blue: #4d9eff;
+    --green: #3ecf8e;
+    --orange: #f7a830;
+    --red: #f06060;
+    --purple: #a78bfa;
+    --teal: #2dd4bf;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  [data-theme="light"] body {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231a6fb5' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  }
+  [data-theme="light"] {
+    --bg: #f0ede8;
+    --bg2: #e8e4de;
+    --bg3: #ffffff;
+    --border: rgba(0,0,0,0.09);
+    --border2: rgba(0,0,0,0.16);
+    --text: #2a2820;
+    --text2: #6b6658;
+    --text3: #a09a90;
+    --blue: #1a6fb5;
+    --green: #0d8f5e;
+    --orange: #c07a10;
+    --red: #c8373a;
+    --purple: #6d42d4;
+    --teal: #0e8a80;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234d9eff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    color: var(--text);
+    min-height: 100vh; font-size: 15px; line-height: 1.6;
+  }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px; border-bottom: 1px solid var(--border);
+    background: var(--bg2); position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .logo-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--blue); box-shadow: 0 0 8px var(--blue);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .topbar-title { font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+  .topbar-sub { font-size: 13px; color: var(--text2); }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  #lastUpdate { font-size: 11px; color: var(--text3); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .container { max-width: 1200px; margin: 0 auto; padding: 28px 32px; }
+  .section-label {
+    font-size: 12px; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--text2);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+  .card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px; margin-bottom: 12px;
+  }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--text2); }
+  .range-tabs {
+    display: flex; gap: 2px; background: var(--bg3);
+    border-radius: var(--radius-sm); padding: 3px;
+  }
+  .range-tab {
+    padding: 4px 10px; border-radius: 5px; border: none;
+    background: transparent; color: var(--text3); font-size: 12px; cursor: pointer; transition: all .15s;
+  }
+  .range-tab.active { background: var(--bg2); color: var(--text); border: 1px solid var(--border2); }
+  .range-tab:hover:not(.active) { color: var(--text2); }
+  .legend-row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text2); }
+  .legend-line { width: 20px; height: 2px; border-radius: 1px; }
+  .chart-wrap { position: relative; width: 100%; height: 260px; }
+  .chart-wrap-sm { position: relative; width: 100%; height: 200px; }
+  .metrics-grid {
+    display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin-top: 16px;
+  }
+  @media(max-width:900px){ .metrics-grid{grid-template-columns:repeat(3,1fr)} }
+  @media(max-width:600px){ .metrics-grid{grid-template-columns:repeat(2,1fr)} .container{padding:20px 16px} .topbar{padding:12px 16px} }
+  .metric-tile {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px; transition: border-color .15s;
+  }
+  .metric-tile:hover { border-color: var(--border2); }
+  .mt-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+  .mt-value { font-size: 22px; font-weight: 600; letter-spacing: -.02em; margin-bottom: 3px; }
+  .mt-change { font-size: 12px; }
+  .mt-change.up { color: var(--red); }
+  .mt-change.dn { color: var(--green); }
+  .mt-change.nt { color: var(--text3); }
+  .trend-badge {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 4px; letter-spacing: .04em;
+    text-transform: uppercase; margin-top: 4px;
+  }
+  .trend-up { background: rgba(240,96,96,.15); color: var(--red); }
+  .trend-dn { background: rgba(62,207,142,.15); color: var(--green); }
+  .trend-fl { background: rgba(139,144,160,.15); color: var(--text2); }
+  .divider { margin: 28px 0; }
+  .sentiment-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px;
+  }
+  @media(max-width:700px){ .sentiment-grid{grid-template-columns:repeat(2,1fr)} }
+  .gauge-tile {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px; text-align: center; transition: border-color .15s;
+  }
+  .gauge-tile:hover { border-color: var(--border2); }
+  .gauge-label { font-size: 13px; color: var(--text2); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px; }
+  .gauge-value { font-size: 32px; font-weight: 700; letter-spacing: -.03em; margin-bottom: 4px; }
+  .gauge-desc { font-size: 11px; font-weight: 500; letter-spacing: .03em; text-transform: uppercase; margin-bottom: 6px; }
+  .gauge-sub { font-size: 12px; color: var(--text2); }
+  .color-red { color: var(--red); }
+  .color-orange { color: var(--orange); }
+  .color-green { color: var(--green); }
+  .color-text2 { color: var(--text2); }
+  .ext-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; color: var(--blue); text-decoration: none;
+    margin-top: 6px; opacity: .8;
+  }
+  .ext-link:hover { opacity: 1; }
+  .sub-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  @media(max-width:600px){ .sub-charts{grid-template-columns:1fr} }
+  .sub-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px;
+  }
+  .sub-card-title { font-size: 13px; color: var(--text2); margin-bottom: 12px; }
+  .sub-chart-wrap { position: relative; width: 100%; height: 140px; }
+  .loading-box {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 10px; padding: 40px; color: var(--text3); font-size: 13px;
+  }
+  .spinner {
+    width: 20px; height: 20px; border: 2px solid var(--border2);
+    border-top-color: var(--blue); border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  .error-box {
+    color: var(--red); font-size: 12px; padding: 12px;
+    background: rgba(240,96,96,.08); border: 1px solid rgba(240,96,96,.2);
+    border-radius: var(--radius-sm); margin: 8px 0;
+  }
+  .data-note {
+    font-size: 12px; color: var(--text2); text-align: right;
+    margin-top: 8px; padding: 0 4px;
+  }
+  /* 經濟指標區塊 */
+  .econ-group { margin-bottom: 24px; }
+  .econ-group-title {
+    font-size: 14px; font-weight: 600; color: var(--text2);
+    margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .econ-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+  }
+  @media(max-width:900px){ .econ-grid{grid-template-columns:repeat(2,1fr)} }
+  @media(max-width:500px){ .econ-grid{grid-template-columns:1fr} }
+  .econ-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px 16px;
+    transition: border-color .15s;
+  }
+  .econ-card:hover { border-color: var(--border2); }
+  .econ-card-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .econ-card-header.has-notice { margin-bottom: 0px; }
+  .econ-fred-notice { font-size:10px; color:var(--text3); line-height:1.2; margin-bottom:2px; }
+  .econ-card-title { font-size: 13px; color: var(--text2); }
+  .econ-card-update { font-size: 12px; color: var(--text2); text-align: right; line-height: 1.4; }
+  .econ-value { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 2px; color: var(--text); }
+  .econ-value.econ-up { color: var(--red); }
+  .econ-value.econ-dn { color: var(--green); }
+  .econ-value.econ-nt { color: var(--text); }
+  .econ-prev { font-size: 12px; color: var(--text2); margin-bottom: 8px; }
+  .econ-chart-wrap { position: relative; width: 100%; height: 80px; }
+  /* 外部連結卡片 */
+  .econ-link-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px 16px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: all .2s ease; min-height: 120px;
+    text-decoration: none; color: inherit;
+  }
+  .econ-link-title { font-size: 13px; color: var(--text2); margin-bottom: 4px; }
+  .econ-link-note { font-size: 11px; color: var(--text2); margin-bottom: 8px; flex: 1; }
+  .econ-link-update { font-size: 10px; color: var(--text3); margin-bottom: 8px; }
 
-/* ── topbar ── */
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 24px;border-bottom:1px solid var(--border);
-  background:var(--bg2);position:sticky;top:0;z-index:100;
-}
-.topbar-left{display:flex;align-items:center;gap:12px}
-.logo-mark{
-  width:32px;height:32px;border-radius:8px;
-  background:linear-gradient(135deg,var(--blue),var(--teal));
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.logo-mark svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.topbar-title{font-size:16px;font-weight:600;letter-spacing:-.01em}
-.topbar-sub{font-size:12px;color:var(--text2)}
-.theme-btn{
-  display:flex;align-items:center;gap:6px;
-  padding:7px 14px;border-radius:var(--radius-sm);
-  border:1px solid var(--border2);background:transparent;
-  color:var(--text2);font-size:13px;cursor:pointer;transition:all .15s;
-}
-.theme-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--blue)}
-.theme-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  @media print {
+    .topbar { position: static !important; }
+    .pdf-btn { display: none !important; }
+    body { background: #fff !important; color: #000 !important; }
+    .card, .gauge-tile, .sub-card, .econ-card, .econ-link-card {
+      border: 1px solid #ccc !important;
+      background: #fff !important;
+      break-inside: avoid;
+    }
+    .section-label { color: #333 !important; }
+    .card-title, .mt-label, .gauge-label, .econ-card-title { color: #555 !important; }
+    canvas { max-width: 100% !important; }
+  }
 
-/* ── tab strip ── */
-.tab-strip-wrap{
-  background:var(--bg2);border-bottom:1px solid var(--border);
-  overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
-}
-.tab-strip-wrap::-webkit-scrollbar{display:none}
-.tab-strip{
-  display:flex;white-space:nowrap;padding:0 24px;min-width:max-content;
-}
-.tab-btn{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:14px 20px;border:none;background:none;
-  color:var(--text2);font-size:15px;font-weight:500;cursor:pointer;
-  border-bottom:2px solid transparent;transition:all .15s;
-  white-space:nowrap;flex-shrink:0;
-}
-.tab-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.tab-btn:hover{color:var(--text)}
-.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+  .pdf-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border2); background: transparent;
+    color: var(--text2); font-size: 12px; cursor: pointer; transition: all .15s;
+  }
+  .pdf-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--green); }
+  .pdf-btn svg { width: 13px; height: 13px; }
+  .theme-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border2); background: transparent;
+    color: var(--text2); font-size: 12px; cursor: pointer; transition: all .15s;
+  }
+  .theme-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--blue); }
+  .theme-btn svg { width: 14px; height: 14px; }
 
-/* ── main content ── */
-.main{max-width:800px;margin:0 auto;padding:28px 24px}
+  /* Hover 高光效果 */
+  .clickable-tile {
+    cursor: pointer;
+    transition: all .2s ease;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+  }
+  .clickable-tile:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.25) !important;
+    background: rgba(255,255,255,0.05) !important;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .clickable-tile:hover .gauge-label,
+  .clickable-tile:hover .mt-label { color: var(--text2); }
 
-/* ── section panel ── */
-.panel{display:none}.panel.active{display:block}
-
-/* ── formula hint ── */
-.formula-hint{
-  background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--blue);
-  border-radius:var(--radius-sm);padding:12px 16px;
-  font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:20px;
-}
-.formula-hint strong{color:var(--text)}
-
-/* ── input grid ── */
-.input-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
-.input-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
-.input-row-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:20px}
-.field{display:flex;flex-direction:column;gap:6px}
-.field label{
-  font-size:12px;color:var(--text2);font-weight:500;
-  text-transform:uppercase;letter-spacing:.06em;
-  display:flex;align-items:center;gap:5px;
-}
-.field label svg{width:13px;height:13px;stroke:var(--blue);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.field input{
-  border:1px solid var(--border2);border-radius:var(--radius-sm);
-  padding:10px 13px;font-size:16px;
-  background:var(--bg3);color:var(--text);width:100%;
-  transition:border-color .15s;
-}
-.field input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(77,158,255,.1)}
-.field input.override{border-color:var(--teal);background:rgba(45,212,191,.06)}
-.field input.override:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(45,212,191,.1)}
-.field-note{font-size:11px;color:var(--text3);margin-top:2px}
-
-/* ── result table ── */
-.result-card{
-  background:var(--bg3);border:1px solid var(--border);
-  border-radius:var(--radius);overflow:hidden;margin-bottom:16px;
-}
-.result-table{width:100%;border-collapse:collapse;font-size:15px}
-.result-table th{
-  padding:10px 16px;font-size:11px;font-weight:600;
-  color:var(--text3);background:var(--bg2);
-  border-bottom:1px solid var(--border);text-align:left;
-  text-transform:uppercase;letter-spacing:.06em;
-}
-.result-table td{
-  padding:11px 16px;border-bottom:1px solid var(--border);color:var(--text);
-  transition:background .1s;
-}
-.result-table tr:last-child td{border-bottom:none}
-.result-table tbody tr:hover td{background:var(--bg2)}
-.ratio-pill{
-  display:inline-flex;align-items:center;
-  padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;
-  background:rgba(77,158,255,.12);color:var(--blue);
-  font-variant-numeric:tabular-nums;letter-spacing:.02em;
-}
-.val-strong{font-weight:600;font-variant-numeric:tabular-nums;font-size:16px}
-.empty-hint{
-  padding:24px;text-align:center;color:var(--text3);font-size:14px;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.empty-hint svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.6}
-
-/* ── sym grid ── */
-.sym-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-
-/* ── wave combos ── */
-.combo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
-.combo-card{
-  border:1px solid var(--border);border-radius:var(--radius-sm);
-  padding:10px 12px 9px;cursor:pointer;background:var(--bg3);
-  transition:all .15s;
-}
-.combo-card:hover{border-color:var(--border3)}
-.combo-card.active{border-color:var(--blue);background:rgba(77,158,255,.07)}
-.combo-ratio{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
-.combo-sub{font-size:11px;color:var(--text3);line-height:1.4}
-
-/* ── wave metric row ── */
-.wave-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
-.wm-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px}
-.wm-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.wm-val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text)}
-.wm-sub{font-size:11px;color:var(--text3);margin-top:2px}
-
-/* ── wave table: invalid row ── */
-.row-invalid td{color:var(--text3)!important}
-.row-manual td{background:rgba(45,212,191,.06)!important;font-weight:600}
-
-/* ── 00715L panel ── */
-.oil-hero{
-  background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);
-  padding:24px;margin-bottom:20px;
-}
-.oil-formula{
-  font-size:13px;color:var(--text2);line-height:2;margin-bottom:20px;
-  padding:12px 16px;background:var(--bg2);border-radius:var(--radius-sm);
-  border-left:3px solid var(--orange);
-}
-.oil-formula strong{color:var(--text)}
-.oil-result-row{
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;
-}
-.oil-result-card{
-  background:var(--bg2);border-radius:var(--radius-sm);
-  border:1px solid var(--border);padding:16px 18px;text-align:center;
-}
-.oil-result-label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
-.oil-result-val{font-size:28px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.oil-result-val.pos{color:var(--red)}
-.oil-result-val.neg{color:var(--green)}
-.oil-result-val.nt{color:var(--text2)}
-.oil-result-note{font-size:11px;color:var(--text3);margin-top:4px}
-.k-row{display:flex;align-items:center;gap:12px;margin-bottom:4px}
-.k-row label{font-size:13px;color:var(--text2);flex-shrink:0;display:flex;align-items:center;gap:5px}
-.k-row label svg{width:13px;height:13px;stroke:var(--orange);fill:none;stroke-width:2;stroke-linecap:round}
-.k-row input[type=range]{flex:1;accent-color:var(--orange);cursor:pointer}
-.k-val{font-size:14px;font-weight:600;color:var(--orange);min-width:32px;text-align:right;font-variant-numeric:tabular-nums}
-.k-presets{display:flex;gap:6px}
-.k-preset{
-  padding:5px 12px;border-radius:20px;border:1px solid var(--border2);
-  background:transparent;color:var(--text2);font-size:12px;cursor:pointer;transition:all .15s;
-}
-.k-preset:hover{border-color:var(--orange);color:var(--orange)}
-.k-preset.active{border-color:var(--orange);background:rgba(247,168,48,.12);color:var(--orange);font-weight:600}
-
-/* ── divider ── */
-.divider{height:1px;background:var(--border);margin:20px 0}
-
-/* ── section title ── */
-.stitle{
-  font-size:12px;font-weight:600;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.08em;
-  margin-bottom:12px;display:flex;align-items:center;gap:6px;
-}
-.stitle svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-
-/* ── responsive ── */
-@media(max-width:600px){
-  .main{padding:20px 16px}
-  .input-row-4{grid-template-columns:1fr 1fr}
-  .input-row-3{grid-template-columns:1fr 1fr}
-  .combo-grid{grid-template-columns:repeat(2,1fr)}
-  .wave-metrics{grid-template-columns:1fr 1fr}
-  .sym-grid{grid-template-columns:1fr}
-  .oil-result-row{grid-template-columns:1fr 1fr}
-  .tab-btn{padding:12px 16px;font-size:14px}
-  .topbar-sub{display:none}
-  .result-table{font-size:14px}
-  .field input{font-size:16px}
-}
-@media(max-width:380px){
-  .input-row-4{grid-template-columns:1fr}
-  .oil-result-row{grid-template-columns:1fr}
-}
+  /* 資產價格區塊 */
+  .assets-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  @media(max-width:1000px){ .assets-grid{grid-template-columns:repeat(3,1fr)} }
+  @media(max-width:600px){ .assets-grid{grid-template-columns:repeat(2,1fr)} }
+  .asset-tile {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+  }
+  .asset-label { font-size: 13px; color: var(--text2); letter-spacing:.03em; text-transform:uppercase; margin-bottom: 6px; }
+  .asset-value { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 3px; color: var(--text); }
+  .asset-value.up { color: var(--red); }
+  .asset-value.dn { color: var(--green); }
+  .asset-value.nt { color: var(--text); }
+  .asset-change { font-size: 11px; }
+  .asset-change.up { color: var(--red); }
+  .asset-change.dn { color: var(--green); }
+  .asset-change.nt { color: var(--text3); }
+  .asset-date { font-size: 11px; color: var(--text2); margin-top: 4px; }
+  .asset-loading { font-size: 11px; color: var(--text3); padding: 20px 0; text-align:center; }
 </style>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1DC1SBCEPH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1DC1SBCEPH');
+  </script>
 </head>
 <body>
 
 <div class="topbar">
   <div class="topbar-left">
-    <div class="logo-mark">
-      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    </div>
+    <div class="logo-dot"></div>
     <div>
-      <div class="topbar-title">支撐壓力計算工具</div>
-      <div class="topbar-sub">黃金切割率 · 波浪理論 · 原油ETF</div>
+      <div class="topbar-title">GlobalMacro Dashboard</div>
+      <div class="topbar-sub">全球總經儀表板 · 每日自動更新</div>
     </div>
   </div>
-  <button class="theme-btn" onclick="toggleTheme()">
-    <svg id="themeIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-    <span id="themeTxt">淺色</span>
-  </button>
-</div>
-
-<div class="tab-strip-wrap">
-  <div class="tab-strip" id="tabStrip">
-    <button class="tab-btn active" data-tab="up" onclick="switchTab('up',this)">
-      <svg viewBox="0 0 24 24"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg>
-      上漲壓力
+  <div class="topbar-right">
+    <span id="lastUpdate"></span>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <span id="themeTxt">淺色</span>
     </button>
-    <button class="tab-btn" data-tab="down" onclick="switchTab('down',this)">
-      <svg viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
-      下跌支撐
-    </button>
-    <button class="tab-btn" data-tab="sym" onclick="switchTab('sym',this)">
-      <svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-      型態對稱法
-    </button>
-    <button class="tab-btn" data-tab="wave" onclick="switchTab('wave',this)">
-      <svg viewBox="0 0 24 24"><path d="M2 12 Q5 4 8 12 Q11 20 14 12 Q17 4 20 12"/></svg>
-      上升波幅計算
-    </button>
-    <button class="tab-btn" data-tab="oil" onclick="switchTab('oil',this)">
-      <svg viewBox="0 0 24 24"><path d="M12 2L8 6H5a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-3L12 2z"/><path d="M12 11 L12 17"/><path d="M9 14 L15 14"/></svg>
-      00715L 測算
+    <button class="pdf-btn" onclick="downloadPDF()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      下載 PDF
     </button>
   </div>
 </div>
 
-<div class="main">
+<div class="container">
 
-  <!-- ─────────── 上漲壓力 ─────────── -->
-  <div class="panel active" id="panel-up">
-    <div class="formula-hint">
-      <strong>公式：</strong>壓力位 = 低點 + (高點 − 低點) × 比率
-    </div>
-    <div class="input-row">
-      <div class="field">
-        <label>
-          <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-          低點（Low）
-        </label>
-        <input type="number" id="u-low" placeholder="例：32.6" oninput="calcUp()">
-      </div>
-      <div class="field">
-        <label>
-          <svg viewBox="0 0 24 24"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
-          高點（High）
-        </label>
-        <input type="number" id="u-high" placeholder="例：43.45" oninput="calcUp()">
-      </div>
-    </div>
-    <div class="result-card">
-      <table class="result-table">
-        <thead><tr><th>回測比率</th><th>壓力價位</th></tr></thead>
-        <tbody id="up-body">
-          <tr><td colspan="2"><div class="empty-hint"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>請輸入低點與高點</div></td></tr>
-        </tbody>
-      </table>
-    </div>
+  <!-- 頂部說明 -->
+  <div style="font-size:11px;color:var(--text2);text-align:center;padding:8px 0 20px;letter-spacing:.02em;background:rgba(77,158,255,0.06);border:1px solid rgba(77,158,255,0.15);border-radius:8px;margin-bottom:20px;padding:10px 16px">
+    FRED經濟數據通常延遲1~2個工作日公布，各類資產非即時報價，請點擊卡片查詢最新數據．
   </div>
 
-  <!-- ─────────── 下跌支撐 ─────────── -->
-  <div class="panel" id="panel-down">
-    <div class="formula-hint">
-      <strong>公式：</strong>支撐位 = 高點 − (高點 − 低點) × 比率
-    </div>
-    <div class="input-row">
-      <div class="field">
-        <label>
-          <svg viewBox="0 0 24 24"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>
-          高點（High）
-        </label>
-        <input type="number" id="d-high" placeholder="例：55.5" oninput="calcDown()">
-      </div>
-      <div class="field">
-        <label>
-          <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-          低點（Low）
-        </label>
-        <input type="number" id="d-low" placeholder="例：42.65" oninput="calcDown()">
+  <!-- 公債殖利率 -->
+  <div class="section-label">10年期公債殖利率走勢</div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">5國殖利率比較</div>
+      <div class="range-tabs" id="rangeTabs">
+        <button class="range-tab" data-r="1M">1M</button>
+        <button class="range-tab active" data-r="3M">3M</button>
+        <button class="range-tab" data-r="6M">6M</button>
+        <button class="range-tab" data-r="1Y">1Y</button>
+        <button class="range-tab" data-r="3Y">3Y</button>
+        <button class="range-tab" data-r="ALL">ALL(20Y)</button>
       </div>
     </div>
-    <div class="result-card">
-      <table class="result-table">
-        <thead><tr><th>回檔比率</th><th>支撐價位</th></tr></thead>
-        <tbody id="down-body">
-          <tr><td colspan="2"><div class="empty-hint"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>請輸入高點與低點</div></td></tr>
-        </tbody>
-      </table>
+    <div class="legend-row" id="yieldLegend"></div>
+    <div class="chart-wrap" id="yieldWrap">
+      <div class="loading-box"><div class="spinner"></div>載入資料中...</div>
     </div>
+    <div class="metrics-grid" id="yieldMetrics"></div>
+    <div class="data-note" id="dataNote"></div>
   </div>
 
-  <!-- ─────────── 型態對稱法 ─────────── -->
-  <div class="panel" id="panel-sym">
-    <div class="sym-grid">
-      <div>
-        <div class="stitle">
-          <svg viewBox="0 0 24 24"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/></svg>
-          上漲壓力目標
-        </div>
-        <div class="field" style="margin-bottom:12px">
-          <label>底部（Bottom）</label>
-          <input type="number" id="su-bot" placeholder="例：31.25" oninput="calcSym()">
-        </div>
-        <div class="field" style="margin-bottom:16px">
-          <label>頸線（Neckline）</label>
-          <input type="number" id="su-neck" placeholder="例：43.2" oninput="calcSym()">
-        </div>
-        <div class="result-card">
-          <table class="result-table">
-            <thead><tr><th>倍數</th><th>目標壓力</th></tr></thead>
-            <tbody id="sym-up"><tr><td colspan="2"><div class="empty-hint"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>請輸入數值</div></td></tr></tbody>
-          </table>
-        </div>
-      </div>
-      <div>
-        <div class="stitle">
-          <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
-          下跌跌幅目標
-        </div>
-        <div class="field" style="margin-bottom:12px">
-          <label>頭部（Head）</label>
-          <input type="number" id="sd-head" placeholder="例：119.5" oninput="calcSym()">
-        </div>
-        <div class="field" style="margin-bottom:16px">
-          <label>頸線（Neckline）</label>
-          <input type="number" id="sd-neck" placeholder="例：92" oninput="calcSym()">
-        </div>
-        <div class="result-card">
-          <table class="result-table">
-            <thead><tr><th>倍數</th><th>目標跌幅</th></tr></thead>
-            <tbody id="sym-dn"><tr><td colspan="2"><div class="empty-hint"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>請輸入數值</div></td></tr></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  <div class="divider"></div>
+
+
+  <!-- 重要資產價格 -->
+  <div class="section-label">重要資產價格</div>
+  <div class="assets-grid" id="assetsGrid">
+    <div class="asset-loading">載入中...</div>
+  </div>
+  <div class="divider"></div>
+
+  <!-- 市場情緒 -->
+  <div class="section-label">市場情緒指標</div>
+  <div class="sentiment-grid" id="sentimentGauges">
+    <div class="loading-box"><div class="spinner"></div></div>
+  </div>
+  <div class="sub-charts" id="subCharts"></div>
+
+  <div class="divider"></div>
+
+  <!-- 經濟數據 -->
+  <div class="section-label">總體經濟數據</div>
+  <div id="econSection">
+    <div class="loading-box"><div class="spinner"></div>載入經濟數據...</div>
   </div>
 
-  <!-- ─────────── 上升波幅計算 ─────────── -->
-  <div class="panel" id="panel-wave">
-    <div class="formula-hint">
-      · 第1浪幅度 = W₁高點 − W₁起點 &nbsp;·&nbsp; 第3浪高點 = W₂低點 + 幅度 × <strong>第3浪倍率</strong><br>
-      · 第4浪低點 = W₃高點 − (W₃高點 − W₂低點) × 回檔比率 &nbsp;·&nbsp; 第5浪高點 = W₄低點 + 幅度 × <strong>第5浪倍率</strong>
-    </div>
 
-    <div class="stitle"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="9"/></svg>已知數值</div>
-    <div class="input-row-4">
-      <div class="field">
-        <label>第1浪起點 W₁S</label>
-        <input type="number" id="w1s" placeholder="例：3490" oninput="calcWave()">
-      </div>
-      <div class="field">
-        <label>第1浪高點 W₁H</label>
-        <input type="number" id="w1h" placeholder="例：4607" oninput="calcWave()">
-      </div>
-      <div class="field">
-        <label>第2浪低點 W₂L</label>
-        <input type="number" id="w2l" placeholder="例：4103" oninput="calcWave()">
-      </div>
-      <div class="field">
-        <label>第3浪高點 W₃H</label>
-        <input type="number" id="w3h-in" placeholder="不填則由倍率推算" oninput="calcWave()">
-        <div class="field-note">選填</div>
-      </div>
+  <!-- 頁面底部 -->
+  <div style="text-align:center;padding:32px 0 24px;border-top:1px solid var(--border);margin-top:32px">
+    <div style="font-size:11px;color:var(--text3);margin-bottom:12px">
+      GlobalMacro Dashboard · 資料來源：FRED & Yahoo Finance
     </div>
-
-    <div class="divider"></div>
-    <div class="stitle"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>選擇上升比例組合（第1浪 : 第3浪 : 第5浪）</div>
-    <div class="combo-grid" id="combo-grid"></div>
-
-    <div class="divider"></div>
-    <div class="stitle"><svg viewBox="0 0 24 24"><path d="M12 22V12M12 12L8 16M12 12L16 16"/><path d="M20 16.7A8 8 0 1 0 8 5"/></svg>第4浪低點</div>
-    <div class="input-row-3">
-      <div class="field">
-        <label class="override-label">
-          <svg viewBox="0 0 24 24" style="stroke:var(--teal)"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          已知第4浪低點 W₄L
-        </label>
-        <input type="number" id="w4l-in" placeholder="填入後覆蓋回檔推算" class="override" oninput="calcWave()">
-        <div class="field-note">選填 — 填入後以此值計算第5浪</div>
-      </div>
-    </div>
-
-    <div id="wave-results" style="display:none">
-      <div class="wave-metrics">
-        <div class="wm-card">
-          <div class="wm-label">第1浪幅度</div>
-          <div class="wm-val" id="m-amp1">—</div>
-          <div class="wm-sub">W₁H − W₁S</div>
-        </div>
-        <div class="wm-card">
-          <div class="wm-label">第3浪高點</div>
-          <div class="wm-val" id="m-w3h">—</div>
-          <div class="wm-sub" id="m-w3h-sub"></div>
-        </div>
-        <div class="wm-card">
-          <div class="wm-label">選定組合第5浪目標</div>
-          <div class="wm-val" id="m-w5sel">—</div>
-          <div class="wm-sub" id="m-w5sel-sub"></div>
-        </div>
-      </div>
-      <div class="stitle"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>各第4浪回檔 × 第5浪目標</div>
-      <div class="result-card">
-        <table class="result-table">
-          <thead><tr><th>第4浪回檔</th><th style="text-align:right">第4浪低點</th><th style="text-align:right" id="th-w5">第5浪目標</th></tr></thead>
-          <tbody id="wave-body"></tbody>
-        </table>
-      </div>
-    </div>
+    <img src="https://visitor-badge.laobi.icu/badge?page_id=nike1112afmax.Study.10Ydashboard"
+         alt="Visitors" style="opacity:.7">
   </div>
 
-  <!-- ─────────── 00715L測算 ─────────── -->
-  <div class="panel" id="panel-oil">
-    <div class="oil-formula">
-      <strong>計算邏輯：</strong><br>
-      油價缺口 Δ% = (布蘭特 MA60 − 布蘭特現價) / 布蘭特現價<br>
-      目標價 = 00715L 現價 × (1 + <strong style="color:var(--orange)">k</strong> × Δ%)<br>
-      <span style="color:var(--text3);font-size:12px">k 為槓桿倍數，實務取 1.90（理論值 2.0，不計耗損）</span>
-    </div>
-
-    <div class="input-row-3">
-      <div class="field">
-        <label>
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          布蘭特現價 (USD)
-        </label>
-        <input type="number" id="o-brent" placeholder="例：72.5" step="0.01" oninput="calcOil()">
-      </div>
-      <div class="field">
-        <label>
-          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          布蘭特 MA60 (USD)
-        </label>
-        <input type="number" id="o-ma60" placeholder="例：78.3" step="0.01" oninput="calcOil()">
-      </div>
-      <div class="field">
-        <label>
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          00715L 現價 (TWD)
-        </label>
-        <input type="number" id="o-etf" placeholder="例：8.5" step="0.01" oninput="calcOil()">
-      </div>
-    </div>
-
-    <div class="oil-hero">
-      <div class="stitle" style="margin-bottom:12px">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        槓桿倍數 k
-      </div>
-      <div class="k-row">
-        <label>
-          <svg viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
-          k =
-        </label>
-        <input type="range" id="o-k" min="1.0" max="2.5" step="0.05" value="1.90" oninput="onKChange()">
-        <span class="k-val" id="k-display">1.90</span>
-      </div>
-      <div class="k-presets">
-        <button class="k-preset active" onclick="setK(1.90,this)">1.90 實務</button>
-        <button class="k-preset" onclick="setK(2.00,this)">2.00 理論</button>
-        <button class="k-preset" onclick="setK(1.80,this)">1.80 保守</button>
-        <button class="k-preset" onclick="setK(1.70,this)">1.70 極保守</button>
-      </div>
-      <div class="oil-result-row">
-        <div class="oil-result-card">
-          <div class="oil-result-label">油價缺口 Δ%</div>
-          <div class="oil-result-val nt" id="o-delta">—</div>
-          <div class="oil-result-note">(MA60 − 現價) / 現價</div>
-        </div>
-        <div class="oil-result-card">
-          <div class="oil-result-label">00715L 目標價</div>
-          <div class="oil-result-val nt" id="o-target">—</div>
-          <div class="oil-result-note" id="o-note">等待輸入</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /main -->
+</div>
 
 <script>
-const RATIOS=[
-  {r:0.191,label:'19.1%'},
-  {r:0.236,label:'23.6%'},
-  {r:0.382,label:'38.2%'},
-  {r:0.500,label:'50.0%'},
-  {r:0.618,label:'61.8%'},
-  {r:0.764,label:'76.4%'},
-  {r:0.809,label:'80.9%'},
+const COUNTRIES = [
+  { key:'us', label:'美國',    color:'#4d9eff', dash:[] },
+  { key:'de', label:'德國(EU)', color:'#3ecf8e', dash:[6,3] },
+  { key:'gb', label:'英國',    color:'#f7a830', dash:[3,3] },
+  { key:'jp', label:'日本',    color:'#a78bfa', dash:[8,4] },
+  { key:'au', label:'澳洲',    color:'#2dd4bf', dash:[4,2] },
 ];
-const COMBOS=[
-  {label:'1:1:1',   w3:1,    w5:1,     sub:'等幅三浪'},
-  {label:'1:1:2',   w3:1,    w5:2,     sub:'第5浪延伸'},
-  {label:'1:2:1',   w3:2,    w5:1,     sub:'第3浪延伸'},
-  {label:'1:2:1.5', w3:2,    w5:1.5,   sub:'第3浪延伸'},
-  {label:'1:2:2',   w3:2,    w5:2,     sub:'第3、5浪均延伸'},
-  {label:'1:1.5:2', w3:1.5,  w5:2,     sub:'第5浪強勢'},
-  {label:'1:1:0.5', w3:1,    w5:0.5,   sub:'第5浪縮短'},
-  {label:'1:1:0.618',w3:1,   w5:0.618, sub:'第5浪黃金縮短'},
-];
-let selCombo=0;
 
-const fmt=(v,d=2)=>(isNaN(v)||v===null)?'—':Number(v).toFixed(d);
-const emptyRow=(cols,msg)=>`<tr><td colspan="${cols}"><div class="empty-hint"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${msg}</div></td></tr>`;
+let raw = null;
+let yChart = null, vChart = null, bChart = null;
+let econCharts = {};
+let curRange = '3M';
 
-function switchTab(id,btn){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('panel-'+id).classList.add('active');
-  btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+const DATA_URL = 'data.json';
+
+async function loadData() {
+  const r = await fetch(DATA_URL + '?t=' + Date.now());
+  if (!r.ok) throw new Error(`data.json 讀取失敗 (HTTP ${r.status})`);
+  return await r.json();
 }
 
-function calcUp(){
-  const l=parseFloat(document.getElementById('u-low').value);
-  const h=parseFloat(document.getElementById('u-high').value);
-  const tb=document.getElementById('up-body');
-  if(isNaN(l)||isNaN(h)||h<=l){tb.innerHTML=emptyRow(2,'請確認高點 > 低點');return;}
-  const amp=h-l;
-  tb.innerHTML=RATIOS.map(({r,label})=>`<tr>
-    <td><span class="ratio-pill">${label}</span></td>
-    <td><span class="val-strong">${fmt(l+amp*r)}</span></td>
-  </tr>`).join('');
+function filterByRange(arr, range) {
+  if (range === 'ALL' || !arr.length) return arr;
+  const days = { '1M': 31, '3M': 92, '6M': 183, '1Y': 365, '3Y': 1095 };
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - (days[range] || 92));
+  const cutStr = cutoff.toISOString().split('T')[0];
+  return arr.filter(p => p.d >= cutStr);
 }
 
-function calcDown(){
-  const h=parseFloat(document.getElementById('d-high').value);
-  const l=parseFloat(document.getElementById('d-low').value);
-  const tb=document.getElementById('down-body');
-  if(isNaN(h)||isNaN(l)||h<=l){tb.innerHTML=emptyRow(2,'請確認高點 > 低點');return;}
-  const amp=h-l;
-  tb.innerHTML=RATIOS.map(({r,label})=>`<tr>
-    <td><span class="ratio-pill">${label}</span></td>
-    <td><span class="val-strong">${fmt(h-amp*r)}</span></td>
-  </tr>`).join('');
+function extendMonthly(arr) {
+  if (arr.length < 2) return arr;
+  const today = new Date().toISOString().split('T')[0];
+  const last = arr[arr.length - 1];
+  if (last.d < today) return [...arr, { d: today, v: last.v }];
+  return arr;
 }
 
-function calcSym(){
-  const bot=parseFloat(document.getElementById('su-bot').value);
-  const un=parseFloat(document.getElementById('su-neck').value);
-  const head=parseFloat(document.getElementById('sd-head').value);
-  const dn=parseFloat(document.getElementById('sd-neck').value);
-  const mults=['一倍','兩倍','三倍','四倍'];
-  const tbu=document.getElementById('sym-up');
-  const tbd=document.getElementById('sym-dn');
-  if(!isNaN(bot)&&!isNaN(un)&&un>bot){
-    const s=un-bot;
-    tbu.innerHTML=mults.map((m,i)=>`<tr><td>${m}頸線</td><td><span class="val-strong">${fmt(un+s*(i+1))}</span></td></tr>`).join('');
-  } else tbu.innerHTML=emptyRow(2,'請輸入數值');
-  if(!isNaN(head)&&!isNaN(dn)&&head>dn){
-    const s=head-dn;
-    tbd.innerHTML=mults.map((m,i)=>`<tr><td>${m}頸線</td><td><span class="val-strong">${fmt(dn-s*(i+1))}</span></td></tr>`).join('');
-  } else tbd.innerHTML=emptyRow(2,'請輸入數值');
+function trendBadge(arr) {
+  if (arr.length < 15) return '';
+  const recent = arr.slice(-5).reduce((a,b) => a + b.v, 0) / 5;
+  const prev   = arr.slice(-15,-10).reduce((a,b) => a + b.v, 0) / 5;
+  const diff = recent - prev;
+  if (diff >  0.15) return '<span class="trend-badge trend-up">↑ 上升</span>';
+  if (diff < -0.15) return '<span class="trend-badge trend-dn">↓ 下降</span>';
+  return '<span class="trend-badge trend-fl">— 持平</span>';
 }
 
-function buildCombos(){
-  document.getElementById('combo-grid').innerHTML=COMBOS.map((c,i)=>`
-    <div class="combo-card${i===selCombo?' active':''}" onclick="selCombo=${i};buildCombos();calcWave()">
-      <div class="combo-ratio">${c.label}</div>
-      <div class="combo-sub">W3×${c.w3} / W5×${c.w5}<br>${c.sub}</div>
-    </div>`).join('');
+function chartTheme() {
+  const light = document.documentElement.getAttribute('data-theme') === 'light';
+  return {
+    tooltipBg:     light ? '#ffffff'              : '#1a1e28',
+    tooltipBorder: light ? 'rgba(0,0,0,0.12)'    : 'rgba(255,255,255,0.1)',
+    tooltipTitle:  light ? '#888070'              : '#8b90a0',
+    tooltipBody:   light ? '#2a2820'              : '#e8eaf0',
+    tickColor:     light ? '#a09a90'              : '#555a6a',
+    gridColor:     light ? 'rgba(0,0,0,0.06)'     : 'rgba(255,255,255,0.04)',
+  };
 }
 
-function calcWave(){
-  const w1s=parseFloat(document.getElementById('w1s').value);
-  const w1h=parseFloat(document.getElementById('w1h').value);
-  const w2l=parseFloat(document.getElementById('w2l').value);
-  const w3hIn=parseFloat(document.getElementById('w3h-in').value);
-  const w4lIn=parseFloat(document.getElementById('w4l-in').value);
-  const resDiv=document.getElementById('wave-results');
-  if(isNaN(w1s)||isNaN(w1h)||isNaN(w2l)||w1h<=w1s){resDiv.style.display='none';return;}
-  const amp1=w1h-w1s;
-  const cb=COMBOS[selCombo];
-  const w3hCalc=w2l+amp1*cb.w3;
-  const w3h=isNaN(w3hIn)?w3hCalc:w3hIn;
-  const amp3=w3h-w2l;
-  document.getElementById('m-amp1').textContent=fmt(amp1);
-  document.getElementById('m-w3h').textContent=fmt(w3h);
-  document.getElementById('m-w3h-sub').textContent=isNaN(w3hIn)?`W₂L + 幅度×${cb.w3}（推算）`:'手動填入';
-  document.getElementById('th-w5').textContent=`第5浪目標（×${cb.w5}）`;
-  const hasManual=!isNaN(w4lIn);
-  const tbody=document.getElementById('wave-body');
-  if(hasManual){
-    const w5=w4lIn+amp1*cb.w5;
-    document.getElementById('m-w5sel').textContent=fmt(w5);
-    document.getElementById('m-w5sel-sub').textContent=`W₄L已知 + 幅度×${cb.w5}`;
-    tbody.innerHTML=`<tr class="row-manual">
-      <td><span class="ratio-pill" style="background:rgba(45,212,191,.12);color:var(--teal)">已知值</span></td>
-      <td style="text-align:right"><span class="val-strong">${fmt(w4lIn)}</span></td>
-      <td style="text-align:right"><span class="val-strong">${fmt(w5)}</span></td>
-    </tr>`;
-  } else {
-    let firstValid=null;
-    tbody.innerHTML=RATIOS.map(({r,label})=>{
-      const w4=w3h-amp3*r;
-      if(w4<=w1s) return `<tr class="row-invalid"><td><span class="ratio-pill">${label}</span></td><td colspan="2" style="font-size:13px;color:var(--text3)">不合法（第4浪低點 ≤ 第1浪起點）</td></tr>`;
-      if(!firstValid) firstValid={w4,label};
-      const w5=w4+amp1*cb.w5;
-      return `<tr>
-        <td><span class="ratio-pill">${label}</span></td>
-        <td style="text-align:right"><span class="val-strong">${fmt(w4)}</span></td>
-        <td style="text-align:right"><span class="val-strong">${fmt(w5)}</span></td>
-      </tr>`;
-    }).join('');
-    if(firstValid){
-      document.getElementById('m-w5sel').textContent=fmt(firstValid.w4+amp1*cb.w5);
-      document.getElementById('m-w5sel-sub').textContent=`以 ${firstValid.label} 回檔W₄L`;
-    } else {
-      document.getElementById('m-w5sel').textContent='—';
-      document.getElementById('m-w5sel-sub').textContent='';
+function mkOpts(tooltipLabel, yTickFn) {
+  const t = chartTheme();
+  return {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: t.tooltipBg,
+        borderColor: t.tooltipBorder, borderWidth: 1,
+        titleColor: t.tooltipTitle, bodyColor: t.tooltipBody,
+        titleFont: { size: 11 }, bodyFont: { size: 12 }, padding: 10,
+        callbacks: { label: tooltipLabel }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { maxTicksLimit: 8, font: { size: 10 }, color: t.tickColor, autoSkip: true },
+        grid: { color: t.gridColor }, border: { display: false }
+      },
+      y: {
+        ticks: { font: { size: 10 }, color: t.tickColor, callback: yTickFn },
+        grid: { color: t.gridColor }, border: { display: false }
+      }
+    }
+  };
+}
+
+function mkMiniOpts(tooltipLabel, yTickFn) {
+  const t = chartTheme();
+  return {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: t.tooltipBg,
+        borderColor: t.tooltipBorder, borderWidth: 1,
+        titleColor: t.tooltipTitle, bodyColor: t.tooltipBody,
+        titleFont: { size: 10 }, bodyFont: { size: 11 }, padding: 8,
+        callbacks: { label: tooltipLabel }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { maxTicksLimit: 4, font: { size: 9 }, color: t.tickColor, autoSkip: true },
+        grid: { display: false }, border: { display: false }
+      },
+      y: {
+        ticks: { font: { size: 9 }, color: t.tickColor, maxTicksLimit: 3, callback: yTickFn },
+        grid: { color: t.gridColor }, border: { display: false }
+      }
+    }
+  };
+}
+
+function renderYield(range) {
+  const wrap = document.getElementById('yieldWrap');
+  const metEl = document.getElementById('yieldMetrics');
+
+  const filtered = COUNTRIES.map(c => {
+    const arr = raw[c.key] || [];
+    const f = filterByRange(arr, range);
+    return c.key === 'us' ? f : extendMonthly(f);
+  });
+  const dates = [...new Set(filtered.flatMap(d => d.map(p => p.d)))].sort();
+
+  wrap.innerHTML = '';
+  const canvas = document.createElement('canvas');
+  canvas.setAttribute('role','img');
+  canvas.setAttribute('aria-label','5國10年期公債殖利率走勢');
+  wrap.appendChild(canvas);
+
+  const datasets = COUNTRIES.map((c, i) => {
+    const mp = Object.fromEntries(filtered[i].map(p => [p.d, p.v]));
+    return {
+      label: c.label,
+      data: dates.map(d => mp[d] ?? null),
+      borderColor: c.color,
+      backgroundColor: c.color + '15',
+      borderWidth: 1.8,
+      borderDash: c.dash,
+      pointRadius: 0, pointHoverRadius: 5,
+      tension: 0.3, spanGaps: true, fill: false
+    };
+  });
+
+  if (yChart) yChart.destroy();
+  yChart = new Chart(canvas, {
+    type: 'line',
+    data: { labels: dates, datasets },
+    options: mkOpts(
+      ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y?.toFixed(2)}%`,
+      v => v.toFixed(1) + '%'
+    )
+  });
+
+  const YIELD_LINKS = { us: 'https://schrts.co/VXsnZzRZ' };
+  metEl.innerHTML = COUNTRIES.map((c, i) => {
+    const d = filtered[i]; if (!d.length) return '';
+    const lat = d[d.length-1].v, prv = d[d.length-2]?.v ?? lat;
+    const chg = lat - prv;
+    const cc = chg > 0.005 ? 'up' : chg < -0.005 ? 'dn' : 'nt';
+    const ar = chg > 0.005 ? '▲' : chg < -0.005 ? '▼' : '—';
+    const link = YIELD_LINKS[c.key];
+    const open = link ? `<a class="metric-tile clickable-tile" href="${link}" target="_blank" rel="noopener">` : '<div class="metric-tile">';
+    const close = link ? '</a>' : '</div>';
+    return open + `
+        <div class="mt-label">${c.label} 10Y</div>
+        <div class="mt-value" style="color:${c.color}">${lat.toFixed(2)}%</div>
+        <div class="mt-change ${cc}">${ar} ${Math.abs(chg).toFixed(3)}%</div>
+        ${trendBadge(d)}
+      ` + close;
+  }).join('');
+}
+
+function renderSentiment() {
+  const gEl = document.getElementById('sentimentGauges');
+  const cEl = document.getElementById('subCharts');
+
+  const vix = raw.vix || [];
+  const buf = raw.buffett || [];
+
+  const vLat = vix.length ? vix[vix.length-1].v : null;
+  const vLatD = vix.length ? vix[vix.length-1].d : null;
+  const vPrvEntry = vix.length > 1 ? vix[vix.length-2] : null;
+  const vPrv = vPrvEntry ? vPrvEntry.v : vLat;
+  const vChg = vLat != null && vPrvEntry ? vLat - vPrv : 0;
+  const vCls = vLat > 30 ? 'color-red' : vLat > 20 ? 'color-orange' : 'color-green';
+  const vDesc = vLat > 30 ? '高恐慌' : vLat > 20 ? '中度警戒' : '低波動';
+
+  const bLat = buf.length ? buf[buf.length-1].v : null;
+  const bCls = bLat > 150 ? 'color-red' : bLat > 100 ? 'color-orange' : 'color-green';
+  const bDesc = bLat > 200 ? '極度高估' : bLat > 150 ? '明顯高估' : bLat > 100 ? '略微高估' : bLat > 75 ? '合理估值' : '低估';
+
+  gEl.innerHTML = `
+    <a class="gauge-tile clickable-tile" href="https://schrts.co/mxsmpgJy" target="_blank" rel="noopener">
+      <div class="gauge-label">VIX 恐慌指數</div>
+      <div class="gauge-value ${vCls}">${vLat != null ? vLat.toFixed(1) : '—'}</div>
+      <div class="gauge-desc ${vCls}">${vDesc}</div>
+      ${vPrvEntry ? `<div class="gauge-sub">${Math.abs(vChg) < 0.01 ? '— 持平' : `${vChg > 0 ? '▲' : '▼'} ${Math.abs(vChg).toFixed(2)} 前日`}</div>` : ''}
+      <div class="ext-link" style="justify-content:center;margin-top:6px">數據參考 ↗</div>
+    </a>
+    <a class="gauge-tile clickable-tile" href="https://www.macromicro.me/collections/34/us-stock-relative/406/us-buffet-index-gspc" target="_blank" rel="noopener">
+      <div class="gauge-label">美股巴菲特指標</div>
+      <div class="gauge-value ${bCls}">${bLat != null ? bLat.toFixed(0) + '%' : '—'}</div>
+      <div class="gauge-desc ${bCls}">${bDesc}</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px">數值僅供參考，各平台計算方式略有差異</div>
+      <div class="ext-link" style="justify-content:center;margin-top:6px">數據參考 ↗</div>
+    </a>
+    <a class="gauge-tile clickable-tile" href="https://edition.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener">
+      <div class="gauge-label">CNN 恐懼貪婪指數</div>
+      <div class="gauge-value color-text2">—</div>
+      <div class="gauge-desc" style="color:#555a6a">需直接查閱</div>
+      <div class="ext-link" style="justify-content:center">前往 CNN ↗</div>
+    </a>
+    <a class="gauge-tile clickable-tile" href="https://www.aaii.com/sentimentsurvey" target="_blank" rel="noopener">
+      <div class="gauge-label">AAII 情緒調查</div>
+      <div class="gauge-value color-text2" style="font-size:20px;padding-top:6px">週報</div>
+      <div class="gauge-desc" style="color:#555a6a">每週四更新</div>
+      <div class="ext-link" style="justify-content:center">前往 AAII ↗</div>
+    </a>
+    <a class="gauge-tile clickable-tile" href="https://www.macromicro.me/collections/34/us-stock-relative/449/us-cboe-options-put-call-ratio" target="_blank" rel="noopener">
+      <div class="gauge-label">Put / Call Ratio</div>
+      <div class="gauge-value color-text2" style="font-size:20px;padding-top:6px">日報</div>
+      <div class="gauge-desc" style="color:#555a6a">每日更新</div>
+      <div class="ext-link" style="justify-content:center">前往 CBOE ↗</div>
+    </a>
+    <a class="gauge-tile clickable-tile" href="https://www.twse.com.tw/zh/statistics/statisticsData.html" target="_blank" rel="noopener">
+      <div class="gauge-label">台股巴菲特指標</div>
+      <div class="gauge-value color-text2" style="font-size:20px;padding-top:6px">季報</div>
+      <div class="gauge-desc" style="color:#555a6a">季度更新</div>
+      <div class="ext-link" style="justify-content:center">前往 TWSE ↗</div>
+    </a>`;
+
+  cEl.innerHTML = `
+    <div class="sub-card">
+      <div class="sub-card-title">VIX 近3個月走勢</div>
+      <div class="sub-chart-wrap"><canvas id="vixCanvas" role="img" aria-label="VIX走勢"></canvas></div>
+    </div>
+    <div class="sub-card">
+      <div class="sub-card-title">美股巴菲特指標（近2年）</div>
+      <div class="sub-chart-wrap"><canvas id="bufCanvas" role="img" aria-label="巴菲特指標走勢"></canvas></div>
+    </div>`;
+
+  if (vix.length) {
+    if (vChart) vChart.destroy();
+    vChart = new Chart(document.getElementById('vixCanvas'), {
+      type: 'line',
+      data: {
+        labels: vix.map(p => p.d),
+        datasets: [{ label:'VIX', data: vix.map(p => p.v),
+          borderColor:'#f06060', backgroundColor:'rgba(240,96,96,0.08)',
+          borderWidth:1.5, pointRadius:0, tension:0.3, fill:true }]
+      },
+      options: mkOpts(c => ` VIX: ${c.parsed.y?.toFixed(1)}`, v => v.toFixed(0))
+    });
+  }
+
+  if (buf.length) {
+    if (bChart) bChart.destroy();
+    bChart = new Chart(document.getElementById('bufCanvas'), {
+      type: 'line',
+      data: {
+        labels: buf.map(p => p.d),
+        datasets: [{ label:'巴菲特指標', data: buf.map(p => p.v),
+          borderColor:'#a78bfa', backgroundColor:'rgba(167,139,250,0.08)',
+          borderWidth:1.5, pointRadius:0, tension:0.3, fill:true }]
+      },
+      options: mkOpts(c => ` 巴菲特: ${c.parsed.y?.toFixed(1)}%`, v => v + '%')
+    });
+  }
+}
+
+
+// YoY 計算：把指數序列轉成年增率 %
+
+function fmtDataPeriod(d) {
+  if (!d) return '';
+  const parts = d.split('-');
+  return `${parts[0]}年${parseInt(parts[1])}月份數據`;
+}
+function calcYoY(arr) {
+  const dateMap = {};
+  arr.forEach(p => { dateMap[p.d] = p.v; });
+  const result = [];
+  for (const p of arr) {
+    const prevYear = (parseInt(p.d.slice(0,4)) - 1).toString();
+    const prevDate = prevYear + p.d.slice(4);
+    if (dateMap[prevDate] && dateMap[prevDate] > 0) {
+      const yoy = (p.v - dateMap[prevDate]) / dateMap[prevDate] * 100;
+      result.push({ d: p.d, v: Math.round(yoy * 100) / 100, p: p.p });
     }
   }
-  resDiv.style.display='block';
+  return result;
 }
 
-function onKChange(){
-  const v=parseFloat(document.getElementById('o-k').value);
-  document.getElementById('k-display').textContent=v.toFixed(2);
-  document.querySelectorAll('.k-preset').forEach(b=>b.classList.remove('active'));
-  calcOil();
-}
-function setK(val,btn){
-  document.getElementById('o-k').value=val;
-  document.getElementById('k-display').textContent=val.toFixed(2);
-  document.querySelectorAll('.k-preset').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  calcOil();
-}
-function calcOil(){
-  const brent=parseFloat(document.getElementById('o-brent').value);
-  const ma60=parseFloat(document.getElementById('o-ma60').value);
-  const etf=parseFloat(document.getElementById('o-etf').value);
-  const k=parseFloat(document.getElementById('o-k').value);
-  const dEl=document.getElementById('o-delta');
-  const tEl=document.getElementById('o-target');
-  const nEl=document.getElementById('o-note');
-  if(isNaN(brent)||isNaN(ma60)||isNaN(etf)||brent===0){
-    dEl.textContent='—';dEl.className='oil-result-val nt';
-    tEl.textContent='—';tEl.className='oil-result-val nt';
-    nEl.textContent='等待輸入';return;
+// 經濟指標設定
+const ECON_INDICATORS = {
+  us: {
+    title: '🇺🇸 美國',
+    items: [
+      { key:'us_payroll',     label:'非農就業人數',           mom:true,  fmt: v=>v>=0?'+'+Math.round(v)+'K':Math.round(v)+'K', color:'#2dd4bf', note:'每月第一個週五' },
+      { key:'us_unemployment',label:'失業率',                 unit:'%',  fmt: v=>v.toFixed(1)+'%', color:'#f06060', note:'每月第一個週五' },
+      { key:'us_cpi',         label:'CPI 消費者物價指數',     yoy:true,  fmt: v=>v.toFixed(2)+'%', color:'#4d9eff', note:'月初公布' },
+      { key:'us_core_cpi',    label:'核心 CPI',               yoy:true,  fmt: v=>v.toFixed(2)+'%', color:'#4d9eff', note:'月初公布' },
+      { key:'us_ppi',         label:'PPI 生產者物價指數',     yoy:true,  fmt: v=>v.toFixed(2)+'%', color:'#f7a830', note:'月中公布' },
+      { key:'us_michigan',    label:'密西根大學消費者信心',   unit:'',   fmt: v=>v.toFixed(1),     color:'#a78bfa', note:'每月第二個週五', fred_delay:true, ref_url:'https://www.macromicro.me/charts/709/us-michigan-consumer-sentiment-twse' },
+      { key:'us_pce',         label:'PCE 個人消費支出',       yoy:true,  fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月末公布' },
+      { key:'us_core_pce',    label:'核心 PCE',               yoy:true,  fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月末公布' },
+
+      { key:'us_gdp',         label:'實質 GDP',               unit:'B$', fmt: v=>'$'+(v/1000).toFixed(1)+'T', color:'#a78bfa', note:'季度公布' },
+    ],
+    links: [
+      { label:'經濟諮商局消費者信心指數', note:'每月最後一個週二公布', url:'https://www.macromicro.me/charts/22/consumer-confidence' },
+      { label:'製造業 PMI（ISM）', note:'每月第一個工作日公布', url:'https://www.macromicro.me/charts/7/ism' },
+      { label:'服務業 PMI（ISM）', note:'每月第三個工作日公布', url:'https://www.macromicro.me/charts/7/ism' },
+      { label:'原油庫存（EIA）',   note:'每週三公布', url:'https://www.macromicro.me/collections/19/mm-oil-price/178/us-oil-inventory' },
+    ]
+  },
+  eu: {
+    title: '🇪🇺 歐元區',
+    items: [
+      { key:'eu_cpi', label:'CPI 消費者物價指數', yoy:true, fmt: v=>v.toFixed(2)+'%', color:'#3ecf8e', note:'月中公布', fred_delay:true, ref_url:'https://hk.investing.com/economic-calendar/cpi-68' },
+    ],
+    links: [
+      { label:'製造業 PMI（Markit）', note:'月初公布', url:'https://hk.investing.com/economic-calendar/european-manufacturing-purchasing-managers-index-(pmi)-201' },
+      { label:'服務業 PMI（Markit）', note:'月初公布', url:'https://hk.investing.com/economic-calendar/hizmet-sat%C4%B1n-alma-m%C3%BCd%C3%BCrleri-endeksi-(pmi)-272' },
+    ]
+  },
+  jp: {
+    title: '🇯🇵 日本',
+    items: [],
+    links: [
+      { label:'CPI 消費者物價指數', note:'月中公布', url:'https://hk.investing.com/economic-calendar/national-cpi-992' },
+    ]
+  },
+  tw: {
+    title: '🇹🇼 台灣',
+    items: [
+
+    ],
+    links: [
+      { label:'CPI 消費者物價指數', note:'月初公布', url:'https://www.macromicro.me/collections/12/tw-price-relative/112/tw-cpi' },
+    ]
   }
-  const delta=(ma60-brent)/brent;
-  const target=etf*(1+k*delta);
-  const dPct=(delta*100);
-  dEl.textContent=(dPct>=0?'+':'')+dPct.toFixed(2)+'%';
-  dEl.className='oil-result-val '+(dPct>0?'pos':dPct<0?'neg':'nt');
-  tEl.textContent=fmt(target)+' 元';
-  const diff=target-etf;
-  tEl.className='oil-result-val '+(diff>0?'pos':diff<0?'neg':'nt');
-  nEl.textContent=`較現價 ${diff>=0?'+':''}${fmt(diff)} 元（${((diff/etf)*100).toFixed(1)}%）`;
+};
+
+
+// 重要資產設定
+const ASSETS_CONFIG = [
+  { key:'dxy',    label:'美元指數',     symbol:'DX-Y.NYB', fmt: v=>v.toFixed(2),  color:'#4d9eff', url:'https://schrts.co/HwDBgEUE' },
+  { key:'eurusd', label:'歐元/美元',    symbol:'EURUSD=X', fmt: v=>v.toFixed(4),  color:'#3ecf8e', url:'https://schrts.co/ijNNqHsf' },
+  { key:'usdjpy', label:'美元/日圓',    symbol:'USDJPY=X', fmt: v=>v.toFixed(2),  color:'#a78bfa', url:'https://finance.sina.com.cn/money/forex/hq/USDJPY.shtml' },
+  { key:'usdtwd', label:'美元/台幣',    symbol:'TWD=X',    fmt: v=>v.toFixed(3),  color:'#f7a830', url:'https://finance.sina.com.cn/money/forex/hq/USDTWD.shtml' },
+  { key:'usdcny', label:'美元/人民幣',  symbol:'CNY=X',    fmt: v=>v.toFixed(4),  color:'#2dd4bf', url:'https://finance.sina.com.cn/money/forex/hq/USDCNY.shtml' },
+  { key:'gold',   label:'紐約黃金',     symbol:'GC=F',     fmt: v=>v.toFixed(1),  color:'#f7a830', url:'https://finance.sina.com.cn/futures/quotes/GC.shtml' },
+  { key:'hui',    label:'金蟲指數',     symbol:'^HUI',     fmt: v=>v.toFixed(2),  color:'#3ecf8e', url:'https://schrts.co/VMaAAFHi' },
+  { key:'crb',    label:'CRB 大宗商品', symbol:null,       fmt: null,             color:'#8b90a0', url:'https://schrts.co/vTFMezqK' },
+  { key:'brent',  label:'布蘭特原油',   symbol:'BZ=F',     fmt: v=>v.toFixed(2),  color:'#f06060', url:'https://finance.sina.com.cn/futures/quotes/OIL.shtml' },
+  { key:'brent_dark', label:'布蘭特原油-暗盤', symbol:null, fmt: null, color:'#f06060', url:'https://finance.sina.com.cn/money/forex/hq/BTCOILNP.shtml' },
+  { key:'wti',    label:'紐約原油',     symbol:'CL=F',     fmt: v=>v.toFixed(2),  color:'#f06060', url:'https://finance.sina.com.cn/futures/quotes/CL.shtml' },
+  { key:'iron',   label:'鐵礦石期貨',   symbol:'TIO=F',    fmt: v=>v.toFixed(2),  color:'#f7a830', url:'https://www.macromicro.me/charts/33462/iron-ore-futures' },
+  { key:'hrc',    label:'熱軋鋼卷 HRC', symbol:null,       fmt: null,             color:'#8b90a0', url:'https://en.macromicro.me/charts/1310/china-hot-rolled-coils-futures' },
+];
+
+function renderAssets() {
+  const grid = document.getElementById('assetsGrid');
+  if (!raw) return;
+
+  grid.innerHTML = ASSETS_CONFIG.map(a => {
+    const rawArr = (raw['asset_' + a.key] || []).filter(p => p.v && !isNaN(p.v) && p.v > 0);
+    const lat = rawArr.length ? rawArr[rawArr.length-1] : null;
+    const prv = rawArr.length > 1 ? rawArr[rawArr.length-2] : null;
+
+    // CRB 或無資料 → 連結卡片
+    if (!lat || !a.symbol) {
+      return `<a class="asset-tile clickable-tile" href="${a.url}" target="_blank" rel="noopener">
+        <div class="asset-label">${a.label}</div>
+        <div class="asset-value color-text2" style="font-size:14px;padding-top:4px">查看數據 ↗</div>
+        <div class="asset-date">點擊前往</div>
+      </a>`;
+    }
+
+    const chg = prv ? lat.v - prv.v : 0;
+    const chgPct = prv && prv.v ? (chg / prv.v * 100) : 0;
+    const cc = chg > 0 ? 'up' : chg < 0 ? 'dn' : 'nt';
+    const ar = chg > 0 ? '▲' : chg < 0 ? '▼' : '—';
+
+    return `<a class="asset-tile clickable-tile" href="${a.url}" target="_blank" rel="noopener">
+      <div class="asset-label">${a.label}</div>
+      <div class="asset-value ${cc}">${a.fmt(lat.v)}</div>
+      <div class="asset-change ${cc}">${ar} ${Math.abs(chgPct).toFixed(2)}%</div>
+      <div class="asset-date">${lat.d}</div>
+    </a>`;
+  }).join('');
 }
 
-function toggleTheme(){
-  const html=document.documentElement;
-  const isLight=html.getAttribute('data-theme')==='light';
-  if(isLight){
+
+
+
+function renderMiniChart(canvasId, arr, color) {
+  // 只顯示近 2 年
+  const cutoff = new Date();
+  cutoff.setFullYear(cutoff.getFullYear() - 2);
+  const cutStr = cutoff.toISOString().split('T')[0];
+  const data = arr.filter(p => p.d >= cutStr);
+  if (!data.length) return;
+
+  if (econCharts[canvasId]) { econCharts[canvasId].destroy(); delete econCharts[canvasId]; }
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  econCharts[canvasId] = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: data.map(p => p.d),
+      datasets: [{ data: data.map(p => p.v),
+        borderColor: color, backgroundColor: color + '15',
+        borderWidth: 1.5, pointRadius: 0, tension: 0.3, fill: true }]
+    },
+    options: mkMiniOpts(c => ` ${c.parsed.y?.toFixed(2)}`, v => v.toFixed(1))
+  });
+}
+
+function renderEcon() {
+  const sec = document.getElementById('econSection');
+  let html = '';
+
+  for (const [regionKey, region] of Object.entries(ECON_INDICATORS)) {
+    const hasData = region.items.some(item => (raw[item.key]||[]).length > 0);
+    const hasLinks = region.links.length > 0;
+    if (!hasData && !hasLinks) continue;
+
+    html += `<div class="econ-group">
+      <div class="econ-group-title">${region.title}</div>
+      <div class="econ-grid">`;
+
+    // 資料卡片
+    for (const item of region.items) {
+      const rawArr = raw[item.key] || [];
+      if (!rawArr.length) continue;
+      const arr = item.yoy ? calcYoY(rawArr) : rawArr;
+      if (!arr.length) continue;
+      const lat = arr[arr.length-1];
+      const prv = arr.length > 1 ? arr[arr.length-2] : null;
+      // mom:true → 顯示月增量（差值）
+      const displayVal = item.mom ? (prv ? (lat.v - prv.v) : 0) : lat.v;
+      const prevVal    = item.mom ? (arr.length > 2 ? arr[arr.length-3].v - arr[arr.length-2].v : 0) : (prv ? prv.v : null);
+      const chg = prevVal != null ? displayVal - prevVal : 0;
+      const chgSign = chg > 0 ? '▲' : chg < 0 ? '▼' : '—';
+      const chgCls = chg > 0 ? 'color-red' : chg < 0 ? 'color-green' : 'color-text2';
+      const canvasId = `ec_${item.key}`;
+
+      html += `<div class="econ-card">
+        <div class="econ-card-header${item.fred_delay ? ' has-notice' : ''}">
+          <div class="econ-card-title">${item.label}</div>
+          <div class="econ-card-update">
+            ${item.note}<br>
+            <span style="color:var(--text3)">${fmtDataPeriod(lat.d)}</span>
+          </div>
+        </div>
+        ${item.fred_delay ? `<div class="econ-fred-notice">FRED延遲更新　<a href="${item.ref_url}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none" onclick="event.stopPropagation()">查看最新數據 ↗</a></div>` : ''}
+        <div class="econ-value ${chg > 0 ? 'econ-up' : chg < 0 ? 'econ-dn' : 'econ-nt'}">${item.fmt(displayVal)}</div>
+        <div class="econ-prev">
+          ${prevVal != null ? `前值 ${item.fmt(prevVal)} <span class="${chgCls}">${chgSign} ${Math.abs(chg).toFixed(2)}</span>` : ''}
+        </div>
+        <div class="econ-chart-wrap"><canvas id="${canvasId}"></canvas></div>
+      </div>`;
+    }
+
+    // 外部連結卡片
+    for (const link of region.links) {
+      html += `<a class="econ-link-card clickable-tile" href="${link.url}" target="_blank" rel="noopener">
+        <div>
+          <div class="econ-link-title">${link.label}</div>
+          <div class="econ-link-update">📅 ${link.note}</div>
+        </div>
+        <div class="ext-link">查看最新數據 ↗</div>
+      </a>`;
+    }
+
+    html += `</div></div>`;
+  }
+
+  sec.innerHTML = html || '<div style="color:var(--text3);padding:20px">無資料</div>';
+
+  // 渲染迷你圖
+  for (const region of Object.values(ECON_INDICATORS)) {
+    for (const item of region.items) {
+      const rawArr = raw[item.key] || [];
+      if (!rawArr.length) continue;
+      let arr;
+      if (item.yoy) arr = calcYoY(rawArr);
+      else if (item.mom) arr = rawArr.slice(1).map((p,i) => ({d:p.d, v: p.v - rawArr[i].v, p: p.p}));
+      else arr = rawArr;
+      if (arr.length) renderMiniChart(`ec_${item.key}`, arr, item.color);
+    }
+  }
+}
+
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.getAttribute('data-theme') === 'light';
+  if (isLight) {
     html.removeAttribute('data-theme');
-    document.getElementById('themeTxt').textContent='淺色';
-    document.getElementById('themeIcon').innerHTML='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-    localStorage.setItem('srTheme','dark');
+    document.getElementById('themeTxt').textContent = '淺色';
+    document.getElementById('themeIcon').innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    localStorage.setItem('gmTheme', 'dark');
   } else {
-    html.setAttribute('data-theme','light');
-    document.getElementById('themeTxt').textContent='深色';
-    document.getElementById('themeIcon').innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-    localStorage.setItem('srTheme','light');
+    html.setAttribute('data-theme', 'light');
+    document.getElementById('themeTxt').textContent = '深色';
+    document.getElementById('themeIcon').innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+    localStorage.setItem('gmTheme', 'light');
+  }
+  // re-render charts so tooltip/grid colors update
+  if (typeof curRange !== 'undefined') {
+    renderYield(curRange);
+    renderEcon();
   }
 }
-(function(){
-  const s=localStorage.getItem('srTheme');
-  if(s==='light') document.documentElement.setAttribute('data-theme','light');
+
+(function() {
+  const saved = localStorage.getItem('gmTheme');
+  if (saved === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.addEventListener('DOMContentLoaded', function() {
+      const txt = document.getElementById('themeTxt');
+      const ico = document.getElementById('themeIcon');
+      if (txt) txt.textContent = '深色';
+      if (ico) ico.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+    });
+  }
 })();
 
-buildCombos();
+function downloadPDF() {
+  const title = document.title;
+  const date = raw?.updated || new Date().toISOString().split('T')[0];
+  document.title = `GlobalMacro_Dashboard_${date}`;
+  window.print();
+  document.title = title;
+}
+
+function buildLegend() {
+  document.getElementById('yieldLegend').innerHTML = COUNTRIES.map(c => `
+    <span class="legend-item">
+      <span class="legend-line" style="background:${c.color}"></span>
+      ${c.label}
+    </span>`).join('');
+}
+
+async function init() {
+  document.getElementById('yieldWrap').innerHTML = '<div class="loading-box"><div class="spinner"></div>載入 data.json...</div>';
+  document.getElementById('sentimentGauges').innerHTML = '<div class="loading-box"><div class="spinner"></div></div>';
+  document.getElementById('subCharts').innerHTML = '';
+  document.getElementById('assetsGrid').innerHTML = '<div class="asset-loading">載入中...</div>';
+  document.getElementById('econSection').innerHTML = '<div class="loading-box"><div class="spinner"></div>載入經濟數據...</div>';
+
+  try {
+    raw = await loadData();
+    renderYield(curRange);
+    renderSentiment();
+    renderAssets();
+    renderEcon();
+    const upd = raw.updated || '';
+    document.getElementById('lastUpdate').textContent = upd ? `資料日期：${upd}` : '';
+    document.getElementById('dataNote').textContent = '資料來源：FRED（聖路易聯準會）& Yahoo Finance，每個工作日自動更新';
+  } catch(e) {
+    document.getElementById('yieldWrap').innerHTML = `<div class="error-box">❌ ${e.message}<br><br>請確認 data.json 已存在於同一目錄，或手動觸發 GitHub Actions。</div>`;
+    document.getElementById('sentimentGauges').innerHTML = '';
+    document.getElementById('econSection').innerHTML = '';
+  }
+}
+
+document.getElementById('rangeTabs').addEventListener('click', e => {
+  if (!e.target.dataset.r || !raw) return;
+  document.querySelectorAll('.range-tab').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  curRange = e.target.dataset.r;
+  renderYield(curRange);
+});
+
+buildLegend();
+init();
 </script>
 </body>
 </html>
