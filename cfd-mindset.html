@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CFD 投資心法 | 建平老師</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --red:        #C8102E;
+    --red-light:  #E8192E;
+    --sidebar-bg: #1E1E1E;
+    --sidebar-hover: #2C2C2C;
+    --sidebar-active: #2E2E2E;
+    --main-bg:    #F4F4F4;
+    --card-bg:    #FFFFFF;
+    --text-primary:   #1A1A1A;
+    --text-secondary: #555555;
+    --text-light:     #888888;
+    --border:     #E8E8E8;
+    --border-card: #DEDEDE;
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
+    --shadow:    0 2px 10px rgba(0,0,0,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'Segoe UI', 'Noto Sans TC', '微軟正黑體', sans-serif;
+    background: var(--main-bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: var(--sidebar-bg);
+    height: 52px;
+    display: flex; align-items: center;
+    padding: 0 20px;
+    gap: 16px;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 0.02em; }
+  .topbar-brand .vs-red { color: var(--red); }
+  .topbar-divider { width: 1px; height: 22px; background: #444; }
+  .topbar-title { color: #ccc; font-size: 13px; }
+  .topbar-spacer { flex: 1; }
+  .topbar-links { display: flex; gap: 8px; }
+  .topbar-links a { color: #ccc; text-decoration: none; font-size: 12px; padding: 5px 12px; border: 1px solid #555; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+  .topbar-links a:hover { border-color: var(--red); color: var(--red); }
+
+  main { max-width: 900px; margin: 0 auto; padding: 88px 28px 64px; }
+
+  .page-hero { margin-bottom: 32px; text-align: center; }
+  .page-eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red); margin-bottom: 8px; font-weight: 600; }
+  .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); line-height: 1.35; margin-bottom: 10px; }
+  .page-subtitle { font-size: 13.5px; color: var(--text-secondary); line-height: 1.8; max-width: 620px; margin: 0 auto; }
+
+  .toc { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 20px 0 40px; }
+  .toc a {
+    font-size: 12.5px; font-weight: 600; color: var(--text-secondary);
+    background: var(--card-bg); border: 1px solid var(--border-card);
+    padding: 6px 14px; border-radius: 20px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px; transition: all .15s;
+  }
+  .toc a:hover { border-color: var(--red); color: var(--red); }
+  .toc a i { color: var(--red); font-size: 11px; }
+
+  .section { margin-bottom: 40px; }
+  .section-header { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 2px solid var(--border); margin-bottom: 18px; }
+  .section-header i { font-size: 20px; color: var(--red); width: 32px; text-align: center; }
+  .section-eyebrow { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); margin-bottom: 3px; font-weight: 600; }
+  .section h2 { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+
+  .card { background: var(--card-bg); border: 1px solid var(--border-card); border-radius: 8px; padding: 22px 24px; margin-bottom: 14px; box-shadow: var(--shadow-sm); }
+  .card-red-border { border-left: 3px solid var(--red); }
+
+  .mindset-list { list-style: none; }
+  .mindset-list li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 11px 0; border-bottom: 1px solid #F0F0F0;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.75;
+  }
+  .mindset-list li:last-child { border-bottom: none; }
+  .mindset-list li i { color: var(--red); font-size: 13px; margin-top: 4px; flex-shrink: 0; }
+  .mindset-list li strong { color: var(--text-primary); }
+
+  .quote-final {
+    background: #FFF5F5; border-left: 3px solid var(--red);
+    border-radius: 0 6px 6px 0; padding: 16px 20px; margin-top: 6px;
+    font-size: 14px; color: #7a1f1f; line-height: 1.85; font-weight: 600;
+  }
+
+  .footer-note { text-align: center; padding: 40px 20px 10px; font-size: 12px; color: var(--text-light); border-top: 1px solid var(--border); margin-top: 20px; line-height: 2; }
+
+  @media (max-width: 600px) {
+    .page-title { font-size: 22px; }
+    main { padding: 76px 18px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand"><span class="vs-red">CFD</span><span>投資心法</span></div>
+  <div class="topbar-divider"></div>
+  <span class="topbar-title">建平老師 · 語錄整理</span>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-links">
+    <a href="https://nike1112afmax.github.io/Study/index1.html" target="_blank">回首頁 ↗</a>
+    <a href="https://drive.google.com/drive/folders/11VKt2TijPQgX-NkFFQG80JZOprKr9DKU?usp=sharing" target="_blank">資料下載 ↗</a>
+  </div>
+</header>
+
+<main>
+
+  <div class="page-hero">
+    <div class="page-eyebrow">啟富達國際 · WMA 財富管理顧問課程</div>
+    <h1 class="page-title">CFD 投資心法</h1>
+    <p class="page-subtitle">建平老師歷年課程語錄整理，涵蓋關鍵五條、節奏五條、耐心、止損、心態五大主題。原文不做修改，僅重新排版方便學員複習與收藏。</p>
+  </div>
+
+  <div class="toc">
+    <a href="#key5"><i class="fa-solid fa-key"></i>關鍵5條</a>
+    <a href="#rhythm5"><i class="fa-solid fa-wave-square"></i>節奏5條</a>
+    <a href="#patience"><i class="fa-solid fa-hourglass-half"></i>耐心是賺錢的底氣</a>
+    <a href="#stoploss"><i class="fa-solid fa-shield-halved"></i>止損是最大的保護</a>
+    <a href="#mindset"><i class="fa-solid fa-brain"></i>心態比技術更重要</a>
+  </div>
+
+  <!-- 關鍵5條 -->
+  <section class="section" id="key5">
+    <div class="section-header">
+      <i class="fa-solid fa-key"></i>
+      <div><div class="section-eyebrow">投資心法</div><h2>關鍵 5 條</h2></div>
+    </div>
+    <div class="card card-red-border">
+      <ul class="mindset-list">
+        <li><i class="fa-solid fa-check"></i><span>不要在暴漲的時候去買入，要在下跌後盤整到位時買入，把這變成一種習慣</span></li>
+        <li><i class="fa-solid fa-check"></i><span>不要滿倉持有一支股票，持股三支比較好，而且最好不同行業的配置（EX：台塑、化肥、鋼鐵）</span></li>
+        <li><i class="fa-solid fa-check"></i><span>不追高，就贏了<strong>50%</strong>的人；做向上趨勢，就贏了<strong>70%</strong>的人；用基本面選股，就贏了<strong>90%</strong>的人；結合月線圖入場，就贏了<strong>95%</strong>的人</span></li>
+        <li><i class="fa-solid fa-check"></i><span>不要在熱門股上做長線（科技股）；不要在冷門股（低估股）上做短線，如果能徹底掌握這規則，就可以輕鬆避開90%以上的坑和吃虧</span></li>
+        <li><i class="fa-solid fa-check"></i><span>堅持和重複上面幾點，財富自由只是時間問題</span></li>
+        <li><i class="fa-solid fa-check"></i><span>不要想買在最低點、賣在最高點，魚頭尾留給人，我們只要魚身</span></li>
+      </ul>
+      <div class="quote-final">天下沒有白吃的午餐——不要錢的最貴。</div>
+    </div>
+  </section>
+
+  <!-- 節奏5條 -->
+  <section class="section" id="rhythm5">
+    <div class="section-header">
+      <i class="fa-solid fa-wave-square"></i>
+      <div><div class="section-eyebrow">投資心法</div><h2>節奏 5 條</h2></div>
+    </div>
+    <div class="card card-red-border">
+      <ul class="mindset-list">
+        <li><i class="fa-solid fa-check"></i><span>股市中利好才是壞消息；利空才是好消息，反人性就要反著做。</span></li>
+        <li><i class="fa-solid fa-check"></i><span>看好的股票——一支在低位的股票，最少做六到九個月。</span></li>
+        <li><i class="fa-solid fa-check"></i><span>底倉控制在50%做長線，50%低買高賣做波段。</span></li>
+        <li><i class="fa-solid fa-check"></i><span>橫有多長，豎有多高，無量上漲必須跑；縮量下跌不必逃。</span></li>
+        <li><i class="fa-solid fa-check"></i><span>上升趨勢，等股票上漲或下跌3天買賣；等股票上漲或下跌7天買賣；等股票上漲或下跌3週買賣。</span></li>
+      </ul>
+      <div class="quote-final">天下沒有白吃的午餐——不要錢的最貴。</div>
+    </div>
+  </section>
+
+  <!-- 耐心 -->
+  <section class="section" id="patience">
+    <div class="section-header">
+      <i class="fa-solid fa-hourglass-half"></i>
+      <div><div class="section-eyebrow">投資心法</div><h2>耐心是賺錢的底氣</h2></div>
+    </div>
+    <div class="card">
+      <ul class="mindset-list">
+        <li><i class="fa-solid fa-quote-left"></i><span>主力洗盤時，散戶急著跳車。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>漲多才要追，跌一點就砍，永遠錯過最好點。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>行情不是天天有，等到關鍵點才出手。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>會賺的人，都懂得忍和等。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>股市就是比誰沉得住氣。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>衝動是散戶的專利，耐心是高手的標誌。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>等一個好機會，勝過亂打一百槍。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>不急，才能看清局勢。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>贏家和輸家的差距，往往就在一點耐心。</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 止損 -->
+  <section class="section" id="stoploss">
+    <div class="section-header">
+      <i class="fa-solid fa-shield-halved"></i>
+      <div><div class="section-eyebrow">投資心法</div><h2>止損才是你最大的保護</h2></div>
+    </div>
+    <div class="card">
+      <ul class="mindset-list">
+        <li><i class="fa-solid fa-quote-left"></i><span>止損不是失敗，而是保護資金。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>賠錢不可怕，可怕的是補到深淵。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>承認錯誤比硬扛更專業。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>輸小錢才能賺大錢。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>拖延不止損，只會讓傷口越大。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>一次深套，可能毀掉幾年的積蓄。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>高手懂得砍得快，散戶常常拖拖拉拉。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>真正可怕的——不是虧損，而是死抱不放。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>記住：停損不是退縮，而是戰略的調整。</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 心態 -->
+  <section class="section" id="mindset">
+    <div class="section-header">
+      <i class="fa-solid fa-brain"></i>
+      <div><div class="section-eyebrow">投資心法</div><h2>心態比技術更重要</h2></div>
+    </div>
+    <div class="card">
+      <ul class="mindset-list">
+        <li><i class="fa-solid fa-quote-left"></i><span>技術可以學，心態卻難以控制。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>九成輸家輸在心態，而不是技術。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>心浮氣躁，再好的方法也沒用。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>穩定心態，才有穩定獲利。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>股市是人性的戰場，輸的都是心性。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>別羨慕別人賺快錢，守好自己的節奏才是關鍵。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>心態不穩，學再多指標也是白搭。</span></li>
+        <li><i class="fa-solid fa-quote-left"></i><span>建立系統比追逐標的重要。</span></li>
+      </ul>
+      <div class="quote-final">
+        不要整天找要投資哪一檔股票，會賺錢跟蹤一檔股票就夠了。<br>
+        當你判斷對了可是你只買一點？對的時候你賺多少，比你對不對更重要。
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="footer-note">
+  資料整理自建平老師歷年課程語錄，原文未經修改，僅重新排版｜啟富達國際股份有限公司版權所有，僅供學員個人學習參考使用
+</div>
+
+</body>
+</html>
